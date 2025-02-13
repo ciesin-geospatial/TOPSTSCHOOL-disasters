@@ -7,13 +7,18 @@ format:
 bibliography: wildfires-references.bib
 ---
 
-## Overview
+# Overview
 
-In this lesson, we will analyze the 2023 Yellowknife wildfire evacuation using multiple satellite-derived datasets. The analysis integrates active fire detections, smoke plumes, wind patterns, and infrastructure data to understand the complex conditions that led to the evacuation of approximately 20,000 residents. You will learn how to access and process data from NASA's [Fire Information for Resource Management System (FIRMS)](https://firms.modaps.eosdis.nasa.gov/), NOAA's [GOES-18 satellite](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch), and Visible Infrared Imaging Radiometer Suite (VIIRS) [Burned Area Product](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch). The lesson demonstrates how to combine these datasets to assess evacuation route vulnerability and regional smoke impacts.
+In this lesson, we will analyze the 2023 Yellowknife wildfire evacuation using multiple satellite-derived datasets to assess evacuation route vulnerability and regional smoke impacts. You will learn how to access and process data from NASA's [Fire Information for Resource Management System (FIRMS)](https://firms.modaps.eosdis.nasa.gov/), NOAA's [GOES-18 satellite](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch), and Visible Infrared Imaging Radiometer Suite (VIIRS) [Burned Area Product](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch). 
 
-Through hands-on analysis, you will work with both near real-time data and post-processed remotely-sensed satellite products. The integration of these datasets shows how emergency managers can use publicly-available data to support evacuation decisions and understand hazard conditions. You will also learn key techniques for processing and visualizing spatial data, including clustering algorithms for fire perimeter detection, smoke plume analysis, and the creation of integrated hazard visualizations.
+The analysis integrates active fire detections, smoke plumes, wind patterns, and infrastructure data to understand the complex conditions that led to the evacuation of approximately 20,000 residents. Through hands-on analysis, you will work with both near real-time data and post-processed remotely-sensed satellite products. The integration of these datasets shows how emergency managers can use publicly-available data to support evacuation decisions and understand hazard conditions.
 
 This lesson emphasizes practical applications of remote sensing data for emergency management, while also exploring the strengths and limitations of different satellite products. By analyzing the Yellowknife evacuation, you will gain experience with workflows that can be applied to other wildfire events and natural hazards.
+
+![Yellowknife Fires of 2023](https://eoimages.gsfc.nasa.gov/images/imagerecords/151000/151722/yellowknife_oli_2023228_lrg.jpg) [^1]
+
+[^1]: Photo Credit: NASA Earth Observatory
+
 
 ::: callout-warning
 ## Preface: A Note on Data Interpretation and Emergency Management
@@ -25,65 +30,82 @@ The integration of multiple data sources can provide valuable insights, but sate
 Always consider these limitations when using remote sensing data to support emergency management decisions.
 :::
 
-## Learning Objectives
+# Learning Objectives
 
-After completing this lesson, students will be able to:
+This lesson uses techniques for processing and visualizing spatial data, including clustering algorithms for fire perimeter detection, smoke plume analysis, and the creation of integrated hazard visualizations. After completing this lesson, students will be able to:
 
-### Technical Competencies
+## Technical Competencies
 
 -   Configure and authenticate API access to multiple NASA Earth data products
 -   Process and harmonize multi-source remote sensing data using R's spatial packages (sf, terra, stars)
 -   Implement spatial analysis workflows combining vector and raster data for wildfire assessment
 -   Create publication-quality static visualizations and basic interactive maps of wildfire impacts
 
-### Analytical Skills
+## Analytical Skills
 
 -   Evaluate the progression and impact of wildfires using multiple remote sensing products
 -   Assess infrastructure vulnerability and damage using spatial analysis techniques
 -   Integrate multiple spatial datasets to conduct a comprehensive wildfire impact assessment
 -   Critical analyze the strengths and limitations of different remote sensing products for fire analysis
 
-### Practical Applications
+## Practical Applications
 
 -   Apply real-world workflows for accessing and processing wildfire-related remote sensing data
 -   Demonstrate best practices for reproducible spatial analysis in R
 -   Implement methods for combining satellite-derived fire products with infrastructure data
 -   Document and communicate spatial analysis results effectively
 
-### Advanced Understanding (Optional Extensions)
+## Advanced Understanding (Optional Extensions)
 
 -   Develop automated workflows for multi-sensor data integration
 -   Apply uncertainty assessment in wildfire impact analysis
 -   Create advanced visualizations for temporal pattern analysis
 -   Implement validation approaches using multiple data sources
 
-## Introduction
+# Introduction
 
-### Wildfires and the 2023 Season
+## Wildfires and the 2023 Season
 
-Wildfires are a natural and essential component of North American forest ecosystems, particularly in the boreal forests that stretch across Canada [@girardin2010; @johnson2001; @zackrisson1996]. These fires play a crucial role in maintaining forest health, recycling nutrients, and promoting biodiversity. However, climate change has begun to alter historical fire regimes, leading to more frequent, intense, and extensive wildfires that pose increasing challenges to both ecosystems and human communities.
+Wildfires are a natural and essential component of North American forest ecosystems, particularly in the boreal forests that stretch across Canada [@girardin2010; @johnson2001; @zackrisson1996]. These fires play a crucial role in maintaining forest health, recycling nutrients, and promoting biodiversity [@Running2006]. However, climate change has begun to alter historical fire regimes, leading to more frequent, intense, and extensive wildfires that pose increasing challenges to both ecosystems and human communities [@Mora2018; @Pausas2021; @Jones2024].
 
-In Canada's boreal forests, fire has historically occurred in natural cycles ranging from 50 to 200 years, helping to maintain a mosaic of forest ages and compositions. Indigenous peoples have long understood and managed these fire regimes, using controlled burns as a land management tool. Today, changing climate conditions are disrupting these traditional patterns. Longer fire seasons, increased lightning activity, and more severe drought conditions are creating unprecedented fire behavior and risk scenarios.
+In Canada's boreal forests, fire has historically occurred in natural cycles ranging from 50 to 200 years, helping to maintain a mosaic of forest ages and compositions. Indigenous peoples have long understood and managed these fire regimes, using controlled burns as a land management tool [@Christianson2014; @Lewis1978; @Wang2022]. Today, changing climate conditions are disrupting these traditional patterns. Longer fire seasons, increased lightning activity, and more severe drought conditions are creating unprecedented fire behavior and risk scenarios.
 
-The human impacts of these changing fire regimes are particularly acute in Canada's northern communities, where limited road networks often leave few evacuation options. Additionally, smoke from these fires can affect air quality across vast regions, creating public health challenges even for communities far from the actual flames. The economic implications are also significant, affecting industries from tourism to mining, and straining emergency response resources.
+![Canada Controlled Burns](https://www.freep.com/gcdn/authoring/authoring-images/2024/07/23/PDTF/74512463007-canada-fire-story-2-053024-es-81.jpg)[^2]
 
-The 2023 wildfire season emerged as a stark illustration of these evolving challenges. The Northwest Territories experienced one of its most devastating fire seasons on record, characterized by record-breaking temperatures and severe drought conditions. The season saw over 236 fires that burned approximately 4 million hectares of land, forcing the first complete evacuation of Yellowknife in its history. The scale of displacement was unprecedented, with an estimated 70% of NWT residents forced to leave their homes. Critical infrastructure, including communities, mines, and transportation networks, faced significant threats, highlighting the vulnerability of northern communities to extreme fire events.
+[^2]: Photo Credt: Detroit Free Press, Alberta Wildfire Firefighters
+
+
+The human impacts of these changing fire regimes are particularly acute in Canada's northern communities, where limited road networks often leave few evacuation options. Additionally, smoke from these fires can affect air quality across vast regions, creating public health challenges even for communities far from the actual flames [@Jones2024]. The economic implications are also significant, affecting industries from tourism to mining, and straining emergency response resources.
+
+The 2023 wildfire season emerged as a stark illustration of these evolving challenges. The Northwest Territories experienced one of its most devastating fire seasons on record, characterized by record-breaking temperatures and severe drought conditions [@Jones2024]. The season saw over 236 fires that burned approximately 4 million hectares of land, over twice the previous record in Canada and over seven times the annual average, forcing the first complete evacuation of Yellowknife in its history. The scale of displacement was unprecedented, with an estimated 70% of Northwest Territories residents forced to leave their homes [@Ridgen2024]. Critical infrastructure, including communities, mines, and transportation networks, faced significant threats, highlighting the vulnerability of northern communities to extreme fire events.
 
 These events showcased both the immediate and long-term challenges of managing wildfires in a changing climate, while also demonstrating the critical importance of robust monitoring and early warning systems. The season served as a powerful example of why enhanced understanding of fire behavior and improved prediction capabilities are essential for protecting communities and ecosystems in an increasingly fire-prone world.
 
+![Terrestrial ecozones and ecoprovinces of Canada](https://www.statcan.gc.ca/sites/default/files/images/environmental-map-eng.gif)[^3]
+
+[^3]: Photo Credit: Statistics Canada
+
+**The Northwest Territories (NWT)** encompasses a vast expanse of northern Canada, covering approximately 1.14 million square kilometers of diverse terrain dominated by boreal forest ecosystems. This region represents one of Canada's most fire-prone areas, where the interplay of climate, vegetation, and geography creates conditions conducive to regular fire activity. The landscape is fundamentally shaped by the Canadian Shield, an ancient bedrock formation characterized by exposed Precambrian rock, countless lakes, and wetlands that create a complex mosaic of fire-susceptible and fire-resistant terrain.
+
 ### Yellowknife
 
-The Northwest Territories (NWT) encompasses a vast expanse of northern Canada, covering approximately 1.14 million square kilometers of diverse terrain dominated by boreal forest ecosystems. This region represents one of Canada's most fire-prone areas, where the interplay of climate, vegetation, and geography creates conditions conducive to regular fire activity. The landscape is fundamentally shaped by the Canadian Shield, an ancient bedrock formation characterized by exposed Precambrian rock, countless lakes, and wetlands that create a complex mosaic of fire-susceptible and fire-resistant terrain.
+![City of Yellowknife](https://www.yellowknife.ca/en/New-Website-Banners/3.-Exploring-Yellowknife-Banner.jpg)[^4]
 
-At the heart of this region lies Yellowknife, the territorial capital, situated on the northern shore of Great Slave Lake. With approximately 20,000 residents, it serves as the primary urban center and economic hub of the NWT. The city's boreal forest setting is dominated by black spruce and jack pine, species that have evolved with fire and even depend on it for regeneration. Black spruce, in particular, has adapted to release its seeds from sealed cones when exposed to the intense heat of forest fires, while jack pine stands often require fire to maintain their ecological dominance.
+[^4]: Photo Credit: City of Yellowknife
 
-The region experiences a subarctic climate, characterized by long, cold winters where temperatures regularly drop below -30°C, and short, warm summers with extended daylight hours. This climate regime creates a distinct fire season that, historically, has been concentrated in the brief summer months. However, climate change is increasingly extending this fire season at both ends, creating new challenges for fire management and community safety.
+At the heart of this region lies Yellowknife, the territorial capital, situated on the northern shore of Great Slave Lake. With approximately 20,000 residents, it serves as the primary urban center and economic hub of the NWT [@CityofYellowknife2025]. The city's boreal forest setting is dominated by black spruce and jack pine, species that have evolved with fire and even depend on it for regeneration. [Black spruce](https://tidcf.nrcan.gc.ca/en/trees/factsheet/39), in particular, has adapted to release its seeds from sealed cones when exposed to the intense heat of forest fires, while jack pine stands often require fire to maintain their ecological dominance.
+
+The region experiences a subarctic climate, characterized by long, cold winters where temperatures regularly drop below -30°C, and short, warm summers with extended daylight hours. This climate regime creates a distinct fire season that, historically, has been concentrated in the brief summer months. However, climate change is increasingly extending this fire season at both ends, creating new challenges for fire management and community safety [@Pausas2021; @Running2006].
 
 Infrastructure in the NWT is notably limited, with Yellowknife connected to southern Canada by a single highway (Highway 3) and air travel serving as a crucial transportation link. This isolation is even more pronounced for the numerous remote communities scattered throughout the territory, many of which are accessible only by air or seasonal ice roads. This limited transportation network creates particular challenges for emergency management and evacuation scenarios during severe fire events, as demonstrated during recent fire seasons.
 
 ### The 2023 Yellowknife Wildfire Crisis
 
-The summer of 2023 brought unprecedented wildfire activity to the Northwest Territories, culminating in the evacuation of Yellowknife in mid-August. The immediate threat came from the Behchokǫ̀ wildfire (designated ZF015), which began southwest of Yellowknife and rapidly expanded under extreme fire weather conditions. By August 14th, the fire had grown to over 163,000 hectares and was advancing approximately 1.2 kilometers per hour toward the territorial capital.
+![Bear in NWT](https://globalnews.ca/wp-content/uploads/2023/09/wiley-wolfe-black-bear-burn.jpg)[^5]
+
+[^5]: Photo Credit: Global News
+
+The summer of 2023 brought unprecedented wildfire activity to the Northwest Territories, culminating in the evacuation of Yellowknife in mid-August. The immediate threat came from the Behchokǫ̀ wildfire (designated ZF015-23 [@MNP2024]), which began southwest of Yellowknife and rapidly expanded under extreme fire weather conditions. By August 14th, the fire had grown to over 163,000 hectares and was advancing approximately 1.2 kilometers per hour toward the territorial capital.
 
 On August 16th, territorial officials issued a mandatory evacuation order for all 20,000 Yellowknife residents, marking the largest evacuation in NWT history. The evacuation presented significant logistical challenges due to limited egress routes. Highway 3, the only road connecting Yellowknife to southern Canada, became a critical lifeline with evacuees forming long convoys south toward Alberta. Meanwhile, military and civilian aircraft conducted one of the largest air evacuations in Canadian history, prioritizing elderly residents, those with medical needs, and individuals without personal vehicles.
 
