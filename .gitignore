@@ -15,3 +15,6 @@ data/yk_Municipal_Boundary_shp/yk_municipal_boundary.dbf
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.prj
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shp
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shx
+
+
+**/*.env
