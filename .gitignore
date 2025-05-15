@@ -18,3 +18,6 @@ data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shx
 
 
 **/*.env
+
+**/data/
+/data/
