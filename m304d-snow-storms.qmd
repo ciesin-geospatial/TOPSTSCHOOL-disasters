@@ -1,0 +1,17 @@
+---
+title: "Snow Storms 1990"
+author: 
+  - "Stevaughn Borders"
+format: 
+    html
+---
+
+
+```{python}
+import geopandas as gpd
+```
+
+```{python}
+gdf = gpd.read_file("data/snow-storms/Snow_19000226_19000303_1.shp") # Display the first few rows of the GeoDataFrame print(gdf.head())
+print(gdf.head())
+```

@@ -9,7 +9,7 @@ bibliography: wildfires-references.bib
 
 # Overview
 
-In this lesson, we will analyze the 2023 Yellowknife wildfire evacuation using multiple satellite-derived datasets to assess evacuation route vulnerability and regional smoke impacts. You will learn how to access and process data from NASA's [Fire Information for Resource Management System (FIRMS)](https://firms.modaps.eosdis.nasa.gov/), NOAA's [GOES-18 satellite](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch), and Visible Infrared Imaging Radiometer Suite (VIIRS) [Burned Area Product](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch). 
+In this lesson, we will analyze the 2023 Yellowknife wildfire evacuation using multiple satellite-derived datasets to assess evacuation route vulnerability and regional smoke impacts. You will learn how to access and process data from NASA's [Fire Information for Resource Management System (FIRMS)](https://firms.modaps.eosdis.nasa.gov/), NOAA's [Geostationary Operational Environmental Satellite 18 (GOES-18) satellite](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch), and Visible Infrared Imaging Radiometer Suite (VIIRS) [Burned Area Product](https://www.nesdis.noaa.gov/our-satellites/currently-flying/goes-18-launch). 
 
 The analysis integrates active fire detections, smoke plumes, wind patterns, and infrastructure data to understand the complex conditions that led to the evacuation of approximately 20,000 residents. Through hands-on analysis, you will work with both near real-time data and post-processed remotely-sensed satellite products. The integration of these datasets shows how emergency managers can use publicly-available data to support evacuation decisions and understand hazard conditions.
 
@@ -121,7 +121,7 @@ The evacuation order remained in effect for 21 days, with residents unable to re
 
 ### Wildfire and Climate Change
 
-The unprecedented scale and intensity of the 2023 NWT fire season exemplifies the broader impacts of climate change on northern fire regimes. Canada's northern regions are warming at approximately three times the global average rate, fundamentally altering the conditions that have historically governed wildfire behavior. This accelerated warming is creating longer fire seasons, with snow melting earlier in spring and winter arriving later in fall, extending the period during which fires can ignite and spread. The warming trend is particularly pronounced in the Northwest Territories, where average temperatures have increased by 2.3°C since 1948, compared to a 1.1°C increase globally.
+The unprecedented scale and intensity of the 2023 NWT fire season exemplifies the broader impacts of climate change on northern fire regimes. Canada's Arctic regions are warming at approximately three times the global average rate, fundamentally altering the conditions that have historically governed wildfire behavior [@CCCR2023]. This accelerated warming is creating longer fire seasons, with snow melting earlier in spring and winter arriving later in fall, extending the period during which fires can ignite and spread [@IPCC2023]. The warming trend is particularly pronounced in the Northwest Territories, where average temperatures have increased by 2.3°C since 1948, compared to a 1.1°C increase globally.
 
 These changing conditions are challenging traditional approaches to fire management and community protection. Historical fire behavior models, based on decades of past observations, are becoming less reliable as new climate patterns emerge. Fire intensity is increasing due to drier fuels and more frequent extreme weather events, while fire spread patterns are becoming more erratic and less predictable. For northern communities like Yellowknife, these changes represent an existential challenge: traditional fire breaks may prove insufficient, evacuation routes may become more frequently threatened, and the resources required for fire suppression may exceed historical requirements. The 2023 evacuation of Yellowknife serves as a harbinger of the complex challenges that northern communities face in adapting to this new reality of fire risk in a warming climate.
 
@@ -129,7 +129,7 @@ These changing conditions are challenging traditional approaches to fire managem
 
 Modern wildfire management increasingly relies on geospatial analysis and remote sensing technologies to support critical decision-making. Natural resource managers and emergency response teams leverage multiple satellite platforms, weather data, and spatial analysis techniques to monitor fire progression, assess risks, and coordinate response efforts in near-real-time. During the Yellowknife evacuation, these tools proved instrumental in tracking the Behchokǫ̀ wildfire's progression, predicting its behavior, and making informed evacuation decisions.
 
-The integration of multiple data sources - from active fire detections to smoke forecasts - allows emergency managers to develop a comprehensive understanding of evolving fire situations. NASA's FIRMS system provides near-real-time fire locations, while GOES satellites track smoke plume development and movement. When combined with infrastructure data and analyzed through modern spatial techniques, these datasets enable rapid assessment of threats to communities, critical infrastructure, and evacuation routes. Post-fire, these same tools support damage assessment and recovery planning through the analysis of burn severity and infrastructure impacts.
+The integration of multiple data sources - from active fire detections to smoke forecasts - allows emergency managers to develop a comprehensive understanding of evolving fire situations. NASA's FIRMS provides near-real-time fire locations, while GOES satellites track smoke plume development and movement. When combined with infrastructure data and analyzed through modern spatial techniques, these datasets enable rapid assessment of threats to communities, critical infrastructure, and evacuation routes. Post-fire, these same tools support damage assessment and recovery planning through the analysis of burn severity and infrastructure impacts.
 
 The Yellowknife wildfire crisis of 2023 serves as an ideal case study for demonstrating these analytical approaches. In the following analysis, we will explore how different remote sensing products can be integrated to monitor and assess wildfire impacts, particularly in northern communities where traditional ground-based monitoring may be limited. We will demonstrate techniques for processing and analyzing multiple satellite data streams, assessing infrastructure vulnerability, and quantifying fire impacts - the same types of analyses that support real-world emergency response and resource management decisions. This practical application of geospatial analysis techniques provides valuable insights into both the technical methods and their critical role in modern fire management.
 
@@ -208,15 +208,21 @@ if (!dir.exists("data")) {
 }
 
 # Download Yellowknife municipal boundary
-boundary_url <- "https://opendata.yellowknife.ca/home/ServeFile/8812810a-8f07-4e83-b086-9f43e2f93aa4?FileType=7"
+boundary_url <- "https://hub.arcgis.com/api/v3/datasets/5959bad3315946c0827f85d8cdeb3b8c_0/downloads/data?format=shp&spatialRefId=26911&where=1%3D1"
 
 # Perform GET request with httr
 res <- httr::GET(
   url = boundary_url,
   httr::write_disk("data/yellowknife_boundary.zip", overwrite = TRUE),
+  httr::config(followlocation = TRUE),
   httr::verbose()
 )
+
 ```
+```{r}
+res
+```
+
 
 Next, we'll unzip the downloaded file and read the municipal boundary layer. The data comes in a geodatabase format and is already in UTM Zone 11N (EPSG:26911):
 
@@ -225,12 +231,14 @@ Next, we'll unzip the downloaded file and read the municipal boundary layer. The
 utils::unzip("data/yellowknife_boundary.zip", 
              exdir = "data/yellowknife_boundaries")
 
+
 # Read the municipal boundary layer
 yk_boundary <- sf::st_read(
-  "data/yellowknife_boundaries/yk_municipal_boundary.shp"
+  "data/yellowknife_boundaries/Municipal_Boundary.shp"
 ) |> 
   identity()
 ```
+
 
 Let's examine the structure of our boundary object to ensure we have the data we need:
 
@@ -301,21 +309,71 @@ basemap_tiles <- maptiles::get_tiles(
 )
 ```
 
-Next, we'll query the FIRMS API to get fire detections for our area. The FIRMS API requires registration for an API key, which should be stored securely in your environment variables:
+Next, we'll query the FIRMS API to get fire detections for our area. The FIRMS API requires registration for an **API Map key**, which should be stored securely in your environment variables. The key will be sent to your email. Request a FIRMS API Map Key [Here](https://firms.modaps.eosdis.nasa.gov/api/map_key/)
 
 ```{r}
+#| echo: false
+# Get FIRMS data
+
+firms_url <- sprintf(
+  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/%s/%.4f,%.4f,%.4f,%.4f/%d/%s",
+  "91e358eced609be3e8a6e99f02b4462a",   # your MAP_KEY
+  "VIIRS_NOAA20_SP",                   # product (SOURCE)
+  bbox["xmin"], bbox["ymin"],         # WEST, SOUTH
+  bbox["xmax"], bbox["ymax"],         # EAST, NORTH
+  10,                                   # DAY_RANGE
+  "2023-08-10"                         # DATE
+)
+
+
+
+resp <- httr2::request(firms_url) |>
+  httr2::req_perform()
+resp
+```
+
+
+
+```{r}
+#| eval: false
 # Get FIRMS data
 firms_url <- sprintf(
-  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/VIIRS_NOAA20_NRT/%s,%s,%s,%s/10/2023-08-10",
-  "FIRMS_API_KEY",
-  bbox["xmin"], bbox["ymin"],
-  bbox["xmax"], bbox["ymax"]
+  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/%s/%.4f,%.4f,%.4f,%.4f/%d/%s",
+  "API_MAP_KEY",   # your MAP_KEY
+  "VIIRS_NOAA20_SP",                   # product (SOURCE)
+  bbox["xmin"], bbox["ymin"],         # WEST, SOUTH
+  bbox["xmax"], bbox["ymax"],         # EAST, NORTH
+  10,                                   # DAY_RANGE
+  "2023-08-10"                         # DATE
 )
+
 resp <- httr2::request(firms_url) |>
   httr2::req_perform()
 ```
 
 We'll process the FIRMS data into a spatial object and add proper datetime fields:
+
+```{r}
+
+df <- httr2::resp_body_string(resp) |>
+  textConnection() |>
+  utils::read.csv()
+
+print(head(df))
+str(df)
+```
+```{r}
+# Process FIRMS data
+firms_points <- httr2::resp_body_string(resp) |>
+  textConnection() |>
+  utils::read.csv() |>
+  sf::st_as_sf(
+    coords = c("longitude", "latitude"),
+    crs = 4326
+  ) |> 
+  sf::st_transform(sf::st_crs(yk_boundary))
+
+```
 
 ```{r}
 # Process FIRMS data
@@ -351,6 +409,12 @@ daily_stats <- firms_points |>
     max_frp = max(frp),
     total_frp = sum(frp)
   )
+daily_stats$date <- as.Date(daily_stats$date)
+
+```
+
+```{r}
+daily_stats
 ```
 
 ::: callout-note
@@ -405,20 +469,21 @@ evac_date <- as.Date("2023-08-16")
 
 # Create temporal progression plot
 p2 <- ggplot2::ggplot(daily_stats, ggplot2::aes(x = date)) +
-    ggplot2::geom_vline(xintercept = evac_date, 
-                        color = "purple", 
-                        linetype = "dashed",
-                        alpha = 0.85,
-                        linewidth = 1.5) +
-    ggplot2::geom_line(ggplot2::aes(y = detections), color = "#00BFFF", linewidth = 1) +
-    ggplot2::geom_point(ggplot2::aes(y = detections), color = "#00BFFF", size = 3) +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(
-      title = "Daily Fire Detections",
-      subtitle = "Purple line indicates evacuation date (Aug 16)",
-      y = "Number of detections",
-      x = "Date"
-    )
+  ggplot2::geom_vline(xintercept = evac_date, 
+                      color = "purple", 
+                      linetype = "dashed",
+                      alpha = 0.85,
+                      linewidth = 1.5) +
+  ggplot2::geom_line(ggplot2::aes(y = detections), color = "#00BFFF", linewidth = 1) +
+  ggplot2::geom_point(ggplot2::aes(y = detections), color = "#00BFFF", size = 3) +
+  ggplot2::scale_x_date(date_breaks = "1 day", date_labels = "%b %d") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(
+    title = "Daily Fire Detections",
+    subtitle = "Purple line indicates evacuation date (Aug 16)",
+    y = "Number of detections",
+    x = "Date"
+  )
 
 print(p2)
 ```
@@ -437,6 +502,7 @@ p3 <- ggplot2::ggplot(daily_stats, ggplot2::aes(x = date)) +
     ggplot2::geom_point(ggplot2::aes(y = mean_frp, color = "Mean FRP"), size = 3) +
     ggplot2::geom_line(ggplot2::aes(y = max_frp, color = "Max FRP"), linewidth = 1) +
     ggplot2::geom_point(ggplot2::aes(y = max_frp, color = "Max FRP"), size = 3) +
+     ggplot2::scale_x_date(date_breaks = "1 day", date_labels = "%b %d") +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       title = "Fire Radiative Power Over Time",
@@ -2006,11 +2072,13 @@ evac_route <- osmdata::opq(bbox = bbox_wgs84) |>
 ```
 
 ::: 
+
 #### OpenStreetMap Road Classifications
 
 -   motorway: highest grade highways
 -   trunk: major arterial routes
 -   primary: major regional routes In the Northwest Territories, most intercity routes are classified as trunk or primary roads.
+
 :::
 
 
@@ -2086,16 +2154,58 @@ By combining our analyses of smoke plumes, wind patterns, and evacuation routes,
 Let's start by getting the most relevant FIRMS data for our peak smoke period:
 
 ```{r}
+#| echo: false
 # Get FIRMS data for peak time with larger extent
 bbox <- sf::st_bbox(sf::st_transform(plume_buffer, 4326)) |>
   round(4)
 
+# firms_url <- sprintf(
+#   "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/VIIRS_NOAA20_NRT/%s,%s,%s,%s/10/%s",
+#   Sys.getenv("FIRMS_API_KEY"),
+#   bbox["xmin"], bbox["ymin"],
+#   bbox["xmax"], bbox["ymax"],
+#   format(peak_time$datetime, "%Y-%m-%d")
+# )
+
 firms_url <- sprintf(
-  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/VIIRS_NOAA20_NRT/%s,%s,%s,%s/10/%s",
-  Sys.getenv("FIRMS_API_KEY"),
-  bbox["xmin"], bbox["ymin"],
-  bbox["xmax"], bbox["ymax"],
-  format(peak_time$datetime, "%Y-%m-%d")
+  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/%s/%.4f,%.4f,%.4f,%.4f/%d/%s",
+  "91e358eced609be3e8a6e99f02b4462a",   # your MAP_KEY
+  "VIIRS_NOAA20_SP",                   # product (SOURCE)
+  bbox["xmin"], bbox["ymin"],         # WEST, SOUTH
+  bbox["xmax"], bbox["ymax"],         # EAST, NORTH
+  10,                                   # DAY_RANGE
+  format(peak_time$datetime, "%Y-%m-%d")  # DATE
+)
+
+# Get the data
+resp <- httr2::request(firms_url) |>
+  httr2::req_perform()
+
+# Process into spatial data
+firms_points_peak <- httr2::resp_body_string(resp) |>
+  textConnection() |>
+  utils::read.csv() |>
+  sf::st_as_sf(
+    coords = c("longitude", "latitude"),
+    crs = 4326
+  ) |>
+  sf::st_transform(sf::st_crs(peak_data$data))
+```
+```{r}
+#| eval: false
+# Get FIRMS data for peak time with larger extent
+bbox <- sf::st_bbox(sf::st_transform(plume_buffer, 4326)) |>
+  round(4)
+
+
+firms_url <- sprintf(
+  "https://firms.modaps.eosdis.nasa.gov/api/area/csv/%s/%s/%.4f,%.4f,%.4f,%.4f/%d/%s",
+  "API_MAP_KEY",   # your MAP_KEY
+  "VIIRS_NOAA20_SP",                   # product (SOURCE)
+  bbox["xmin"], bbox["ymin"],         # WEST, SOUTH
+  bbox["xmax"], bbox["ymax"],         # EAST, NORTH
+  10,                                   # DAY_RANGE
+  format(peak_time$datetime, "%Y-%m-%d")  # DATE
 )
 
 # Get the data
