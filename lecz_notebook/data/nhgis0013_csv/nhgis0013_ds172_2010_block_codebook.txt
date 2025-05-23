@@ -1,0 +1,165 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0013_ds172_2010_block'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             2010
+Geographic level: Block (by State--County--Census Tract)
+Extent:           Puerto Rico
+Dataset:          2010 Census: SF 1a - P & H Tables [Blocks & Larger Areas]
+   NHGIS code:    2010_SF1a
+   NHGIS ID:      ds172
+Breakdown(s):     Geographic Component:
+                     Total area (00)
+ 
+Tables:
+ 
+1. Housing Units
+   Universe:    Housing units
+   Source code: H1
+   NHGIS code:  IFC
+ 
+2. Occupancy Status
+   Universe:    Housing units
+   Source code: H3
+   NHGIS code:  IFE
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        STUSAB:      State/US-Abbreviation (USPS)
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        COUSUBA:     County Subdivision Code
+        COUSUBCC:    FIPS County Subdivision Class Code
+        PLACEA:      Place Code
+        PLACECC:     FIPS Place Class Code
+        TRACTA:      Census Tract Code
+        BLKGRPA:     Block Group Code
+        BLOCKA:      Block Code
+        CONCITA:     Consolidated City Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        RES_ONLYA:   American Indian Area/Alaska Native Area (Reservation or Statistical Entity Only) Code
+        TRUSTA:      American Indian Area (Off-Reservation Trust Land Only)/Hawaiian Home Land Code
+        AIANHHCC:    FIPS American Indian Area/Alaska Native Area/Hawaiian Home Land Class Code
+        AITSCEA:     Tribal Subdivision/Remainder Code
+        AITS:        American Indian Tribal Subdivision (FIPS)
+        TTRACTA:     Tribal Census Tract Code
+        TBLKGRPA:    Tribal Block Group Code
+        ANRCA:       Alaska Native Regional Corporation Code
+        CBSAA:       Metropolitan Statistical Area/Micropolitan Statistical Area Code
+        METDIVA:     Metropolitan Division Code
+        CSAA:        Combined Statistical Area Code
+        NECTAA:      New England City and Town Area Code
+        NECTADIVA:   New England City and Town Area Division Code
+        CNECTAA:     Combined New England City and Town Area Code
+        CBSAPCI:     Metropolitan Statistical Area/Micropolitan Statistical Area Principal City Indicator
+        NECTAPCI:    New England City and Town Area Principal City Indicator
+        UAA:         Urban Area Code
+        UATYPE:      Urban Area Type
+        URA:         Urban/Rural Code
+        CDA:         Congressional District (111th Congress) Code
+        SLDUA:       State Legislative District (Upper Chamber) Code
+        SLDLA:       State Legislative District (Lower Chamber) Code
+        VTD:         Voting District
+        VTDI:        Voting District Indicator
+        ZCTA5A:      5-Digit ZIP Code Tabulation Area Code
+        SUBMCDA:     Subminor Civil Division Code
+        SDELMA:      School District (Elementary)/Remainder Code
+        SDSECA:      School District (Secondary)/Remainder Code
+        SDUNIA:      School District (Unified)/Remainder Code
+        AREALAND:    Area (Land)
+        AREAWATR:    Area (Water)
+        NAME:        Area Name-Legal/Statistical Area Description (LSAD) Term-Part Indicator
+        FUNCSTAT:    Functional Status Code
+        INTPTLAT:    Internal Point (Latitude)
+        INTPTLON:    Internal Point (Longitude)
+        LSADC:       Legal/Statistical Area Description Code
+        MEMI:        Metropolitan Micropolitan Indicator
+        NMEMI:       NECTA Metropolitan Micropolitan Indicator
+        PUMA:        Public Use Microdata Area
+        SABINSA:     School Attendance Area Code
+ 
+Breakdown:
+    Geographic Component: Total area (00)
+ 
+    Table 1:     Housing Units
+    Universe:    Housing units
+    Source code: H1
+    NHGIS code:  IFC
+        IFC001:      Total
+ 
+    Table 2:     Occupancy Status
+    Universe:    Housing units
+    Source code: H3
+    NHGIS code:  IFE
+        IFE001:      Total
+        IFE002:      Occupied
+        IFE003:      Vacant
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Katherine Knowles, Tracy Kugler, Finn Roberts, and Steven Ruggles.
+        IPUMS National Historical Geographic Information System: Version 19.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2024. 
+        http://doi.org/10.18128/D050.V19.0
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455
