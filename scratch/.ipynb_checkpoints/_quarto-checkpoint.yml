@@ -1,0 +1,48 @@
+project:
+  title: "SCHOOL Disasters Module"
+  type: website
+  output-dir: docs
+format:
+  html:
+    embed-resources: true
+    theme: sandstone
+    css: "https://raw.githubusercontent.com/ciesin-geospatial/TOPSTSCHOOL/main/custom.scss"
+    toc: true
+    toc-title: Contents
+    toc-location: left
+    code-overflow: wrap
+code-block-bg: true
+code-block-border-left: "#315c86"
+keep-ipynb: true
+lightbox: true
+execute:
+  warning: false
+website:
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        url: https://ciesin-geospatial.github.io/TOPSTSCHOOL-air-quality/index.html
+      - text: "Lessons"
+        menu:
+          - text: "Lesson 1:  Changing exposure (the who) to coastal hazards in PR (PR, AK, & HI were never done; projections to 2100 were also never done"
+            url: ""
+          - text: "Lesson 2: Wildfire damage assessment in Canada (regional AOI) using VIIRS Burnscar, FIRMS, building footprint"
+            url: ""
+          - text: "Generating local data for flood damage assessment (drone data from Maui) Connect to SheldUS County level"
+            url: ""
+
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            url:  https://github.com/ciesin-geospatial/TOPSTSCHOOL
+          - text: Report a Bug
+            url:  https://github.com/ciesin-geospatial/TOPSTSCHOOL/issues
+      - icon: globe
+        href: https://ciesin-geospatial.github.io/TOPSTSCHOOL/
+        text: "TOPSTSCHOOL GitHub Home Page"
+      - icon: youtube
+        href: https://www.youtube.com/channel/UCOIrczFd7_ht2bNUQ3qnM8w
+        text: "YouTube Channel"
