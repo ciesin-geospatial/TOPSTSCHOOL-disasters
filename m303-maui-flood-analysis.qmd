@@ -1,0 +1,127 @@
+---
+title: "Flood Watch Report – Maui Heavy Rainfall Analysis"
+author: 
+  - "Kytt MacManus, Raphael Sutiono, Francisco Sanchez, Mykola Dydych"
+format: 
+  html
+bibliography: maui-flood.bib
+---
+
+# Overview
+
+In this lesson, you will analyze the **Flash Flood Watch for Maui** issued in April 2024 due to prolonged, heavy rainfall. You will simulate rainfall data to evaluate flood risks across different regions of the island. This type of hazard analysis helps develop early-warning systems and improve response strategies for climate-related emergencies.
+
+## Learning Objectives
+
+By the end of this lesson, you should be able to:
+
+- Understand the meteorological cause and risk factors of flash floods in Maui.
+- Simulate and visualize rainfall data using Python.
+- Identify areas most vulnerable to flood impacts based on rainfall and elevation.
+- Communicate findings through charts and summary insights.
+
+# Introduction
+
+Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. On **April 14, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system.
+
+Heavy rains, particularly over windward and wildfire-scarred slopes, threatened roads, homes, and infrastructure. This report explores the event using simulated rainfall data and visual  tools to assess possible flood impact zones.
+
+# Accessing Data
+
+## National Oceanic and Atmospheric Administration (NOAA) National Center for Environmental Information (NCEI)
+
+National Climatic Data Center (NCDC) Climate Data Online (CDO) offers web services that provide access to current data. Detailed instructions for NCEI's [Access Data Service API v1](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) allows you to retrieve data directly in CSV (or JSON, XML, etc.) format — no API token required.
+
+`https://www.ncei.noaa.gov/access/services/data/v1`
+
+This API supports datasets like global-hourly (Integrated Surface Dataset, or ISD), which includes hourly precipitation among other variables.
+
+You can directly request the CSV file using this URL:
+
+
+```{python}
+import requests
+import pandas as pd
+import io
+
+url = "https://www.ncei.noaa.gov/access/services/data/v1"
+
+params = {
+    "dataset": "global-hourly",   
+    "stations": "USW00022516",        # Kahului Airport
+    "dataTypes": "HPCP",              # Hourly precipitation
+    "startDate": "2024-04-14",
+    "endDate": "2024-04-15",
+    "format": "csv",
+    "units": "metric"
+}
+
+response = requests.get(url, params=params)
+
+if response.status_code == 200:
+    df = pd.read_csv(io.StringIO(response.text))
+    print(df.head())
+else:
+    print("Error:", response.status_code)
+    print(response.text)
+
+
+```
+
+
+
+
+## Hourly Precipitation Data (HPD)
+
+NOAA's NCEI publishes [Hourly Precipitation Data (HPD) Publication](https://www.ncei.noaa.gov/metadata/geoportal/rest/metadata/item/gov.noaa.ncdc:C00127/html), which contains hourly precipitation amounts obtained from recording rain gauges located at National Weather Service, Federal Aviation Administration, and cooperative observer stations. 
+Published data are displayed in inches to tenths or inches to hundredths at local standard time. HPD includes maximum precipitation for nine (9) time periods from 15 minutes to 24 hours, for selected stations.
+
+
+
+# Event Summary
+
+### Flood Watch Details
+
+- **Issued:** April 14, 2024
+- **Effective Through:** Monday afternoon
+- **Location:** Maui County (windward slopes, valleys, and burn scar areas)
+- **Hazards:**
+  - Rainfall rates over **2 inches/hour**
+  - Flash floods and overflowing streams
+  - Landslides in steep terrain
+  - Road closures and infrastructure damage
+
+
+
+  
+
+### Interpretation
+
+- Locations like **Hana**, **Makawao**, and **Wailuku** exceed the 2-inch threshold for localized flash flooding.
+- These regions are also close to steep slopes or previously burned areas, compounding flood risk.
+
+# Mapping Risk Zones (Optional Extension)
+
+If working with actual satellite or elevation data (e.g., Digital Elevation Models or VIIRS flood maps), you can overlay rainfall intensity with slope or vegetation loss to enhance the flood vulnerability assessment.
+
+*In this lesson, we'll simulate the interpretation only.*
+
+## Risk Assessment Notes:
+
+- **Hana & Makawao**: High rainfall + steep terrain = increased landslide and runoff risk.
+- **Kahului & Wailuku**: Urban centers vulnerable to road flooding.
+- **Lahaina**: Lower rainfall, but previously wildfire-affected terrain may have poor water absorption.
+
+# Key Findings
+
+- Heavy rain events in Maui are especially dangerous in **mountainous and post-wildfire zones**.
+- Simulated rainfall suggests **localized flooding risk** in Hana, Makawao, and Wailuku.
+- Public alerts and proactive drainage maintenance are critical during such forecasts.
+
+# Conclusion
+
+This analysis of the **April 2024 Flood Watch** for Maui highlights the importance of combining weather data, topography, and land use to predict flood risks. Simulated rainfall over 2 inches in steep and urban zones should trigger concern for flash floods, landslides, and blocked roads.
+
+> **Key takeaway**: Integrating rainfall data with mapping tools helps emergency responders and residents prepare more effectively for climate hazards.
+
+![NOAA Satellite Image of Rainfall Impact Over Maui](https://media.mauinow.com/file/mauinow/2024/04/noaa-nws-satellite-1024x576.jpg)
