@@ -187,7 +187,7 @@ import pprint
 
 # Step 1: Load API key from .env file
 load_dotenv()
-IPUMS_API_KEY = os.getenv("jfm2205@columbia.edu", "59cba10d8a5da536fc06b59d0f22aac2b5f64a819df686fd2d47d0e4")
+IPUMS_API_KEY = os.getenv("EMAIL", "API_KEY")
 
 if IPUMS_API_KEY is None:
     raise ValueError("API key not found. Make sure IPUMS_API_KEY is defined in your .env file.")
@@ -231,8 +231,8 @@ extract = AggregateDataExtract(
     datasets=[
         NhgisDataset(name="2010_SF1a", data_tables=["P12", "H3"], geog_levels=["blck_grp"]),
         NhgisDataset(name="2020_DHCa", data_tables=["P12", "H3"], geog_levels=["blck_grp"]),
-    ]
-    # geographic_extents=["720"]
+    ],
+    geographic_extents=["720"]
     #    shapefiles=["720_blck_grp_2020_tl2020"]  to download shapefiles
 )
 
@@ -994,14 +994,12 @@ plt.show()
 Let's combine the Block Groups into Counties and Map the results.
 
 
-#####
 
-#### HIEU SUMMARIZE merged_df TO COUNTY (pd_county_df) using "sum" to add:  "Total_Population", "Male", "Female", "Pop60plus_total",  "Total_Housing_Units", "Occupied", "Vacant",  for all have _2010 and _2020 at the end. 
+## HIEU SUMMARIZE merged_df TO COUNTY (pd_county_df) using "sum" to add:  "Total_Population", "Male", "Female", "Pop60plus_total",  "Total_Housing_Units", "Occupied", "Vacant",  for all have _2010 and _2020 at the end. 
 
 
-#####
 
-### Recalculate CHange
+### Hieu Recalculate CHange
 
 ```{python}
 
@@ -1146,10 +1144,9 @@ layer = FeatureLayer(layer.url)
 ```
 
 
+ 
+## Hieu Change this for Change this for County to display the "COUNTY" name in the label and either VacancyRatio_dz 
 
-####
-## Change this for Change this for County to display the "COUNTY" name in the label and either VacancyRatio_dz
-#####
 ```{python}
 
 
@@ -1220,13 +1217,14 @@ m1
 
 # Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.
 
-#####
-## Overlay LECZ polygons and add a classification column of 1 or 0 to the counties dataframe
+With the arcgis package, we can search online for the polygons of the LECZ areas in Puerto Rico
+
+
+## Hieu  Overlay LECZ polygons and add a classification column of 1 or 0 to the counties dataframe
 
 ## Plot bloxplot showing differences in Vacant and Aged Ratios in the two groups (in lecz, not in lecz)
 
 ## Display map with counties in LEZ only with colors displaying AgedRatio_dz
 
-
-###
+ 
 
