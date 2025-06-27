@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "fb1c4e9f",
+   "id": "e95653a9",
    "metadata": {},
    "source": [
     "---\n",
@@ -101,7 +101,7 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "223f541f",
+   "id": "6fa9c78b",
    "metadata": {
     "results": "hide"
    },
@@ -479,7 +479,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "aafa3095",
+   "id": "b10e5c58",
    "metadata": {},
    "source": [
     "This lesson uses arcgis version of 2.4.0 or higher:\n"
@@ -488,7 +488,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "95b230db",
+   "id": "e0e14c98",
    "metadata": {},
    "outputs": [
     {
@@ -509,7 +509,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "673b7e44",
+   "id": "449842f1",
    "metadata": {},
    "source": [
     "If arcgis version is lower, use `pip install`:\n"
@@ -518,7 +518,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "3c14179c",
+   "id": "51bad889",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -530,7 +530,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "02cf20af",
+   "id": "5595e502",
    "metadata": {},
    "source": [
     "## Using IPUMS API to pull U.S Census Data for Puerto Rico\n",
@@ -548,7 +548,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "3ccb9152",
+   "id": "8a390097",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -569,7 +569,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "ae008545",
+   "id": "bd3bd634",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -589,7 +589,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "512a2dea",
+   "id": "7b95b384",
    "metadata": {},
    "source": [
     "Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.\n",
@@ -600,7 +600,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "9a9fe268",
+   "id": "9c4cb2d8",
    "metadata": {},
    "outputs": [
     {
@@ -624,7 +624,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "29fef296",
+   "id": "1d270d5f",
    "metadata": {},
    "source": [
     "### Downlaoding shapefiles from IPUMS\n",
@@ -640,7 +640,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "474ca4f0",
+   "id": "86c22d16",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -670,7 +670,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e8388fc6",
+   "id": "28aaaba5",
    "metadata": {},
    "source": [
     "This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.\n"
@@ -679,7 +679,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "fcae3298",
+   "id": "1f59246c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -695,7 +695,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2618f34e",
+   "id": "8c8e52f9",
    "metadata": {},
    "source": [
     "This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:\n"
@@ -704,7 +704,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "4130e887",
+   "id": "1a3c583f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -722,7 +722,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "3a823962",
+   "id": "585f8c0c",
    "metadata": {},
    "source": [
     "After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!"
@@ -731,7 +731,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "ee2cd713",
+   "id": "bd503dff",
    "metadata": {},
    "outputs": [
     {
@@ -768,7 +768,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "4294beb6",
+   "id": "8aec4b64",
    "metadata": {},
    "source": [
     "This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.\n",
@@ -779,7 +779,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "5d48cb9f",
+   "id": "7b830a97",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -986,7 +986,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5232531d",
+   "id": "87f567f8",
    "metadata": {},
    "source": [
     "This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis."
@@ -995,7 +995,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "5598fa5c",
+   "id": "0a01aa27",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1010,7 +1010,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "30e86ffd",
+   "id": "9a4b8126",
    "metadata": {},
    "source": [
     "This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:\n",
@@ -1025,7 +1025,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "363ee117",
+   "id": "5755607c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1062,7 +1062,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f97bd887",
+   "id": "52fea994",
    "metadata": {},
    "source": [
     "Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).\n",
@@ -1073,7 +1073,7 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "82c08359",
+   "id": "da6f6700",
    "metadata": {},
    "outputs": [
     {
@@ -1106,7 +1106,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "86c0fa0b",
+   "id": "41bcf7b7",
    "metadata": {},
    "source": [
     "This step prepares for comparison between the 2010 and 2020 datasets. \n",
@@ -1119,7 +1119,7 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "e333ab11",
+   "id": "2de4df48",
    "metadata": {},
    "outputs": [
     {
@@ -1357,7 +1357,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ee47b9bc",
+   "id": "33abfe6e",
    "metadata": {},
    "source": [
     "## Comparing Time Series \n",
@@ -1370,14 +1370,14 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "99dec98d",
+   "id": "359837a5",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_6256\\1793893454.py:6: FutureWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\1793893454.py:6: FutureWarning:\n",
       "\n",
       "A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.\n",
       "The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.\n",
@@ -1791,7 +1791,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "aff96cdd",
+   "id": "8a8cea5a",
    "metadata": {},
    "source": [
     "# Plotting Graphs from IPUMS data:\n",
@@ -1804,7 +1804,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "2d47e1c3",
+   "id": "b2440e7c",
    "metadata": {},
    "outputs": [
     {
@@ -1846,7 +1846,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cc7b54e4",
+   "id": "45e4b9f3",
    "metadata": {},
    "source": [
     "This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. \n",
@@ -1857,7 +1857,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "b45ed696",
+   "id": "404577bc",
    "metadata": {},
    "outputs": [
     {
@@ -1894,7 +1894,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5319044b",
+   "id": "704e1874",
    "metadata": {},
    "source": [
     "By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.\n",
@@ -1914,7 +1914,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "d1195275",
+   "id": "fe1bdfce",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1930,7 +1930,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d4e8e11b",
+   "id": "4dc8f269",
    "metadata": {},
    "source": [
     "This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:"
@@ -1939,7 +1939,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "69161d47",
+   "id": "715e6c6b",
    "metadata": {},
    "outputs": [
     {
@@ -1976,7 +1976,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d7f1367c",
+   "id": "10ae91af",
    "metadata": {},
    "source": [
     "This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. \n",
@@ -1992,7 +1992,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "2d111897",
+   "id": "34488f3c",
    "metadata": {},
    "outputs": [
     {
@@ -2027,7 +2027,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "559b02fe",
+   "id": "ec4c23ba",
    "metadata": {},
    "source": [
     "This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.\n",
@@ -2046,7 +2046,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "ff3ba46b",
+   "id": "9c77533a",
    "metadata": {},
    "outputs": [
     {
@@ -2094,7 +2094,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9f7c1f83",
+   "id": "c1d224be",
    "metadata": {},
    "source": [
     "## Generating Age Pyramids\n",
@@ -2109,7 +2109,7 @@
   {
    "cell_type": "code",
    "execution_count": 23,
-   "id": "23f8fb15",
+   "id": "809f7843",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2122,7 +2122,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "14f9b85d",
+   "id": "52a46d69",
    "metadata": {},
    "source": [
     "Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:\n"
@@ -2131,7 +2131,7 @@
   {
    "cell_type": "code",
    "execution_count": 24,
-   "id": "503c3670",
+   "id": "ce76da92",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2149,7 +2149,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d90ed335",
+   "id": "efb12697",
    "metadata": {},
    "source": [
     "This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).\n",
@@ -2160,7 +2160,7 @@
   {
    "cell_type": "code",
    "execution_count": 25,
-   "id": "ab3d593b",
+   "id": "a9029fcf",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2185,7 +2185,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a361d7a0",
+   "id": "25e68963",
    "metadata": {},
    "source": [
     "We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. \n",
@@ -2198,7 +2198,7 @@
   {
    "cell_type": "code",
    "execution_count": 26,
-   "id": "86fc9172",
+   "id": "603d2f6d",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2240,7 +2240,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "145adc42",
+   "id": "2e85b525",
    "metadata": {},
    "source": [
     "The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.\n",
@@ -2251,7 +2251,7 @@
   {
    "cell_type": "code",
    "execution_count": 27,
-   "id": "20f61d81",
+   "id": "da8161ba",
    "metadata": {},
    "outputs": [
     {
@@ -2334,7 +2334,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2e99fc44",
+   "id": "a1552765",
    "metadata": {},
    "source": [
     "### Select an individual census block\n",
@@ -2345,7 +2345,7 @@
   {
    "cell_type": "code",
    "execution_count": 28,
-   "id": "42baa043",
+   "id": "5c5abab5",
    "metadata": {},
    "outputs": [
     {
@@ -2431,7 +2431,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "69779a4d",
+   "id": "b81a536d",
    "metadata": {},
    "source": [
     "### Select a large Block Group\n",
@@ -2442,14 +2442,14 @@
   {
    "cell_type": "code",
    "execution_count": 29,
-   "id": "ba3b6ba0",
+   "id": "16ca5826",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_6256\\4281272699.py:11: SettingWithCopyWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\4281272699.py:11: SettingWithCopyWarning:\n",
       "\n",
       "\n",
       "A value is trying to be set on a copy of a slice from a DataFrame.\n",
@@ -2585,7 +2585,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cff1e373",
+   "id": "f8c4e4ad",
    "metadata": {},
    "source": [
     "## Interactinv with ArcGIS Online Portal\n",
@@ -2596,7 +2596,7 @@
   {
    "cell_type": "code",
    "execution_count": 30,
-   "id": "6ee5be70",
+   "id": "28f58ba3",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2614,7 +2614,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "920b3b31",
+   "id": "79d00f47",
    "metadata": {},
    "source": [
     "We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!\n"
@@ -2623,7 +2623,7 @@
   {
    "cell_type": "code",
    "execution_count": 31,
-   "id": "5eb26422",
+   "id": "86d70837",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2633,7 +2633,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2db890b5",
+   "id": "5f2b1a69",
    "metadata": {},
    "source": [
     "## Summarizing and Plotting DAta\n",
@@ -2652,7 +2652,7 @@
   {
    "cell_type": "code",
    "execution_count": 32,
-   "id": "7e3822a1",
+   "id": "0ec4b962",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2667,7 +2667,7 @@
   {
    "cell_type": "code",
    "execution_count": 33,
-   "id": "4100581b",
+   "id": "c89fb1ca",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2686,7 +2686,7 @@
   {
    "cell_type": "code",
    "execution_count": 34,
-   "id": "ac41e303",
+   "id": "51db6a0c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2702,7 +2702,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cb627ffa",
+   "id": "404020f1",
    "metadata": {},
    "source": [
     "##\n"
@@ -2711,7 +2711,7 @@
   {
    "cell_type": "code",
    "execution_count": 35,
-   "id": "87e7b9fe",
+   "id": "c7076cc1",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2762,7 +2762,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ee4bea64",
+   "id": "5d9051f5",
    "metadata": {},
    "source": [
     "# Mapping data\n",
@@ -2779,7 +2779,7 @@
   {
    "cell_type": "code",
    "execution_count": 36,
-   "id": "36f9155c",
+   "id": "f0af4f19",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2796,7 +2796,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "83e32a51",
+   "id": "39133bfd",
    "metadata": {},
    "source": [
     "Select the position of the \"Cansus Zip Code Tabulation Areas\" layer starting with position the first position as `0`. "
@@ -2805,7 +2805,7 @@
   {
    "cell_type": "code",
    "execution_count": 37,
-   "id": "f8ee9259",
+   "id": "d69f6046",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2818,7 +2818,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "bbb4c0fe",
+   "id": "31249505",
    "metadata": {},
    "source": [
     "With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis"
@@ -2827,7 +2827,7 @@
   {
    "cell_type": "code",
    "execution_count": 38,
-   "id": "6b4f6cde",
+   "id": "ea6818f4",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2844,7 +2844,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "589084a4",
+   "id": "5f0dc166",
    "metadata": {},
    "source": [
     "## Hieu Change this for Change this for County to display the \"COUNTY\" name in the label and either VacancyRatio_dz \n"
@@ -2853,7 +2853,7 @@
   {
    "cell_type": "code",
    "execution_count": 39,
-   "id": "d4b0c071",
+   "id": "47252dc0",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2920,7 +2920,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "97b1eb6f",
+   "id": "6ade642b",
    "metadata": {},
    "source": [
     "# Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.\n",
