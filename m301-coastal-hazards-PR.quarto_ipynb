@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "e95653a9",
+   "id": "9e6cc38d",
    "metadata": {},
    "source": [
     "---\n",
@@ -101,336 +101,11 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "6fa9c78b",
+   "id": "b55fe589",
    "metadata": {
     "results": "hide"
    },
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
-      "127: The specified procedure could not be found.\r\n",
-      "\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "import arcgis\n",
     "from arcgis.gis import GIS\n",
@@ -479,7 +154,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b10e5c58",
+   "id": "25e7ba6f",
    "metadata": {},
    "source": [
     "This lesson uses arcgis version of 2.4.0 or higher:\n"
@@ -488,7 +163,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "e0e14c98",
+   "id": "e257ba64",
    "metadata": {},
    "outputs": [
     {
@@ -497,7 +172,7 @@
        "'2.4.1.1'"
       ]
      },
-     "execution_count": 2,
+     "execution_count": 36,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -509,7 +184,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "449842f1",
+   "id": "bfc30792",
    "metadata": {},
    "source": [
     "If arcgis version is lower, use `pip install`:\n"
@@ -518,7 +193,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "51bad889",
+   "id": "a22d49a8",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -530,7 +205,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5595e502",
+   "id": "b0b1c874",
    "metadata": {},
    "source": [
     "## Using IPUMS API to pull U.S Census Data for Puerto Rico\n",
@@ -548,7 +223,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "8a390097",
+   "id": "649db3e6",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -569,7 +244,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "bd3bd634",
+   "id": "e92aa477",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -589,7 +264,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "7b95b384",
+   "id": "42c29377",
    "metadata": {},
    "source": [
     "Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.\n",
@@ -600,7 +275,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "9c4cb2d8",
+   "id": "abee769b",
    "metadata": {},
    "outputs": [
     {
@@ -624,7 +299,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1d270d5f",
+   "id": "0f1a0553",
    "metadata": {},
    "source": [
     "### Downlaoding shapefiles from IPUMS\n",
@@ -640,7 +315,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "86c22d16",
+   "id": "ab0e3777",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -670,7 +345,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "28aaaba5",
+   "id": "f98164ef",
    "metadata": {},
    "source": [
     "This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.\n"
@@ -679,7 +354,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "1f59246c",
+   "id": "4506f463",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -695,7 +370,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "8c8e52f9",
+   "id": "9e320a2a",
    "metadata": {},
    "source": [
     "This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:\n"
@@ -704,7 +379,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "1a3c583f",
+   "id": "24b85c9a",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -722,7 +397,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "585f8c0c",
+   "id": "6b60d584",
    "metadata": {},
    "source": [
     "After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!"
@@ -731,7 +406,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "bd503dff",
+   "id": "5a6d557c",
    "metadata": {},
    "outputs": [
     {
@@ -768,7 +443,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "8aec4b64",
+   "id": "94c2888d",
    "metadata": {},
    "source": [
     "This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.\n",
@@ -779,7 +454,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "7b830a97",
+   "id": "6a9ff841",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -986,7 +661,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "87f567f8",
+   "id": "3770d9f1",
    "metadata": {},
    "source": [
     "This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis."
@@ -995,7 +670,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "0a01aa27",
+   "id": "f5f38a78",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1010,7 +685,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9a4b8126",
+   "id": "9b3fd3c6",
    "metadata": {},
    "source": [
     "This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:\n",
@@ -1025,7 +700,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "5755607c",
+   "id": "48d45985",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1062,7 +737,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "52fea994",
+   "id": "b3147573",
    "metadata": {},
    "source": [
     "Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).\n",
@@ -1073,7 +748,7 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "da6f6700",
+   "id": "fe7e9236",
    "metadata": {},
    "outputs": [
     {
@@ -1106,7 +781,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "41bcf7b7",
+   "id": "0d40eca5",
    "metadata": {},
    "source": [
     "This step prepares for comparison between the 2010 and 2020 datasets. \n",
@@ -1119,223 +794,9 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "2de4df48",
+   "id": "967b8b5a",
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/html": [
-       "<div>\n",
-       "<style scoped>\n",
-       "    .dataframe tbody tr th:only-of-type {\n",
-       "        vertical-align: middle;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe tbody tr th {\n",
-       "        vertical-align: top;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe thead th {\n",
-       "        text-align: right;\n",
-       "    }\n",
-       "</style>\n",
-       "<table border=\"1\" class=\"dataframe\">\n",
-       "  <thead>\n",
-       "    <tr style=\"text-align: right;\">\n",
-       "      <th></th>\n",
-       "      <th>GISJOIN</th>\n",
-       "      <th>YEAR</th>\n",
-       "      <th>STUSAB</th>\n",
-       "      <th>GEOID</th>\n",
-       "      <th>GEOCODE</th>\n",
-       "      <th>REGIONA</th>\n",
-       "      <th>DIVISIONA</th>\n",
-       "      <th>STATE</th>\n",
-       "      <th>STATEA</th>\n",
-       "      <th>COUNTY</th>\n",
-       "      <th>...</th>\n",
-       "      <th>Pop60plus_total_2020</th>\n",
-       "      <th>AgedRatio_2020</th>\n",
-       "      <th>VacantRatio_2020</th>\n",
-       "      <th>Total_Population_2010</th>\n",
-       "      <th>Pop60plus_total_2010</th>\n",
-       "      <th>AgedRatio_2010</th>\n",
-       "      <th>Total_Housing_Units_2010</th>\n",
-       "      <th>Occupied_2010</th>\n",
-       "      <th>Vacant_2010</th>\n",
-       "      <th>VacantRatio_2010</th>\n",
-       "    </tr>\n",
-       "  </thead>\n",
-       "  <tbody>\n",
-       "    <tr>\n",
-       "      <th>0</th>\n",
-       "      <td>G72000109563001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019563001</td>\n",
-       "      <td>720019563001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>562</td>\n",
-       "      <td>0.298301</td>\n",
-       "      <td>0.102815</td>\n",
-       "      <td>2171</td>\n",
-       "      <td>363</td>\n",
-       "      <td>0.167204</td>\n",
-       "      <td>854</td>\n",
-       "      <td>737</td>\n",
-       "      <td>117</td>\n",
-       "      <td>0.137002</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>1</th>\n",
-       "      <td>G72000109563002</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019563002</td>\n",
-       "      <td>720019563002</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>568</td>\n",
-       "      <td>0.286290</td>\n",
-       "      <td>0.070263</td>\n",
-       "      <td>2165</td>\n",
-       "      <td>438</td>\n",
-       "      <td>0.202309</td>\n",
-       "      <td>881</td>\n",
-       "      <td>751</td>\n",
-       "      <td>130</td>\n",
-       "      <td>0.147560</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2</th>\n",
-       "      <td>G72000109564001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019564001</td>\n",
-       "      <td>720019564001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>483</td>\n",
-       "      <td>0.295956</td>\n",
-       "      <td>0.103064</td>\n",
-       "      <td>1852</td>\n",
-       "      <td>322</td>\n",
-       "      <td>0.173866</td>\n",
-       "      <td>801</td>\n",
-       "      <td>677</td>\n",
-       "      <td>124</td>\n",
-       "      <td>0.154806</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>3</th>\n",
-       "      <td>G72000109564002</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019564002</td>\n",
-       "      <td>720019564002</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>370</td>\n",
-       "      <td>0.365252</td>\n",
-       "      <td>0.092593</td>\n",
-       "      <td>1143</td>\n",
-       "      <td>277</td>\n",
-       "      <td>0.242345</td>\n",
-       "      <td>493</td>\n",
-       "      <td>418</td>\n",
-       "      <td>75</td>\n",
-       "      <td>0.152130</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>4</th>\n",
-       "      <td>G72000109565001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019565001</td>\n",
-       "      <td>720019565001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>523</td>\n",
-       "      <td>0.278191</td>\n",
-       "      <td>0.138142</td>\n",
-       "      <td>2100</td>\n",
-       "      <td>346</td>\n",
-       "      <td>0.164762</td>\n",
-       "      <td>827</td>\n",
-       "      <td>682</td>\n",
-       "      <td>145</td>\n",
-       "      <td>0.175333</td>\n",
-       "    </tr>\n",
-       "  </tbody>\n",
-       "</table>\n",
-       "<p>5 rows × 88 columns</p>\n",
-       "</div>"
-      ],
-      "text/plain": [
-       "           GISJOIN  YEAR STUSAB                  GEOID       GEOCODE  REGIONA  \\\n",
-       "0  G72000109563001  2020     PR  1500000US720019563001  720019563001        9   \n",
-       "1  G72000109563002  2020     PR  1500000US720019563002  720019563002        9   \n",
-       "2  G72000109564001  2020     PR  1500000US720019564001  720019564001        9   \n",
-       "3  G72000109564002  2020     PR  1500000US720019564002  720019564002        9   \n",
-       "4  G72000109565001  2020     PR  1500000US720019565001  720019565001        9   \n",
-       "\n",
-       "   DIVISIONA        STATE  STATEA              COUNTY  ...  \\\n",
-       "0          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "1          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "2          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "3          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "4          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "\n",
-       "   Pop60plus_total_2020  AgedRatio_2020  VacantRatio_2020  \\\n",
-       "0                   562        0.298301          0.102815   \n",
-       "1                   568        0.286290          0.070263   \n",
-       "2                   483        0.295956          0.103064   \n",
-       "3                   370        0.365252          0.092593   \n",
-       "4                   523        0.278191          0.138142   \n",
-       "\n",
-       "   Total_Population_2010  Pop60plus_total_2010  AgedRatio_2010  \\\n",
-       "0                   2171                   363        0.167204   \n",
-       "1                   2165                   438        0.202309   \n",
-       "2                   1852                   322        0.173866   \n",
-       "3                   1143                   277        0.242345   \n",
-       "4                   2100                   346        0.164762   \n",
-       "\n",
-       "   Total_Housing_Units_2010  Occupied_2010  Vacant_2010  VacantRatio_2010  \n",
-       "0                       854            737          117          0.137002  \n",
-       "1                       881            751          130          0.147560  \n",
-       "2                       801            677          124          0.154806  \n",
-       "3                       493            418           75          0.152130  \n",
-       "4                       827            682          145          0.175333  \n",
-       "\n",
-       "[5 rows x 88 columns]"
-      ]
-     },
-     "execution_count": 10,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "# Key columns to compare between years\n",
     "columns_used = [\n",
@@ -1349,15 +810,12 @@
     "    on=\"GISJOIN\",  # Join on geographic ID\n",
     "    how=\"inner\",  # Keep only matching rows\n",
     "    suffixes=(\"_2020\", \"_2010\")  # Label columns by year\n",
-    ")\n",
-    "\n",
-    "# View merged dataset\n",
-    "merged_df.head()"
+    ")\n"
    ]
   },
   {
    "cell_type": "markdown",
-   "id": "33abfe6e",
+   "id": "fa401e20",
    "metadata": {},
    "source": [
     "## Comparing Time Series \n",
@@ -1370,14 +828,56 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "359837a5",
+   "id": "be187d2b",
    "metadata": {},
    "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "           GISJOIN  YEAR STUSAB                  GEOID       GEOCODE  REGIONA  \\\n",
+      "0  G72000109563001  2020     PR  1500000US720019563001  720019563001        9   \n",
+      "1  G72000109563002  2020     PR  1500000US720019563002  720019563002        9   \n",
+      "2  G72000109564001  2020     PR  1500000US720019564001  720019564001        9   \n",
+      "3  G72000109564002  2020     PR  1500000US720019564002  720019564002        9   \n",
+      "4  G72000109565001  2020     PR  1500000US720019565001  720019565001        9   \n",
+      "\n",
+      "   DIVISIONA        STATE  STATEA              COUNTY  ...  AgedRatio_2010  \\\n",
+      "0          0  Puerto Rico      72  Adjuntas Municipio  ...        0.167204   \n",
+      "1          0  Puerto Rico      72  Adjuntas Municipio  ...        0.202309   \n",
+      "2          0  Puerto Rico      72  Adjuntas Municipio  ...        0.173866   \n",
+      "3          0  Puerto Rico      72  Adjuntas Municipio  ...        0.242345   \n",
+      "4          0  Puerto Rico      72  Adjuntas Municipio  ...        0.164762   \n",
+      "\n",
+      "   Total_Housing_Units_2010  Occupied_2010  Vacant_2010  VacantRatio_2010  \\\n",
+      "0                       854            737          117          0.137002   \n",
+      "1                       881            751          130          0.147560   \n",
+      "2                       801            677          124          0.154806   \n",
+      "3                       493            418           75          0.152130   \n",
+      "4                       827            682          145          0.175333   \n",
+      "\n",
+      "   Total_Pop_Change  Pop60plus_Change  Vacant_Change  AgedRatio_Change  \\\n",
+      "0              -287               199            -33          0.131097   \n",
+      "1              -181               130            -74          0.083981   \n",
+      "2              -220               161            -50          0.122090   \n",
+      "3              -130                93            -35          0.122907   \n",
+      "4              -220               177            -32          0.113430   \n",
+      "\n",
+      "   VacantRatio_Change  \n",
+      "0           -0.034187  \n",
+      "1           -0.077296  \n",
+      "2           -0.051742  \n",
+      "3           -0.059537  \n",
+      "4           -0.037191  \n",
+      "\n",
+      "[5 rows x 93 columns]\n"
+     ]
+    },
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\1793893454.py:6: FutureWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\2163144468.py:6: FutureWarning:\n",
       "\n",
       "A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.\n",
       "The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.\n",
@@ -1387,393 +887,6 @@
       "\n",
       "\n"
      ]
-    },
-    {
-     "data": {
-      "text/html": [
-       "<div>\n",
-       "<style scoped>\n",
-       "    .dataframe tbody tr th:only-of-type {\n",
-       "        vertical-align: middle;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe tbody tr th {\n",
-       "        vertical-align: top;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe thead th {\n",
-       "        text-align: right;\n",
-       "    }\n",
-       "</style>\n",
-       "<table border=\"1\" class=\"dataframe\">\n",
-       "  <thead>\n",
-       "    <tr style=\"text-align: right;\">\n",
-       "      <th></th>\n",
-       "      <th>GISJOIN</th>\n",
-       "      <th>YEAR</th>\n",
-       "      <th>STUSAB</th>\n",
-       "      <th>GEOID</th>\n",
-       "      <th>GEOCODE</th>\n",
-       "      <th>REGIONA</th>\n",
-       "      <th>DIVISIONA</th>\n",
-       "      <th>STATE</th>\n",
-       "      <th>STATEA</th>\n",
-       "      <th>COUNTY</th>\n",
-       "      <th>...</th>\n",
-       "      <th>AgedRatio_2010</th>\n",
-       "      <th>Total_Housing_Units_2010</th>\n",
-       "      <th>Occupied_2010</th>\n",
-       "      <th>Vacant_2010</th>\n",
-       "      <th>VacantRatio_2010</th>\n",
-       "      <th>Total_Pop_Change</th>\n",
-       "      <th>Pop60plus_Change</th>\n",
-       "      <th>Vacant_Change</th>\n",
-       "      <th>AgedRatio_Change</th>\n",
-       "      <th>VacantRatio_Change</th>\n",
-       "    </tr>\n",
-       "  </thead>\n",
-       "  <tbody>\n",
-       "    <tr>\n",
-       "      <th>0</th>\n",
-       "      <td>G72000109563001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019563001</td>\n",
-       "      <td>720019563001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.167204</td>\n",
-       "      <td>854</td>\n",
-       "      <td>737</td>\n",
-       "      <td>117</td>\n",
-       "      <td>0.137002</td>\n",
-       "      <td>-287</td>\n",
-       "      <td>199</td>\n",
-       "      <td>-33</td>\n",
-       "      <td>0.131097</td>\n",
-       "      <td>-0.034187</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>1</th>\n",
-       "      <td>G72000109563002</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019563002</td>\n",
-       "      <td>720019563002</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.202309</td>\n",
-       "      <td>881</td>\n",
-       "      <td>751</td>\n",
-       "      <td>130</td>\n",
-       "      <td>0.147560</td>\n",
-       "      <td>-181</td>\n",
-       "      <td>130</td>\n",
-       "      <td>-74</td>\n",
-       "      <td>0.083981</td>\n",
-       "      <td>-0.077296</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2</th>\n",
-       "      <td>G72000109564001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019564001</td>\n",
-       "      <td>720019564001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.173866</td>\n",
-       "      <td>801</td>\n",
-       "      <td>677</td>\n",
-       "      <td>124</td>\n",
-       "      <td>0.154806</td>\n",
-       "      <td>-220</td>\n",
-       "      <td>161</td>\n",
-       "      <td>-50</td>\n",
-       "      <td>0.122090</td>\n",
-       "      <td>-0.051742</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>3</th>\n",
-       "      <td>G72000109564002</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019564002</td>\n",
-       "      <td>720019564002</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.242345</td>\n",
-       "      <td>493</td>\n",
-       "      <td>418</td>\n",
-       "      <td>75</td>\n",
-       "      <td>0.152130</td>\n",
-       "      <td>-130</td>\n",
-       "      <td>93</td>\n",
-       "      <td>-35</td>\n",
-       "      <td>0.122907</td>\n",
-       "      <td>-0.059537</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>4</th>\n",
-       "      <td>G72000109565001</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US720019565001</td>\n",
-       "      <td>720019565001</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Adjuntas Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.164762</td>\n",
-       "      <td>827</td>\n",
-       "      <td>682</td>\n",
-       "      <td>145</td>\n",
-       "      <td>0.175333</td>\n",
-       "      <td>-220</td>\n",
-       "      <td>177</td>\n",
-       "      <td>-32</td>\n",
-       "      <td>0.113430</td>\n",
-       "      <td>-0.037191</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>...</th>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2244</th>\n",
-       "      <td>G72015307506011</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506011</td>\n",
-       "      <td>721537506011</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.223221</td>\n",
-       "      <td>565</td>\n",
-       "      <td>475</td>\n",
-       "      <td>90</td>\n",
-       "      <td>0.159292</td>\n",
-       "      <td>661</td>\n",
-       "      <td>189</td>\n",
-       "      <td>51</td>\n",
-       "      <td>0.020767</td>\n",
-       "      <td>0.008366</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2245</th>\n",
-       "      <td>G72015307506012</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506012</td>\n",
-       "      <td>721537506012</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.161085</td>\n",
-       "      <td>1201</td>\n",
-       "      <td>1058</td>\n",
-       "      <td>143</td>\n",
-       "      <td>0.119067</td>\n",
-       "      <td>-2023</td>\n",
-       "      <td>-197</td>\n",
-       "      <td>-106</td>\n",
-       "      <td>0.133827</td>\n",
-       "      <td>-0.035921</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2246</th>\n",
-       "      <td>G72015307506013</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506013</td>\n",
-       "      <td>721537506013</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.069416</td>\n",
-       "      <td>340</td>\n",
-       "      <td>322</td>\n",
-       "      <td>18</td>\n",
-       "      <td>0.052941</td>\n",
-       "      <td>415</td>\n",
-       "      <td>291</td>\n",
-       "      <td>107</td>\n",
-       "      <td>0.186084</td>\n",
-       "      <td>0.131697</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2247</th>\n",
-       "      <td>G72015307506021</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506021</td>\n",
-       "      <td>721537506021</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.232906</td>\n",
-       "      <td>813</td>\n",
-       "      <td>681</td>\n",
-       "      <td>132</td>\n",
-       "      <td>0.162362</td>\n",
-       "      <td>-513</td>\n",
-       "      <td>45</td>\n",
-       "      <td>24</td>\n",
-       "      <td>0.121031</td>\n",
-       "      <td>0.059544</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2248</th>\n",
-       "      <td>G72015307506022</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506022</td>\n",
-       "      <td>721537506022</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>0.210402</td>\n",
-       "      <td>637</td>\n",
-       "      <td>463</td>\n",
-       "      <td>174</td>\n",
-       "      <td>0.273155</td>\n",
-       "      <td>-41</td>\n",
-       "      <td>75</td>\n",
-       "      <td>-66</td>\n",
-       "      <td>0.068100</td>\n",
-       "      <td>-0.085655</td>\n",
-       "    </tr>\n",
-       "  </tbody>\n",
-       "</table>\n",
-       "<p>2249 rows × 93 columns</p>\n",
-       "</div>"
-      ],
-      "text/plain": [
-       "              GISJOIN  YEAR STUSAB                  GEOID       GEOCODE  \\\n",
-       "0     G72000109563001  2020     PR  1500000US720019563001  720019563001   \n",
-       "1     G72000109563002  2020     PR  1500000US720019563002  720019563002   \n",
-       "2     G72000109564001  2020     PR  1500000US720019564001  720019564001   \n",
-       "3     G72000109564002  2020     PR  1500000US720019564002  720019564002   \n",
-       "4     G72000109565001  2020     PR  1500000US720019565001  720019565001   \n",
-       "...               ...   ...    ...                    ...           ...   \n",
-       "2244  G72015307506011  2020     PR  1500000US721537506011  721537506011   \n",
-       "2245  G72015307506012  2020     PR  1500000US721537506012  721537506012   \n",
-       "2246  G72015307506013  2020     PR  1500000US721537506013  721537506013   \n",
-       "2247  G72015307506021  2020     PR  1500000US721537506021  721537506021   \n",
-       "2248  G72015307506022  2020     PR  1500000US721537506022  721537506022   \n",
-       "\n",
-       "      REGIONA  DIVISIONA        STATE  STATEA              COUNTY  ...  \\\n",
-       "0           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "1           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "2           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "3           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "4           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "...       ...        ...          ...     ...                 ...  ...   \n",
-       "2244        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2245        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2246        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2247        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2248        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "\n",
-       "      AgedRatio_2010  Total_Housing_Units_2010  Occupied_2010  Vacant_2010  \\\n",
-       "0           0.167204                       854            737          117   \n",
-       "1           0.202309                       881            751          130   \n",
-       "2           0.173866                       801            677          124   \n",
-       "3           0.242345                       493            418           75   \n",
-       "4           0.164762                       827            682          145   \n",
-       "...              ...                       ...            ...          ...   \n",
-       "2244        0.223221                       565            475           90   \n",
-       "2245        0.161085                      1201           1058          143   \n",
-       "2246        0.069416                       340            322           18   \n",
-       "2247        0.232906                       813            681          132   \n",
-       "2248        0.210402                       637            463          174   \n",
-       "\n",
-       "      VacantRatio_2010  Total_Pop_Change  Pop60plus_Change  Vacant_Change  \\\n",
-       "0             0.137002              -287               199            -33   \n",
-       "1             0.147560              -181               130            -74   \n",
-       "2             0.154806              -220               161            -50   \n",
-       "3             0.152130              -130                93            -35   \n",
-       "4             0.175333              -220               177            -32   \n",
-       "...                ...               ...               ...            ...   \n",
-       "2244          0.159292               661               189             51   \n",
-       "2245          0.119067             -2023              -197           -106   \n",
-       "2246          0.052941               415               291            107   \n",
-       "2247          0.162362              -513                45             24   \n",
-       "2248          0.273155               -41                75            -66   \n",
-       "\n",
-       "      AgedRatio_Change  VacantRatio_Change  \n",
-       "0             0.131097           -0.034187  \n",
-       "1             0.083981           -0.077296  \n",
-       "2             0.122090           -0.051742  \n",
-       "3             0.122907           -0.059537  \n",
-       "4             0.113430           -0.037191  \n",
-       "...                ...                 ...  \n",
-       "2244          0.020767            0.008366  \n",
-       "2245          0.133827           -0.035921  \n",
-       "2246          0.186084            0.131697  \n",
-       "2247          0.121031            0.059544  \n",
-       "2248          0.068100           -0.085655  \n",
-       "\n",
-       "[2249 rows x 93 columns]"
-      ]
-     },
-     "execution_count": 11,
-     "metadata": {},
-     "output_type": "execute_result"
     }
    ],
    "source": [
@@ -1785,13 +898,16 @@
     "merged_df[\"AgedRatio_Change\"].fillna(0, inplace=True)  # Fill missing with 0\n",
     "merged_df[\"VacantRatio_Change\"] = merged_df[\"VacantRatio_2020\"] - merged_df[\"VacantRatio_2010\"]  # Change in vacancy ratio\n",
     "\n",
-    "# View updated DataFrame\n",
-    "merged_df\n"
+    "\n",
+    "\n",
+    "# View merged dataset\n",
+    "\n",
+    "print(merged_df.head())"
    ]
   },
   {
    "cell_type": "markdown",
-   "id": "8a8cea5a",
+   "id": "d7bfb653",
    "metadata": {},
    "source": [
     "# Plotting Graphs from IPUMS data:\n",
@@ -1804,7 +920,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "b2440e7c",
+   "id": "54c3ae75",
    "metadata": {},
    "outputs": [
     {
@@ -1846,7 +962,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "45e4b9f3",
+   "id": "00216a67",
    "metadata": {},
    "source": [
     "This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. \n",
@@ -1857,7 +973,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "404577bc",
+   "id": "f765dbf9",
    "metadata": {},
    "outputs": [
     {
@@ -1866,7 +982,7 @@
        "Text(0.5, 1.0, 'Vacancy Ratio Change 2010-2020')"
       ]
      },
-     "execution_count": 13,
+     "execution_count": 47,
      "metadata": {},
      "output_type": "execute_result"
     },
@@ -1894,7 +1010,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "704e1874",
+   "id": "df8856f8",
    "metadata": {},
    "source": [
     "By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.\n",
@@ -1914,7 +1030,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "fe1bdfce",
+   "id": "a9b204fa",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1930,7 +1046,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "4dc8f269",
+   "id": "fade1833",
    "metadata": {},
    "source": [
     "This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:"
@@ -1939,7 +1055,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "715e6c6b",
+   "id": "caa104c9",
    "metadata": {},
    "outputs": [
     {
@@ -1948,7 +1064,7 @@
        "Text(0.5, 1.0, 'Male/Female Ratio Total Change 2010-2020 (In thousands) Z-score')"
       ]
      },
-     "execution_count": 15,
+     "execution_count": 49,
      "metadata": {},
      "output_type": "execute_result"
     },
@@ -1976,7 +1092,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "10ae91af",
+   "id": "78060f72",
    "metadata": {},
    "source": [
     "This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. \n",
@@ -1992,7 +1108,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "34488f3c",
+   "id": "5f53dc7d",
    "metadata": {},
    "outputs": [
     {
@@ -2027,7 +1143,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ec4c23ba",
+   "id": "4e694fbe",
    "metadata": {},
    "source": [
     "This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.\n",
@@ -2046,7 +1162,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "9c77533a",
+   "id": "6b01e894",
    "metadata": {},
    "outputs": [
     {
@@ -2094,7 +1210,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "c1d224be",
+   "id": "fed6d7b2",
    "metadata": {},
    "source": [
     "## Generating Age Pyramids\n",
@@ -2109,7 +1225,7 @@
   {
    "cell_type": "code",
    "execution_count": 23,
-   "id": "809f7843",
+   "id": "da4cc710",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2122,7 +1238,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "52a46d69",
+   "id": "9acf754b",
    "metadata": {},
    "source": [
     "Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:\n"
@@ -2131,7 +1247,7 @@
   {
    "cell_type": "code",
    "execution_count": 24,
-   "id": "ce76da92",
+   "id": "6e7bf948",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2149,7 +1265,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "efb12697",
+   "id": "5fd9dd6d",
    "metadata": {},
    "source": [
     "This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).\n",
@@ -2160,7 +1276,7 @@
   {
    "cell_type": "code",
    "execution_count": 25,
-   "id": "a9029fcf",
+   "id": "fd3d1c35",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2185,7 +1301,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "25e68963",
+   "id": "f179fdf8",
    "metadata": {},
    "source": [
     "We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. \n",
@@ -2198,7 +1314,7 @@
   {
    "cell_type": "code",
    "execution_count": 26,
-   "id": "603d2f6d",
+   "id": "e5b022e4",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2240,7 +1356,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2e85b525",
+   "id": "9eb5651b",
    "metadata": {},
    "source": [
     "The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.\n",
@@ -2251,7 +1367,7 @@
   {
    "cell_type": "code",
    "execution_count": 27,
-   "id": "da8161ba",
+   "id": "9e7e27b3",
    "metadata": {},
    "outputs": [
     {
@@ -2334,7 +1450,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a1552765",
+   "id": "c51a6351",
    "metadata": {},
    "source": [
     "### Select an individual census block\n",
@@ -2345,7 +1461,7 @@
   {
    "cell_type": "code",
    "execution_count": 28,
-   "id": "5c5abab5",
+   "id": "196455e3",
    "metadata": {},
    "outputs": [
     {
@@ -2431,7 +1547,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b81a536d",
+   "id": "fa4a9a78",
    "metadata": {},
    "source": [
     "### Select a large Block Group\n",
@@ -2442,7 +1558,7 @@
   {
    "cell_type": "code",
    "execution_count": 29,
-   "id": "16ca5826",
+   "id": "fa521cac",
    "metadata": {},
    "outputs": [
     {
@@ -2585,7 +1701,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f8c4e4ad",
+   "id": "382f8af7",
    "metadata": {},
    "source": [
     "## Interactinv with ArcGIS Online Portal\n",
@@ -2596,7 +1712,7 @@
   {
    "cell_type": "code",
    "execution_count": 30,
-   "id": "28f58ba3",
+   "id": "7c3cddbd",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2614,7 +1730,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "79d00f47",
+   "id": "b2fa2fb1",
    "metadata": {},
    "source": [
     "We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!\n"
@@ -2623,7 +1739,7 @@
   {
    "cell_type": "code",
    "execution_count": 31,
-   "id": "86d70837",
+   "id": "1a9ce89c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2633,7 +1749,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5f2b1a69",
+   "id": "8ee87316",
    "metadata": {},
    "source": [
     "## Summarizing and Plotting DAta\n",
@@ -2652,7 +1768,7 @@
   {
    "cell_type": "code",
    "execution_count": 32,
-   "id": "0ec4b962",
+   "id": "51e72b05",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2667,7 +1783,7 @@
   {
    "cell_type": "code",
    "execution_count": 33,
-   "id": "c89fb1ca",
+   "id": "e8a504fe",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2686,7 +1802,7 @@
   {
    "cell_type": "code",
    "execution_count": 34,
-   "id": "51db6a0c",
+   "id": "4ba1dd5a",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2702,7 +1818,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "404020f1",
+   "id": "cc6fa0e2",
    "metadata": {},
    "source": [
     "##\n"
@@ -2711,7 +1827,7 @@
   {
    "cell_type": "code",
    "execution_count": 35,
-   "id": "c7076cc1",
+   "id": "73fa2028",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2762,7 +1878,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5d9051f5",
+   "id": "d2cf5a5e",
    "metadata": {},
    "source": [
     "# Mapping data\n",
@@ -2779,7 +1895,7 @@
   {
    "cell_type": "code",
    "execution_count": 36,
-   "id": "f0af4f19",
+   "id": "290908ec",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2796,7 +1912,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "39133bfd",
+   "id": "c654e4a9",
    "metadata": {},
    "source": [
     "Select the position of the \"Cansus Zip Code Tabulation Areas\" layer starting with position the first position as `0`. "
@@ -2805,7 +1921,7 @@
   {
    "cell_type": "code",
    "execution_count": 37,
-   "id": "d69f6046",
+   "id": "dbb197a6",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2818,7 +1934,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "31249505",
+   "id": "2c365cee",
    "metadata": {},
    "source": [
     "With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis"
@@ -2827,7 +1943,7 @@
   {
    "cell_type": "code",
    "execution_count": 38,
-   "id": "ea6818f4",
+   "id": "5c599132",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2844,7 +1960,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5f0dc166",
+   "id": "ece7a1cf",
    "metadata": {},
    "source": [
     "## Hieu Change this for Change this for County to display the \"COUNTY\" name in the label and either VacancyRatio_dz \n"
@@ -2853,7 +1969,7 @@
   {
    "cell_type": "code",
    "execution_count": 39,
-   "id": "47252dc0",
+   "id": "80abce07",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2920,7 +2036,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "6ade642b",
+   "id": "1fc367af",
    "metadata": {},
    "source": [
     "# Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.\n",
@@ -2942,18 +2058,6 @@
    "language": "python",
    "name": "python3",
    "path": "C:\\Users\\jmartine\\AppData\\Roaming\\jupyter\\kernels\\python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.9"
   }
  },
  "nbformat": 4,

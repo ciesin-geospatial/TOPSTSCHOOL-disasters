@@ -630,8 +630,6 @@ merged_df = pr_df_2020.merge(
     suffixes=("_2020", "_2010")  # Label columns by year
 )
 
-# View merged dataset
-merged_df.head()
 
 ```
 
@@ -651,9 +649,11 @@ merged_df["AgedRatio_Change"] = merged_df["AgedRatio_2020"] - merged_df["AgedRat
 merged_df["AgedRatio_Change"].fillna(0, inplace=True)  # Fill missing with 0
 merged_df["VacantRatio_Change"] = merged_df["VacantRatio_2020"] - merged_df["VacantRatio_2010"]  # Change in vacancy ratio
 
-# View updated DataFrame
-merged_df
 
+
+# View merged dataset
+
+print(merged_df.head())
 
 ```
 
