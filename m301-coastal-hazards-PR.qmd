@@ -26,15 +26,16 @@ bibliography: lecz-references.bib
 
 # Overview
 
-In this lesson, you will use the dataset delineating [Low Elevation Coastal Zones](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) from the NASA Socioeconomic Data and Applications Center (SEDAC) website along with census data from the [US Census Bureau](https://www.census.gov/data.html). 
+In this lesson, you will use a dataset delineating [Low Elevation Coastal Zones](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) from the NASA Socioeconomic Data and Applications Center (SEDAC) website along with census data from the [US Census Bureau](https://www.census.gov/data.html) from the [IPUMS](https://www.ipums.org/) National Historical Geographic Information System (NHGIS). 
 
-You will perform various preprocessing tasks to prepare the raw spatial data for analysis. These steps include exploring the dataset with visualizations and thematic mapping tools. You will then learn how to generate summary statistics based on combinations of these two layers, over two different time periods. 
+You will perform various preprocessing tasks to combina tabular and spatial boundary data for analysis. These steps include exploring the dataset with visualizations and thematic mapping tools. You will then learn how to generate summary statistics based on combinations of these two layers, over two different time periods. 
 
 You will learn how to perform numerous data manipulations, create statistical summaries of population-at-risk (and related housing characteristics), and examine a decade of change throughout this lesson.
 
 # Learning Objectives
 
-- Become familiar with Low Elevation Coastal Zones (LECZs) and explain their significance (as well as limitations) in assessing coastal hazard exposure.
+- Become familiar with Census Block and County census data for 5-year age groups from the U.S. Census.
+- Become familiar with Low Elevation Coastal Zones (LECZs) in Puerto Rico and explain their significance (as well as limitations) in assessing coastal hazard exposure.
 - Access, integrate, explore, and use LECZ data from NASA SEDAC and demographic data from the US Census Bureau for Puerto Rico.
 - Assess decadal changes (2010–2020) in population and housing characteristics in coastal versus non-coastal zones in Puerto Rico.
 - Create regional and local scale maps and statistical figures of exposure and decadal change.
@@ -42,18 +43,30 @@ You will learn how to perform numerous data manipulations, create statistical su
 
 # Introduction
 
-Low Elevation Coastal Zones (LECZs) have been defined globally, with population estimates for areas below 5m and 10m elevations [@mcgranahan2007; @macmanus2021]. In the continental U.S. (CONUS), 1 in 10 people live in the 10m LECZ, and studies highlight that urban residents, people of color, and older adults are disproportionately exposed. For instance, about 1 in 5 urban Black residents live in this zone [@tagtachian2023; @hauer2020sea].
+## Low Elevation Coastal Zones (LECZs)
+
+Low Elevation Coastal Zones (LECZs) have been defined globally, with population estimates for areas below 5m and 10m elevations [@mcgranahan2007; @macmanus2021]. 
+
+In the continental U.S. (CONUS), 1 in 10 people live in the 10m LECZ, and studies highlight that urban residents, people of color, and older adults are disproportionately exposed. For instance, about 1 in 5 urban Black residents live in this zone [@tagtachian2023; @hauer2020sea].
 
 This is the sneak peak of what LECZ looks like:
 ![](data/lecz_pr/lecz_satellite.png)
 
-You may wonder why studies of the “entire” US often restrict themselves to the CONUS? The simplest answer is limitations either data or computational power. For example, this happens because of incomplete coverage in one data set or another. Some US territories may not collect the full suite of census variables that are collected in CONUS. For example the detail on housing characteristics is limited in Guam, Northern Mariana Islands, US Virgin Islands and American Samoa, and the Census’ American Community Survey is not conducted in any of the territories, though Puerto Rico conducts its own Community Survey. In some other cases, data collected from satellites (such as SRTM) have variable accuracy toward polar regions [U.S Census Bureau](https://docs.google.com/document/d/1bKYopZoMLCD2djl2vc3pwNSKwGDk6TKRI79swefIvKY/edit?tab=t.0). 
+You may wonder why studies of the “entire” US often restrict themselves to the CONUS? The simplest answer is limitations either data or computational power. For example, this happens because of incomplete coverage in one data set or another. Some US territories may not collect the full suite of census variables that are collected in CONUS. 
+
+For example the detail on housing characteristics is limited in Guam, Northern Mariana Islands, US Virgin Islands and American Samoa, and the Census’ American Community Survey is not conducted in any of the territories, though Puerto Rico conducts its own Community Survey. In some other cases, data collected from satellites (such as SRTM) have variable accuracy toward polar regions [U.S Census Bureau](https://docs.google.com/document/d/1bKYopZoMLCD2djl2vc3pwNSKwGDk6TKRI79swefIvKY/edit?tab=t.0). 
 
 Another possible reason for omission outside of CONUS could be computational challenges or limitations. For instance US territories are subject to different map projections, which implies the need for additional functions in processing algorithms to account for spatial variations and to unify spatial structures.
 
-# Additional Resources
+ 
+::: {.callout-tip style="color: #5a7a2b;"}
+## Programming Reminder
+
+
+
 
 ### “What is a Map Projection?”
+
 Map projections have existed for thousands of years. They help map makers render the spherical surface of the Earth flat -- so it can be seen on a piece of paper or computer screen, and so that the unit of measure is uniform throughout the area of interest. As a result, map projections distort something -- area, shape, distance, direction -- to make this possible. 
 
 Here are some resources to learn more about map projections:
@@ -64,50 +77,25 @@ Here are some resources to learn more about map projections:
 
 There are many resources to guide a new learner, so enjoy learning! 
 
+
+
+:::
+
+
 # Accessing Data
 
-This lesson uses the Python language. 
 
-These are the equired packages to run this lesson `impumspy`, `pandas`, `arcgis`, `zipfile`, and `numpy`. Optional packages include `glob`, `geopandas`, and `earthaccess`.
+This lesson uses the Python language. These are the equired packages to run this lesson `impumspy`, `pandas`, `arcgis`, `zipfile`, and `numpy`. Optional packages include `glob`, `geopandas`, and `earthaccess`.
+
+Use `import` to import the necessary packages:
 
 ```{python}
-# from ipumspy import readers, ddi
-# from ipumspy.api import IpumsApiClient
-# from ipumspy import AggregateDataExtract
+#| results: hide
 
 
-# from dotenv import load_dotenv
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.colors as colors
-# import os
-# from matplotlib.ticker import FuncFormatter
+ 
 import arcgis
 from arcgis.gis import GIS
-
-# # from arcgis.map import Map
-# from arcgis.raster import Raster
-# from arcgis.features import GeoAccessor
-
-# from arcgis.map.renderers import (
-#     ClassBreaksRenderer,
-#     ClassBreakInfo,
-#     UniqueValueRenderer,
-#     UniqueValueInfo,
-#     SizeInfoVisualVariable,
-# )
-
-# from arcgis.mapping.symbol import SimpleLineSymbol, SimpleFillSymbol
-
-# import geopandas as gpd
-# import glob
-# from zipfile import ZipFile
-# import earthaccess as ea
-# import requests
-# import pprint
-# import re
-
 
 
 # Standard libraries
@@ -145,6 +133,11 @@ from ipumspy import readers, ddi
 from ipumspy.api import IpumsApiClient
 from ipumspy import AggregateDataExtract
 
+from ipumspy.api.extract import NhgisDataset
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 ```
 
@@ -159,6 +152,9 @@ arcgis.__version__
 If arcgis version is lower, use `pip install`:
 
 ```{python}
+#| eval: false
+
+
 pip install arcgis==2.4.1.1
 
 ```
@@ -178,12 +174,25 @@ After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. Y
 
 
 ```{python} 
- 
+#| eval: false
 
-from dotenv import load_dotenv
-import os
-from ipumspy.api import IpumsApiClient
-import pprint
+
+# Step 1: Load API key from .env file
+load_dotenv()
+IPUMS_API_KEY = os.getenv("EMAIL", "API_KEY")
+
+if IPUMS_API_KEY is None:
+    raise ValueError("API key not found. Make sure IPUMS_API_KEY is defined in your .env file.")
+
+# Step 2: Initialize IPUMS client
+ipums = IpumsApiClient(IPUMS_API_KEY)
+
+
+```
+
+```{python} 
+#| echo: false
+
 
 # Step 1: Load API key from .env file
 load_dotenv()
@@ -198,9 +207,6 @@ ipums = IpumsApiClient(IPUMS_API_KEY)
 
 ```
 
-```{python}
-ipums 
-```
 
 Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.
 
@@ -213,84 +219,114 @@ This block will be returning the shapefile name of interest so that we can downl
 
 for page in ipums.get_metadata_catalog("nhgis", metadata_type="shapefiles"):
     for shapefile in page["data"]:
-        if shapefile["extent"] in ["Puerto Rico", "United States"]:
-            if shapefile["geographicLevel"] in ["ZCTA", "ZIP Code Tabulation Area"]:
-                print(f"Name: {shapefile['name']} | Year: {shapefile['year']}")
+        if shapefile["extent"] == "Puerto Rico":
+            if shapefile["geographicLevel"] == "Block Group" and shapefile["year"] == "2010":
+                print( "Name: " + shapefile["name"] + " | Year: " + shapefile["year"])
 ```
 ### Downlaoding shapefiles from IPUMS
 
-With this API key, we can extract geospatial data from the IPUMS API
+With this API key, we can extract geospatial data from the IPUMS API. Using the geo level `blck_grp`, we can speicify that we want to extract data at the Block Group level.
+
+
+The `AggregateDataExtract` function specifies the collection to use, in this case NHGIS, give it a human-readable label for the extract request, and requests the 2010 and 2020 Summary File 1 (SF1a) dataset with tables P12 (sex by age) and H3 (vacancy status) at the block group geographic level. It also limits the extract to geographic extent code "720" (Puerto Rico).
+
+Getting data from 2010 and 2020 with the variables for 5-year Age Groups (P12) and the Housing (H3). 
 
 
 ```{python}
-from ipumspy.api.extract import NhgisDataset
-#Submit extraction data to IPUMS portal
+#| eval: false
+
+
+# Submit extraction data to IPUMS portal
 extract = AggregateDataExtract(
-    collection="nhgis",
-    description="Puerto Rico 2010–2020 vacancy",
+    collection="nhgis",  # Use NHGIS collection
+    description="Puerto Rico 2010–2020 vacancy",  # Extract label
     datasets=[
-        NhgisDataset(name="2010_SF1a", data_tables=["P12", "H3"], geog_levels=["blck_grp"]),
-        NhgisDataset(name="2020_DHCa", data_tables=["P12", "H3"], geog_levels=["blck_grp"]),
+        NhgisDataset(
+            name="2010_SF1a",  # 2010 dataset
+            data_tables=["P12", "H3"],  # Tables: sex by age, vacancy
+            geog_levels=["blck_grp"]  # At block group level
+        ),
+        NhgisDataset(
+            name="2020_DHCa",  # 2020 dataset
+            data_tables=["P12", "H3"],  # Same tables
+            geog_levels=["blck_grp"]  # Same level
+        ),
     ],
-    geographic_extents=["720"]
-    #    shapefiles=["720_blck_grp_2020_tl2020"]  to download shapefiles
+    geographic_extents=["720"]  # Puerto Rico only
+    # shapefiles=["720_blck_grp_2020_tl2020"]  # Optional: include shapefile
 )
 
 
+
+
 ```
 
-```{python}
-extract
-```
 
 
-Getting data from 2010 and 2020 with the variables are Total Housing Units and Occupancy Status as H1 and H3 respectively. 
+This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.
  
 ```{python}
-#Submit the extract request
-ipums.submit_extract(extract)
-print(f"Extract ID: {extract.extract_id}")
+#| eval: false
 
-#Wait for the extract to finish
-ipums.wait_for_extract(extract)
+
+# Submit the extract request
+ipums.submit_extract(extract)  # Send request to IPUMS
+print(f"Extract ID: {extract.extract_id}")  # Print the extract ID
+
+# Wait for the extract to finish
+
 ```
 
+This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:
+
 ```{python}
-# #Download the extract
-current = os.getcwd()
-DOWNLOAD_DIR = os.path.join(f"{current}/data/ipums/block") #Change to your storage location
+#| eval: false
 
-# Create the directory if it doesn't exist
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-ipums.download_extract(extract, download_dir=DOWNLOAD_DIR)
+# Download the extract
+current = os.getcwd()  # Get current working directory
+DOWNLOAD_DIR = os.path.join(f"{current}/data/ipums/block")  # Set download path
+
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)  # Create folder if needed
+
+ipums.download_extract(extract, download_dir=DOWNLOAD_DIR)  # Download files to folder
+
 ```
 
+After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!
 ```{python}
 
-current = os.getcwd()
-DOWNLOAD_DIR = os.path.join(f"{current}/data/ipums/block") #Change to your storage location
-file_list = os.listdir(DOWNLOAD_DIR)
-csv_zip = [f for f in file_list if f.endswith('_csv.zip')]
-csv = f"{DOWNLOAD_DIR}/{csv_zip[0]}" 
+current = os.getcwd()  # Get current working directory
+DOWNLOAD_DIR = os.path.join(f"{current}/data/ipums/block")  # Set path to downloaded extract
+file_list = os.listdir(DOWNLOAD_DIR)  # List files in download folder
+csv_zip = [f for f in file_list if f.endswith('_csv.zip')]  # Find ZIP with CSVs
+csv = f"{DOWNLOAD_DIR}/{csv_zip[0]}"  # Get full path to ZIP
 
 # Read zip data file in the extract
 with ZipFile(csv) as z:
-    csv_data = z.namelist()
+    csv_data = z.namelist()  # List files inside ZIP
     print("Contents of zip: ", csv_data)
     
     # Find the correct CSVs using filename patterns
-    file_2020 = next(f for f in csv_data if '2020' in f and f.endswith('.csv'))
-    file_2010 = next(f for f in csv_data if '2010' in f and f.endswith('.csv'))
+    file_2020 = next(f for f in csv_data if '2020' in f and f.endswith('.csv'))  # 2020 file
+    file_2010 = next(f for f in csv_data if '2010' in f and f.endswith('.csv'))  # 2010 file
 
     # Read CSVs into DataFrames
     with z.open(file_2020) as f:
-        df_2020 = pd.read_csv(f)
+        df_2020 = pd.read_csv(f)  # Load 2020 data
 
     with z.open(file_2010) as f:
-        df_2010 = pd.read_csv(f)
+        df_2010 = pd.read_csv(f)  # Load 2010 data
+
 
 ```
+
+
+This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.
+
+Look for the .txt file(s) in the zipped file you downloaded, and they will shed some light on your data.
+
 
 ```{python}
 
@@ -488,24 +524,40 @@ rename_2010 = {
     "IFE003": "Vacant"
 }
 
-df_2010.rename(columns = rename_2010, inplace = True)
-df_2020.rename(columns = rename_2020, inplace = True)
+
+
+# Apply renaming to both datasets
+df_2010.rename(columns=rename_2010, inplace=True)  # Rename 2010 columns
+df_2020.rename(columns=rename_2020, inplace=True)  # Rename 2020 columns
+
 ```
 
-Subsetting Puerto Rico in IPUMS (STATEA 72)
+This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis.
 ```{python}
 
-pr_df_2010 = df_2010[df_2010["STATEA"] == 72]
-pr_df_2020 = df_2020[df_2020["STATEA"] == 72]
+# Subset Puerto Rico (STATEA code 72)
+pr_df_2010 = df_2010[df_2010["STATEA"] == 72]  # Filter 2010 data for Puerto Rico
+pr_df_2020 = df_2020[df_2020["STATEA"] == 72]  # Filter 2020 data for Puerto Rico
 
-pr_df_2010 = pr_df_2010.dropna(axis=1, how='all')
-pr_df_2020 = pr_df_2020.dropna(axis=1, how='all')
+# Drop columns with all missing values
+pr_df_2010 = pr_df_2010.dropna(axis=1, how='all')  # Clean 2010 data
+pr_df_2020 = pr_df_2020.dropna(axis=1, how='all')  # Clean 2020 data
+
 ```
 
 
-Using our data, we can calculate the population that ire 60 years of age or older
+This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:
+
+-   AgedRatio: the share of the total population that is 60+
+
+-   VacantRatio: the share of housing units that are vacant
+
+These ratios help measure aging and housing vacancy patterns in Puerto Rico over time.
+
 ```{python}
 
+
+# Define age columns for population 60+
 pop60plus_cols = [
     "Female: 60 and 61 years",
     "Female: 62 to 64 years",
@@ -525,65 +577,83 @@ pop60plus_cols = [
     "Male: 85 years and over"
 ]
 
-pr_df_2010["Pop60plus_total"] = pr_df_2010[pop60plus_cols].sum(axis=1)
-pr_df_2010["AgedRatio"] = pr_df_2010["Pop60plus_total"] /  pr_df_2010["Total_Population"]
-pr_df_2010["VacantRatio"] = pr_df_2010["Vacant"] /  pr_df_2010["Total_Housing_Units"]
+# Calculate totals and ratios for 2010
+pr_df_2010["Pop60plus_total"] = pr_df_2010[pop60plus_cols].sum(axis=1)  # Sum 60+ pop
+pr_df_2010["AgedRatio"] = pr_df_2010["Pop60plus_total"] / pr_df_2010["Total_Population"]  # 60+ share
+pr_df_2010["VacantRatio"] = pr_df_2010["Vacant"] / pr_df_2010["Total_Housing_Units"]  # Vacancy share
 
-
+# Calculate totals and ratios for 2020
 pr_df_2020["Pop60plus_total"] = pr_df_2020[pop60plus_cols].sum(axis=1)
-pr_df_2020["AgedRatio"] = pr_df_2020["Pop60plus_total"] /  pr_df_2020["Total_Population"]
-pr_df_2020["VacantRatio"] = pr_df_2020["Vacant"] /  pr_df_2020["Total_Housing_Units"]
+pr_df_2020["AgedRatio"] = pr_df_2020["Pop60plus_total"] / pr_df_2020["Total_Population"]
+pr_df_2020["VacantRatio"] = pr_df_2020["Vacant"] / pr_df_2020["Total_Housing_Units"]
+
 
 ```
+
+Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).
+
+This kind of visualization helps reveal spatial patterns or clusters related to population aging and housing dynamics.
 
 ```{python}
-# Example: plot Female_60plus_total and Male_60plus_total
 
-plt.scatter(pr_df_2010["VacantRatio"], pr_df_2010["AgedRatio"], alpha=0.3)
+# Plot Aged Ratio vs. Vacant Ratio for 2010
+plt.scatter(pr_df_2010["VacantRatio"], pr_df_2010["AgedRatio"], alpha=0.3)  # Transparent points
 
-plt.title("Aged Ratio (60+) over Vacancy Ratio")
-plt.xlabel("Vacant Ratio")
-plt.ylabel("Aged Ratio") 
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+plt.title("Aged Ratio (60+) over Vacancy Ratio")  # Plot title
+plt.xlabel("Vacant Ratio")  # X-axis label
+plt.ylabel("Aged Ratio")  # Y-axis label
+plt.grid(True)  # Show grid
+plt.tight_layout()  # Adjust layout
+plt.show()  # Display plot
+
 ```
 
+
+This step prepares for comparison between the 2010 and 2020 datasets. 
+
+It selects key columns (like total population, aged population, and vacancy) from the 2010 data and merges them with the full 2020 data using GISJOIN as a unique geographic identifier. 
+
+The resulting merged_df contains side-by-side values for both years, using suffixes to distinguish 2010 and 2020 columns.
 ```{python}
   
-columns_used = ["Total_Population", "Male", "Female", "Pop60plus_total", "AgedRatio", "Total_Housing_Units", "Occupied", "Vacant", "VacantRatio"]
+# Key columns to compare between years
+columns_used = [
+    "Total_Population",  "Pop60plus_total", "AgedRatio",
+    "Total_Housing_Units", "Occupied", "Vacant", "VacantRatio"
+]
 
+# Merge 2020 data with selected 2010 columns using GISJOIN
+merged_df = pr_df_2020.merge(
+    pr_df_2010[["GISJOIN"] + columns_used],  # Keep GISJOIN + key columns from 2010
+    on="GISJOIN",  # Join on geographic ID
+    how="inner",  # Keep only matching rows
+    suffixes=("_2020", "_2010")  # Label columns by year
+)
 
-# Combine first 18 columns with the specific ones, avoiding duplicates
-# selected_cols = list(pr_df_2020.columns[:24]) + columns_used  
-
-# pr_df_2020sel = pr_df_2020[selected_cols]
-
-merged_df = pr_df_2020.merge(pr_df_2010[["GISJOIN"]+columns_used], on = "GISJOIN", how = "inner", suffixes=("_2020", "_2010"))
+# View merged dataset
 merged_df
 
-
-merged_df
 ```
 
+## Comparing Time Series 
 
+To understand demographic and housing trends over time, we compare key indicators from different time periods. By calculating the absolute changes we can assess patterns of population decline, aging, and housing dynamics at the local level.
 
-
-## Comparing time series 
+This step calculates absolute changes between 2010 and 2020 for several key indicators: total population, population aged 60+, vacant housing units, and the ratios of aged population and vacancy. These new columns will help identify trends across geographic areas. Missing values in the AgedRatio_Change column are filled with 0 to ensure clean outputs.
 
 ```{python}
  
-merged_df["Total_Pop_Change"] = merged_df["Total_Population_2020"] - merged_df["Total_Population_2010"]
-merged_df["Pop60plus_Change"] = merged_df["Pop60plus_total_2020"] - merged_df["Pop60plus_total_2010"]
-merged_df["Vacant_Change"] = (merged_df["Vacant_2020"] - merged_df["Vacant_2010"])
-merged_df["AgedRatio_Change"] = (merged_df["AgedRatio_2020"] - merged_df["AgedRatio_2010"])
-merged_df["AgedRatio_Change"].fillna(0, inplace=True) 
-merged_df["VacantRatio_Change"] = merged_df["VacantRatio_2020"] - merged_df["VacantRatio_2010"]
+# Calculate absolute changes between 2010 and 2020
+merged_df["Total_Pop_Change"] = merged_df["Total_Population_2020"] - merged_df["Total_Population_2010"]  # Change in total population
+merged_df["Pop60plus_Change"] = merged_df["Pop60plus_total_2020"] - merged_df["Pop60plus_total_2010"]  # Change in 60+ population
+merged_df["Vacant_Change"] = merged_df["Vacant_2020"] - merged_df["Vacant_2010"]  # Change in vacant units
+merged_df["AgedRatio_Change"] = merged_df["AgedRatio_2020"] - merged_df["AgedRatio_2010"]  # Change in aged ratio
+merged_df["AgedRatio_Change"].fillna(0, inplace=True)  # Fill missing with 0
+merged_df["VacantRatio_Change"] = merged_df["VacantRatio_2020"] - merged_df["VacantRatio_2010"]  # Change in vacancy ratio
 
-
-
-
+# View updated DataFrame
 merged_df
+
 
 ```
 
@@ -591,36 +661,60 @@ merged_df
 
 # Plotting Graphs from IPUMS data:
 
+This visualization step uses a `Seaborn pairplot` to explore the relationships between key change variables from 2010 to 2020. 
+
+By plotting scatterplots for every pair of variables and histograms along the diagonal we can quickly spot correlations or patterns in population decline, aging, and housing vacancy across Puerto Rico’s geographic units.
+
 ```{python}
-import seaborn as sns
-import matplotlib.pyplot as plt
+ 
+# Choose key variables to compare
+vars_to_plot = [
+    "Total_Pop_Change",
+    "Pop60plus_Change",
+    "Vacant_Change",
+    "AgedRatio_Change",
+    "VacantRatio_Change"
+]
 
-# Example: choose 5 variables from your DataFrame
-vars_to_plot = ["Total_Pop_Change", "Pop60plus_Change", "Vacant_Change", "AgedRatio_Change", "VacantRatio_Change"]
-
-# Subset your dataframe
+# Subset DataFrame to those variables
 data_subset = merged_df[vars_to_plot]
 
-# Create the pairplot
+# Create pairwise plots with histograms on the diagonal
 sns.pairplot(data_subset, diag_kind="hist", corner=True)
 
-plt.suptitle("Pairwise Scatterplots and Histograms", y=1.02)
+plt.suptitle("Pairwise Scatterplots and Histograms", y=1.02)  # Set overall title
 plt.tight_layout()
-plt.show()
+plt.show()  # Display the plot
+
+
 ```
 
 
+This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. 
+
+It helps identify whether most areas experienced increases or decreases in vacancy—and how large those shifts were.
 
 ```{python}
+
 merged_df["Vacant_Change"] .hist()
 
 plt.title("Vacancy Ratio Change 2010-2020")
 ```
 
-This histogram answers why the Cabo Rojo's Decadal Vacant Change is in the first quantile. There is only one county (frequency) that has less than -2000 value which is belong to Cabo Rojo. Therefore, Cabo Rojo is classified as lower quantile (1st quantile).
- 
 
-By looking more further into the histogram and difference bar chart between 2010 and 2020. We can have more confident that quantile classification did not do the right job at interpreation the data.
+By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.
+
+To better evaluate how unusual each area's change is, we compute z-scores for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
+
+
+::: {.callout-tip style="color: #5a7a2b;"}
+
+## Math Refresher
+
+A z-score tells us how many standard deviations a value is from the mean. A positive z-score means the value is above the mean. A negative z-score means it's below the mean. Z-scores help us compare variables on different scales and identify outliers—typically anything above +2 or below –2 is considered unusually high or low.
+
+:::
+
 
 ```{python}
 
@@ -636,7 +730,7 @@ for var in vars_to_plot:
 ```
 
 
-
+This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:
 ```{python}
 merged_df["Vacant_dz"] .hist()
 
@@ -644,75 +738,103 @@ plt.title("Male/Female Ratio Total Change 2010-2020 (In thousands) Z-score")
 ```
 
 
+This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. 
+
+By putting all variables on the same scale (mean = 0, std = 1), we can asily spot strong linear relationships, identify clusters or outliers, and ompare change intensity across different domains (e.g., aging vs. vacancy).
+
+This is especially useful when your original variables had different units or ranges.
+
+
+Can you spot any linear trends in the scatterplots?
 ```{python}
 
-# Select all columns that end with '_z' (z-score columns)
+#
+# Select all z-score columns (those ending in "_dz")
 zscore_cols = [col for col in merged_df.columns if col.endswith("_dz")]
-data_subset = merged_df[zscore_cols]
+data_subset = merged_df[zscore_cols]  # Subset for plotting
 
+# Create pairplot of standardized change variables
+sns.pairplot(data_subset, diag_kind="hist", corner=True)  # No duplicate plots, hist on diagonal
 
-# Create the pairplot
-sns.pairplot(data_subset, diag_kind="hist", corner=True)
-
-plt.suptitle("Pairwise Scatterplots and Histograms (Z-Scores)", y=1.02)
+plt.suptitle("Pairwise Scatterplots and Histograms (Z-Scores)", y=1.02)  # Title above plot
 plt.tight_layout()
-plt.show()
+plt.show()  # Display the plot
+
+
 ```
-This histogram answers why the Cabo Rojo's Decadal Vacant Change is in the first quantile. There is only one county (frequency) that has less than -2000 value which is belong to Cabo Rojo. Therefore, Cabo Rojo is classified as lower quantile (1st quantile).
 
 
 
+
+This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.
+
+This type of scaling:
+
+- Keeps the area near zero linear (for interpretability)
+
+- Compresses extreme values
+
+- Handles both positive and negative changes symmetrically.
+
+This visualization helps identify whether increases in older populations are associated with changes in housing vacancy—and how extreme those shifts are across Puerto Rico.
 
 
  
 ```{python}
 
-# Plot
+# Create a scatter plot of z-score changes
 fig, ax = plt.subplots(figsize=(8, 6))
 
-ax.scatter( 
-    merged_df["VacantRatio_dz"],
-    merged_df["AgedRatio_dz"],
+ax.scatter(
+    merged_df["VacantRatio_dz"],  # X-axis: vacancy ratio z-score
+    merged_df["AgedRatio_dz"],    # Y-axis: aging ratio z-score
     alpha=0.6,
     color="mediumseagreen",
     edgecolor="black"
 )
 
-
-# Use symmetric log scaling
-ax.set_xscale("symlog", linthresh=1)  # linthresh defines the linear range near 0
+# Apply symmetric log scaling to both axes
+ax.set_xscale("symlog", linthresh=1)  # Linear near 0, log beyond ±1
 ax.set_yscale("symlog", linthresh=1)
 
-
-# Axis formatting
-ax.set_xlabel("Vacant Housing Ratio Change")
-ax.set_ylabel("Age (60+) Ratio Change")
+# Add labels and title
+ax.set_xlabel("Vacant Housing Ratio Change")  # X-axis label
+ax.set_ylabel("Age (60+) Ratio Change")       # Y-axis label
 ax.set_title("Vacant Ratio Change vs Aged Ratio (60+) Change (in Z-Scores)")
+
+# Grid and layout
 ax.grid(True)
 plt.tight_layout()
 plt.show()
+
+
 ```
 
+## Generating Age Pyramids
 
+Another useful way to analyze popylation is with population pyramids for Puerto Rico using mean percentages of male and female population by age group, based on census block-level data. The pyramid compares the age structure visually between sexes, helping identify trends like population aging or gender imbalances in specific cohorts.
 
+Key Steps in the Code:
+
+First, Extract age-by-sex columns from the dataset.
 
 ```{python}
-import pandas as pd
-import matplotlib.pyplot as plt
 
-# 1. Define the relevant columns
+# Define the relevant columns
 joined_columns = [col for col in merged_df.columns if col.startswith("Male:") or col.startswith("Female:")]
 
-# 2. Ensure Total_Population exists (if not, create it)
-if "Total_Population" not in merged_df.columns:
-    merged_df["Total_Population"] = merged_df[joined_columns].sum(axis=1)
+# Create DataFrame for percentage values
+pct_df = merged_df[["Total_Population_2020"] + joined_columns].copy()
 
-# 3. Create DataFrame for percentage values
-pct_df = merged_df[["Total_Population"] + joined_columns].copy()
+```
+
+Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:
+
+```{python}
 
 # 4. Compute percentage for each age group column
 for col in joined_columns:
-    pct_df[f"{col}_pct"] = pct_df[col] / pct_df["Total_Population"] * 100
+    pct_df[f"{col}_pct"] = pct_df[col] / pct_df["Total_Population_2020"] * 100
 
 # 5. Drop original count columns, keep only percent columns
 pct_df = pct_df[[col for col in pct_df.columns if col.endswith("_pct")]]
@@ -720,6 +842,13 @@ pct_df = pct_df[[col for col in pct_df.columns if col.endswith("_pct")]]
 # 6. Separate by sex
 male_age_percentages = []
 female_age_percentages = []
+```
+
+This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).
+
+It also creates a clean DataFrame that aligns age group labels with their corresponding male and female percentages, setting the foundation for the population pyramid.
+
+```{python}
 
 for col in pct_df.columns:
     mean_pct = round(pct_df[col].mean(), 2)
@@ -739,7 +868,18 @@ population_df = pd.DataFrame({
 })
 population = population_df.copy()
 
-# 9. Combine select age groups
+```
+
+
+We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. 
+
+In the plot, we manually add percentages for adjacent rows as the age group label.
+
+After combining, it prepares the data for bidirectional horizontal bar plotting by making male values negative (so they show on the left), keeping female values positive (on the right), and creating helper columns for width and placement of bars.
+
+```{python}
+
+# Combine select age groups
 # Combine 15-17 and 18-19 into 15-19
 population.iloc[3, 0] = "15 to 19 years"
 population.iloc[3, 1] += population.iloc[4, 1]
@@ -764,7 +904,7 @@ population.iloc[13, 1] += population.iloc[14, 1]
 population.iloc[13, 2] += population.iloc[14, 2]
 population = population.drop(index=14).reset_index(drop=True)
 
-# 10. Prepare for plotting
+# Prepare for plotting
 population["Female_Left"] = 0
 population["Female_Width"] = population["Female"]
 population["Male_Left"] = -population["Male"]
@@ -774,39 +914,84 @@ population["Male_Width"] = population["Male"]
 population["Male"] = population["Male"].round(2)
 population["Female"] = population["Female"].round(2)
 
+```
+
+
+The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.
+
+A custom title, axis formatting, and color scheme are applied for clarity and polish.
+```{python}
+
 # 11. Plot the population pyramid
-fig = plt.figure(figsize=(15, 10))
+fig = plt.figure(figsize=(15, 10))  # Set figure size
 
-plt.barh(y=population["Age"], width=population["Female_Width"], color="#ee7a87", label="Female")
-plt.barh(y=population["Age"], width=population["Male_Width"], left=population["Male_Left"],
-         color="#4682b4", label="Male")
+# Plot female bars to the right
+plt.barh(
+    y=population["Age"],
+    width=population["Female_Width"],
+    color="#ee7a87",
+    label="Female"
+)
 
+# Plot male bars to the left
+plt.barh(
+    y=population["Age"],
+    width=population["Male_Width"],
+    left=population["Male_Left"],
+    color="#4682b4",
+    label="Male"
+)
+
+# Add gender labels to plot
 plt.text(-5, len(population) - 1, "Male", fontsize=25, fontweight="bold")
 plt.text(4, len(population) - 1, "Female", fontsize=25, fontweight="bold")
 
-# Add labels
+# Add percentage labels to each bar
 for idx in range(len(population)):
-    plt.text(x=population["Male_Left"][idx] - 0.1, y=idx, s="{}%".format(population["Male"][idx]),
-             ha="right", va="center", fontsize=15, color="#4682b4")
-    plt.text(x=population["Female_Width"][idx] + 0.1, y=idx, s="{}%".format(population["Female"][idx]),
-             ha="left", va="center", fontsize=15, color="#ee7a87")
+    # Male label (on the left)
+    plt.text(
+        x=population["Male_Left"][idx] - 0.1,
+        y=idx,
+        s="{}%".format(population["Male"][idx]),
+        ha="right", va="center",
+        fontsize=15, color="#4682b4"
+    )
+    # Female label (on the right)
+    plt.text(
+        x=population["Female_Width"][idx] + 0.1,
+        y=idx,
+        s="{}%".format(population["Female"][idx]),
+        ha="left", va="center",
+        fontsize=15, color="#ee7a87"
+    )
 
-plt.xlim(-7, 7)
-plt.xticks(range(-7, 8), ["{}%".format(i) for i in range(-7, 8)])
-plt.legend(loc="best")
+# Format axes and labels
+plt.xlim(-7, 7)  # Set x-axis limits
+plt.xticks(range(-7, 8), ["{}%".format(i) for i in range(-7, 8)])  # Format tick labels as percents
+plt.legend(loc="best")  # Add legend
 plt.xlabel("Percent (%)", fontsize=16, fontweight="bold")
 plt.ylabel("Age Range", fontsize=16, fontweight="bold")
-plt.title("Puerto Rico Mean Age Distribution (Census Blocks)", loc="left", pad=20, fontsize=25, fontweight="bold")
 
-plt.tight_layout()
-plt.show()
+# Add title
+plt.title(
+    "Puerto Rico Mean Age Distribution (Census Blocks) 2020",
+    loc="left", pad=20,
+    fontsize=25, fontweight="bold"
+)
+
+plt.tight_layout()  # Optimize spacing
+plt.show()  # Display the plot
+
 
 ```
 
 
 ### Select an individual census block
 
+We can subset the dataframe to select a single census block and generate an age pyramid.
+
 ```{python}
+
 
 # --- STEP 1: Select a census block by GEOID ---
 block_id = "G72002100310212"  # Replace with any valid GEOID
@@ -867,11 +1052,14 @@ plt.legend(loc="best")
 
 plt.xlabel(value_label, fontsize=14)
 plt.ylabel("Age Range", fontsize=14)
-plt.title(f"Census Block {block_id} Age Distribution", fontsize=18, fontweight="bold")
+plt.title(f"Census Block {block_id} Age Distribution 2020", fontsize=18, fontweight="bold")
 plt.tight_layout()
 plt.show()
 ```
 
+### Select a large Block Group
+
+Age pyramids can also be generated by subsetting a Census Block Group by name, for example `NAME == "Block Group 1"` or "Block Group 3":
 ```{python}
 bg_name = "Block Group 3"
 
@@ -974,23 +1162,29 @@ plt.xticks(range(-7, 8), ["{}%".format(i) for i in range(-7, 8)])
 plt.legend(loc="best")
 plt.xlabel("Percent (%)", fontsize=16, fontweight="bold")
 plt.ylabel("Age Range", fontsize=16, fontweight="bold")
-plt.title(f"Puerto Rico Mean Age Distribution ({bg_name})", loc="left", pad=20, fontsize=25, fontweight="bold")
+plt.title(f"Puerto Rico Mean Age Distribution ({bg_name}) 2020", loc="left", pad=20, fontsize=25, fontweight="bold")
 
 plt.tight_layout()
 plt.show()
 ```
 
+## Interactinv with ArcGIS Online Portal
 
-
+ArcGIS Online or Enterprise portal are tools that retrieve a specific hosted feature layers. We use the `arcgis` package to find features of U.S. counties (2020), and filter it to include only features where STATEFP = '72', which corresponds to Puerto Rico. The resulting spatial data is converted into a Spatially Enabled DataFrame (sedf) using ArcGIS' Python API.
 ```{python}
 # Get the layer from the published data
 
+# Connect to ArcGIS Online (anonymous session)
 gis = GIS()
-layer = gis.content.get("3132216944b249a08d13b1aa0ee6fda2").layers[0] # The layer of PR county 2020 published to the portal
 
+# Access a specific hosted feature layer by its Item ID
+layer = gis.content.get("3132216944b249a08d13b1aa0ee6fda2").layers[0]  # PR counties 2020 layer
 
-sedf = layer.query(where = "STATEFP = '72'").sdf
+# Query Puerto Rico counties using the state FIPS code '72'
+sedf = layer.query(where="STATEFP = '72'").sdf  # Convert to Spatially Enabled DataFrame
 ```
+
+We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
 
 ```{python}
 #Merge the feature to the merged 2010-2020 df
@@ -1012,89 +1206,89 @@ Let's combine the Block Groups into Counties and Map the results.
 
 ```{python}
 
-pr_county_df["AgedRatio_2010"] = pr_county_df["Pop60plus_total_2010"] /  pr_county_df["Total_Population_2010"]
-pr_county_df["VacantRatio_2010"] = pr_county_df["Vacant_2010"] /  pr_county_df["Total_Housing_Units_2010"]
+# pr_county_df["AgedRatio_2010"] = pr_county_df["Pop60plus_total_2010"] /  pr_county_df["Total_Population_2010"]
+# pr_county_df["VacantRatio_2010"] = pr_county_df["Vacant_2010"] /  pr_county_df["Total_Housing_Units_2010"]
 
 
-pr_county_df["AgedRatio_2020"] = pr_county_df["Pop60plus_total_2020"] /  pr_county_df["Total_Population_2020"]
-pr_county_df["VacantRatio_2020"] = pr_county_df["Vacant_2020"] /  pr_county_df["Total_Housing_Units_2020"]
+# pr_county_df["AgedRatio_2020"] = pr_county_df["Pop60plus_total_2020"] /  pr_county_df["Total_Population_2020"]
+# pr_county_df["VacantRatio_2020"] = pr_county_df["Vacant_2020"] /  pr_county_df["Total_Housing_Units_2020"]
 
 ```
 
 ```{python}
 
-pr_county_df["Total_Pop_Change"] = pr_county_df["Total_Population_2020"] - pr_county_df["Total_Population_2010"]
-pr_county_df["Pop60plus_Change"] = pr_county_df["Pop60plus_total_2020"] - pr_county_df["Pop60plus_total_2010"]
-pr_county_df["Vacant_Change"] = (pr_county_df["Vacant_2020"] - pr_county_df["Vacant_2010"])
+# pr_county_df["Total_Pop_Change"] = pr_county_df["Total_Population_2020"] - pr_county_df["Total_Population_2010"]
+# pr_county_df["Pop60plus_Change"] = pr_county_df["Pop60plus_total_2020"] - pr_county_df["Pop60plus_total_2010"]
+# pr_county_df["Vacant_Change"] = (pr_county_df["Vacant_2020"] - pr_county_df["Vacant_2010"])
 
-pr_county_df["VacantRatio_Change"] = pr_county_df["VacantRatio_2020"] - pr_county_df["VacantRatio_2010"]
+# pr_county_df["VacantRatio_Change"] = pr_county_df["VacantRatio_2020"] - pr_county_df["VacantRatio_2010"]
 
-pr_county_df["AgedRatio_Change"] = (pr_county_df["AgedRatio_2020"] - pr_county_df["AgedRatio_2010"])
+# pr_county_df["AgedRatio_Change"] = (pr_county_df["AgedRatio_2020"] - pr_county_df["AgedRatio_2010"])
 
 
-pr_county_df
+# pr_county_df
 
 ```
 
 
 ```{python}
 
-# Compute means and standard deviations
-means = pr_county_df[vars_to_plot].mean()
-stds = pr_county_df[vars_to_plot].std()
+# # Compute means and standard deviations
+# means = pr_county_df[vars_to_plot].mean()
+# stds = pr_county_df[vars_to_plot].std()
 
-# Create z-score columns
-for var in vars_to_plot:
-    z_col = var.replace("_Change", "_dz")
-    pr_county_df[z_col] = (pr_county_df[var] - means[var]) / stds[var]
+# # Create z-score columns
+# for var in vars_to_plot:
+#     z_col = var.replace("_Change", "_dz")
+#     pr_county_df[z_col] = (pr_county_df[var] - means[var]) / stds[var]
 ```
 
 ##
 
 ```{python}
 # Filter for lowest and highest vacancy quantile groups
-lowest = pr_county_df[pr_county_df["AgedRatio_dz"] == 1]
-highest = pr_county_df[pr_county_df["AgedRatio_dz"] == 5]
+# lowest = pr_county_df[pr_county_df["AgedRatio_dz"] == 1]
+# highest = pr_county_df[pr_county_df["AgedRatio_dz"] == 5]
 
 
-# Use COUNTYA for grouping (could be COUNTY if preferred)
-# Step 1: Find common counties between the two groups
-common_counties = sorted(
-    set(lowest["COUNTY"]).intersection(set(highest["COUNTY"]))
-)
+# # Use COUNTYA for grouping (could be COUNTY if preferred)
+# # Step 1: Find common counties between the two groups
+# common_counties = sorted(
+#     set(lowest["COUNTY"]).intersection(set(highest["COUNTY"]))
+# )
 
-# Step 2: Group and sum vacant housing units for 2010 and 2020, reindexed by common counties
-vacant_low_2010 = lowest[lowest["COUNTY"].isin(common_counties)] \
-    .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
-vacant_low_2020 = lowest[lowest["COUNTYA"].isin(common_counties)] \
-    .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
+# # Step 2: Group and sum vacant housing units for 2010 and 2020, reindexed by common counties
+# vacant_low_2010 = lowest[lowest["COUNTY"].isin(common_counties)] \
+#     .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
+# vacant_low_2020 = lowest[lowest["COUNTYA"].isin(common_counties)] \
+#     .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
 
-vacant_high_2010 = highest[highest["COUNTY"].isin(common_counties)] \
-    .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
-vacant_high_2020 = highest[highest["COUNTY"].isin(common_counties)] \
-    .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
+# vacant_high_2010 = highest[highest["COUNTY"].isin(common_counties)] \
+#     .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
+# vacant_high_2020 = highest[highest["COUNTY"].isin(common_counties)] \
+#     .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
 
-# Step 3: Plot
-x = np.arange(len(common_counties))  # consistent X positions
+# # Step 3: Plot
+# x = np.arange(len(common_counties))  # consistent X positions
 
-fig, ax = plt.subplots(figsize=(12, 6))
+# fig, ax = plt.subplots(figsize=(12, 6))
 
-ax.scatter(x, vacant_low_2010.values, label='Lowest Age Ratio 2010', color='skyblue', marker='o', s=60)
-ax.scatter(x, vacant_low_2020.values, label='Lowest Age Ratio 2020', color='blue', marker='o', s=60)
-ax.scatter(x, vacant_high_2010.values, label='Highest Age Ratio 2010', color='orange', marker='^', s=60)
-ax.scatter(x, vacant_high_2020.values, label='Highest Age Ratio 2020', color='darkred', marker='^', s=60)
+# ax.scatter(x, vacant_low_2010.values, label='Lowest Age Ratio 2010', color='skyblue', marker='o', s=60)
+# ax.scatter(x, vacant_low_2020.values, label='Lowest Age Ratio 2020', color='blue', marker='o', s=60)
+# ax.scatter(x, vacant_high_2010.values, label='Highest Age Ratio 2010', color='orange', marker='^', s=60)
+# ax.scatter(x, vacant_high_2020.values, label='Highest Age Ratio 2020', color='darkred', marker='^', s=60)
 
-# Formatting
-ax.set_ylabel('Vacant Housing Ratio')
-ax.set_xlabel('County (COUNTYA)')
-ax.set_title('Vacant Housing Units by County: Lowest vs Highest Age Ratio Change Quantile (2010 & 2020)')
-ax.set_xticks(x)
-ax.set_xticklabels(common_counties, rotation=90)
-ax.legend()
-ax.grid(True, axis='y')
+# # Formatting
+# ax.set_ylabel('Vacant Housing Ratio')
+# ax.set_xlabel('County (COUNTYA)')
+# ax.set_title('Vacant Housing Units by County: Lowest vs Highest Age Ratio Change Quantile (2010 & 2020)')
+# ax.set_xticks(x)
+# ax.set_xticklabels(common_counties, rotation=90)
+# ax.legend()
+# ax.grid(True, axis='y')
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
 
 
 ```
@@ -1114,41 +1308,41 @@ This lesson is public facing so we already published the layers for the learners
 
 ```{python}
 
-# Explicit interactive authentication
-gis = GIS("https://www.arcgis.com", authenticate='interactive')
+# # Explicit interactive authentication
+# gis = GIS("https://www.arcgis.com", authenticate='interactive')
 
 
-# Get the layer from the published data
+# # Get the layer from the published data
 
-results = gis.content.search("Census County Esri_US_Federal_Data", item_type="Feature Layer")
-for r in results:
-    print(r)
+# results = gis.content.search("Census County Esri_US_Federal_Data", item_type="Feature Layer")
+# for r in results:
+#     print(r)
 
 ```
 
 Select the position of the "Cansus Zip Code Tabulation Areas" layer starting with position the first position as `0`. 
 ```{python}
 
-#select the appropiate item
-zip_item = results[3]
-item_id = zip_item.id
-print(f"Title: {zip_item.title}")
-print(f"ID: {item_id}")
+# #select the appropiate item
+# zip_item = results[3]
+# item_id = zip_item.id
+# print(f"Title: {zip_item.title}")
+# print(f"ID: {item_id}")
  
 ```
 
 With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis
 ```{python}
 
-from arcgis.features import FeatureLayer
-# Authenticate interactively
-gis = GIS("https://www.arcgis.com", authenticate='interactive')
-layer = gis.content.get(item_id).layers[0] # The layer of PR county 2020 published to the portal
-# Print all field names
-field_names = [field['name'] for field in layer.properties.fields]
-print(field_names)
-print(layer.url)
-layer = FeatureLayer(layer.url)
+# from arcgis.features import FeatureLayer
+# # Authenticate interactively
+# gis = GIS("https://www.arcgis.com", authenticate='interactive')
+# layer = gis.content.get(item_id).layers[0] # The layer of PR county 2020 published to the portal
+# # Print all field names
+# field_names = [field['name'] for field in layer.properties.fields]
+# print(field_names)
+# print(layer.url)
+# layer = FeatureLayer(layer.url)
 
 ```
 
@@ -1159,65 +1353,65 @@ layer = FeatureLayer(layer.url)
 ```{python}
 
 
-# Build unique value info entries
-unique_value_infos = []
-for i in range(5):
-    unique_value_infos.append({
-        "value": i + 1,
-        "label": quantile_labels[i],
-        "symbol": symbols[i]
-    })
+# # Build unique value info entries
+# unique_value_infos = []
+# for i in range(5):
+#     unique_value_infos.append({
+#         "value": i + 1,
+#         "label": quantile_labels[i],
+#         "symbol": symbols[i]
+#     })
 
-# Define the unique value renderer
-pr_uvr = {
-    "type": "uniqueValue",
-    "field1": "Total_Population",
-    "uniqueValueInfos": unique_value_infos
-}
+# # Define the unique value renderer
+# pr_uvr = {
+#     "type": "uniqueValue",
+#     "field1": "Total_Population",
+#     "uniqueValueInfos": unique_value_infos
+# }
 
-# Define labeling info
-pr_labeling_info = [
-    {
-        "labelExpression": "[NAME_x]",
-        "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
-        "repeatLabel": True,
-        "symbol": {
-            "type": "esriTS",
-            "color": [0, 0, 0, 255],
-            "font": {
-                "family": "Arial",
-                "size": 12
-            },
-            "horizontalAlignment": "center",
-            "kerning": True
-        }
-    }
-]
+# # Define labeling info
+# pr_labeling_info = [
+#     {
+#         "labelExpression": "[NAME_x]",
+#         "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+#         "repeatLabel": True,
+#         "symbol": {
+#             "type": "esriTS",
+#             "color": [0, 0, 0, 255],
+#             "font": {
+#                 "family": "Arial",
+#                 "size": 12
+#             },
+#             "horizontalAlignment": "center",
+#             "kerning": True
+#         }
+#     }
+# ]
 
-# Layer display options
-pr_options_dict = {
-    "showLabels": True,
-    "layerDefinition": {
-        "drawingInfo": {
-            "labelingInfo": pr_labeling_info,
-            "renderer": pr_uvr
-        }
-    },
-    "opacity": 0.5,
-    "title": "Vacant Housing Units Decadal Change"
-}
+# # Layer display options
+# pr_options_dict = {
+#     "showLabels": True,
+#     "layerDefinition": {
+#         "drawingInfo": {
+#             "labelingInfo": pr_labeling_info,
+#             "renderer": pr_uvr
+#         }
+#     },
+#     "opacity": 0.5,
+#     "title": "Vacant Housing Units Decadal Change"
+# }
 
 
 
-gis = GIS()
-m1 = gis.map("Puerto Rico") 
+# gis = GIS()
+# m1 = gis.map("Puerto Rico") 
  
-m1.content.add(pr_sedf_ipums, options = pr_options_dict) 
-# update the legend label for LECZ layer in Notebooks
+# m1.content.add(pr_sedf_ipums, options = pr_options_dict) 
+# # update the legend label for LECZ layer in Notebooks
  
-m1.legend.enabled = True
+# m1.legend.enabled = True
 
-m1
+# m1
 ```
 
 
