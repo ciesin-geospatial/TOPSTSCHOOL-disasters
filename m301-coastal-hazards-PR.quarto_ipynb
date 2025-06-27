@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "f3d11f94",
+   "id": "fb1c4e9f",
    "metadata": {},
    "source": [
     "---\n",
@@ -101,7 +101,7 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "d33a83b1",
+   "id": "223f541f",
    "metadata": {
     "results": "hide"
    },
@@ -479,7 +479,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "4fa65f3b",
+   "id": "aafa3095",
    "metadata": {},
    "source": [
     "This lesson uses arcgis version of 2.4.0 or higher:\n"
@@ -488,7 +488,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "73fe866a",
+   "id": "95b230db",
    "metadata": {},
    "outputs": [
     {
@@ -509,7 +509,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f790a121",
+   "id": "673b7e44",
    "metadata": {},
    "source": [
     "If arcgis version is lower, use `pip install`:\n"
@@ -518,7 +518,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "57fcddfc",
+   "id": "3c14179c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -530,7 +530,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e9ba6267",
+   "id": "02cf20af",
    "metadata": {},
    "source": [
     "## Using IPUMS API to pull U.S Census Data for Puerto Rico\n",
@@ -548,7 +548,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "cceefa3a",
+   "id": "3ccb9152",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -569,7 +569,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "47171f06",
+   "id": "ae008545",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -589,7 +589,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1087d81b",
+   "id": "512a2dea",
    "metadata": {},
    "source": [
     "Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.\n",
@@ -600,7 +600,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "bf7ab586",
+   "id": "9a9fe268",
    "metadata": {},
    "outputs": [
     {
@@ -624,7 +624,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "42d3372b",
+   "id": "29fef296",
    "metadata": {},
    "source": [
     "### Downlaoding shapefiles from IPUMS\n",
@@ -640,7 +640,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "1fa59418",
+   "id": "474ca4f0",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -670,7 +670,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "46a54a0b",
+   "id": "e8388fc6",
    "metadata": {},
    "source": [
     "This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.\n"
@@ -679,7 +679,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "21ed8219",
+   "id": "fcae3298",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -695,7 +695,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f5716e4c",
+   "id": "2618f34e",
    "metadata": {},
    "source": [
     "This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:\n"
@@ -704,7 +704,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "7d42ee59",
+   "id": "4130e887",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -722,7 +722,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a51856fd",
+   "id": "3a823962",
    "metadata": {},
    "source": [
     "After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!"
@@ -731,7 +731,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "1e4b7342",
+   "id": "ee2cd713",
    "metadata": {},
    "outputs": [
     {
@@ -768,7 +768,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "060a7ca9",
+   "id": "4294beb6",
    "metadata": {},
    "source": [
     "This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.\n",
@@ -779,7 +779,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "16b1cf49",
+   "id": "5d48cb9f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -986,7 +986,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5a330876",
+   "id": "5232531d",
    "metadata": {},
    "source": [
     "This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis."
@@ -995,7 +995,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "194f5cef",
+   "id": "5598fa5c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1010,7 +1010,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "48ea2c63",
+   "id": "30e86ffd",
    "metadata": {},
    "source": [
     "This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:\n",
@@ -1025,7 +1025,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "78f3e0c5",
+   "id": "363ee117",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1062,7 +1062,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5c8da2b2",
+   "id": "f97bd887",
    "metadata": {},
    "source": [
     "Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).\n",
@@ -1073,7 +1073,7 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "27645105",
+   "id": "82c08359",
    "metadata": {},
    "outputs": [
     {
@@ -1106,7 +1106,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "6116bbff",
+   "id": "86c0fa0b",
    "metadata": {},
    "source": [
     "This step prepares for comparison between the 2010 and 2020 datasets. \n",
@@ -1119,7 +1119,7 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "485165b6",
+   "id": "e333ab11",
    "metadata": {},
    "outputs": [
     {
@@ -1287,222 +1287,48 @@
        "      <td>145</td>\n",
        "      <td>0.175333</td>\n",
        "    </tr>\n",
-       "    <tr>\n",
-       "      <th>...</th>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "      <td>...</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2244</th>\n",
-       "      <td>G72015307506011</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506011</td>\n",
-       "      <td>721537506011</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>487</td>\n",
-       "      <td>0.243988</td>\n",
-       "      <td>0.167658</td>\n",
-       "      <td>1335</td>\n",
-       "      <td>298</td>\n",
-       "      <td>0.223221</td>\n",
-       "      <td>565</td>\n",
-       "      <td>475</td>\n",
-       "      <td>90</td>\n",
-       "      <td>0.159292</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2245</th>\n",
-       "      <td>G72015307506012</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506012</td>\n",
-       "      <td>721537506012</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>284</td>\n",
-       "      <td>0.294912</td>\n",
-       "      <td>0.083146</td>\n",
-       "      <td>2986</td>\n",
-       "      <td>481</td>\n",
-       "      <td>0.161085</td>\n",
-       "      <td>1201</td>\n",
-       "      <td>1058</td>\n",
-       "      <td>143</td>\n",
-       "      <td>0.119067</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2246</th>\n",
-       "      <td>G72015307506013</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506013</td>\n",
-       "      <td>721537506013</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>360</td>\n",
-       "      <td>0.255500</td>\n",
-       "      <td>0.184638</td>\n",
-       "      <td>994</td>\n",
-       "      <td>69</td>\n",
-       "      <td>0.069416</td>\n",
-       "      <td>340</td>\n",
-       "      <td>322</td>\n",
-       "      <td>18</td>\n",
-       "      <td>0.052941</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2247</th>\n",
-       "      <td>G72015307506021</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506021</td>\n",
-       "      <td>721537506021</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>481</td>\n",
-       "      <td>0.353937</td>\n",
-       "      <td>0.221906</td>\n",
-       "      <td>1872</td>\n",
-       "      <td>436</td>\n",
-       "      <td>0.232906</td>\n",
-       "      <td>813</td>\n",
-       "      <td>681</td>\n",
-       "      <td>132</td>\n",
-       "      <td>0.162362</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2248</th>\n",
-       "      <td>G72015307506022</td>\n",
-       "      <td>2020</td>\n",
-       "      <td>PR</td>\n",
-       "      <td>1500000US721537506022</td>\n",
-       "      <td>721537506022</td>\n",
-       "      <td>9</td>\n",
-       "      <td>0</td>\n",
-       "      <td>Puerto Rico</td>\n",
-       "      <td>72</td>\n",
-       "      <td>Yauco Municipio</td>\n",
-       "      <td>...</td>\n",
-       "      <td>342</td>\n",
-       "      <td>0.278502</td>\n",
-       "      <td>0.187500</td>\n",
-       "      <td>1269</td>\n",
-       "      <td>267</td>\n",
-       "      <td>0.210402</td>\n",
-       "      <td>637</td>\n",
-       "      <td>463</td>\n",
-       "      <td>174</td>\n",
-       "      <td>0.273155</td>\n",
-       "    </tr>\n",
        "  </tbody>\n",
        "</table>\n",
-       "<p>2249 rows × 88 columns</p>\n",
+       "<p>5 rows × 88 columns</p>\n",
        "</div>"
       ],
       "text/plain": [
-       "              GISJOIN  YEAR STUSAB                  GEOID       GEOCODE  \\\n",
-       "0     G72000109563001  2020     PR  1500000US720019563001  720019563001   \n",
-       "1     G72000109563002  2020     PR  1500000US720019563002  720019563002   \n",
-       "2     G72000109564001  2020     PR  1500000US720019564001  720019564001   \n",
-       "3     G72000109564002  2020     PR  1500000US720019564002  720019564002   \n",
-       "4     G72000109565001  2020     PR  1500000US720019565001  720019565001   \n",
-       "...               ...   ...    ...                    ...           ...   \n",
-       "2244  G72015307506011  2020     PR  1500000US721537506011  721537506011   \n",
-       "2245  G72015307506012  2020     PR  1500000US721537506012  721537506012   \n",
-       "2246  G72015307506013  2020     PR  1500000US721537506013  721537506013   \n",
-       "2247  G72015307506021  2020     PR  1500000US721537506021  721537506021   \n",
-       "2248  G72015307506022  2020     PR  1500000US721537506022  721537506022   \n",
+       "           GISJOIN  YEAR STUSAB                  GEOID       GEOCODE  REGIONA  \\\n",
+       "0  G72000109563001  2020     PR  1500000US720019563001  720019563001        9   \n",
+       "1  G72000109563002  2020     PR  1500000US720019563002  720019563002        9   \n",
+       "2  G72000109564001  2020     PR  1500000US720019564001  720019564001        9   \n",
+       "3  G72000109564002  2020     PR  1500000US720019564002  720019564002        9   \n",
+       "4  G72000109565001  2020     PR  1500000US720019565001  720019565001        9   \n",
        "\n",
-       "      REGIONA  DIVISIONA        STATE  STATEA              COUNTY  ...  \\\n",
-       "0           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "1           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "2           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "3           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "4           9          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
-       "...       ...        ...          ...     ...                 ...  ...   \n",
-       "2244        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2245        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2246        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2247        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
-       "2248        9          0  Puerto Rico      72     Yauco Municipio  ...   \n",
+       "   DIVISIONA        STATE  STATEA              COUNTY  ...  \\\n",
+       "0          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
+       "1          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
+       "2          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
+       "3          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
+       "4          0  Puerto Rico      72  Adjuntas Municipio  ...   \n",
        "\n",
-       "      Pop60plus_total_2020  AgedRatio_2020  VacantRatio_2020  \\\n",
-       "0                      562        0.298301          0.102815   \n",
-       "1                      568        0.286290          0.070263   \n",
-       "2                      483        0.295956          0.103064   \n",
-       "3                      370        0.365252          0.092593   \n",
-       "4                      523        0.278191          0.138142   \n",
-       "...                    ...             ...               ...   \n",
-       "2244                   487        0.243988          0.167658   \n",
-       "2245                   284        0.294912          0.083146   \n",
-       "2246                   360        0.255500          0.184638   \n",
-       "2247                   481        0.353937          0.221906   \n",
-       "2248                   342        0.278502          0.187500   \n",
+       "   Pop60plus_total_2020  AgedRatio_2020  VacantRatio_2020  \\\n",
+       "0                   562        0.298301          0.102815   \n",
+       "1                   568        0.286290          0.070263   \n",
+       "2                   483        0.295956          0.103064   \n",
+       "3                   370        0.365252          0.092593   \n",
+       "4                   523        0.278191          0.138142   \n",
        "\n",
-       "      Total_Population_2010  Pop60plus_total_2010  AgedRatio_2010  \\\n",
-       "0                      2171                   363        0.167204   \n",
-       "1                      2165                   438        0.202309   \n",
-       "2                      1852                   322        0.173866   \n",
-       "3                      1143                   277        0.242345   \n",
-       "4                      2100                   346        0.164762   \n",
-       "...                     ...                   ...             ...   \n",
-       "2244                   1335                   298        0.223221   \n",
-       "2245                   2986                   481        0.161085   \n",
-       "2246                    994                    69        0.069416   \n",
-       "2247                   1872                   436        0.232906   \n",
-       "2248                   1269                   267        0.210402   \n",
+       "   Total_Population_2010  Pop60plus_total_2010  AgedRatio_2010  \\\n",
+       "0                   2171                   363        0.167204   \n",
+       "1                   2165                   438        0.202309   \n",
+       "2                   1852                   322        0.173866   \n",
+       "3                   1143                   277        0.242345   \n",
+       "4                   2100                   346        0.164762   \n",
        "\n",
-       "      Total_Housing_Units_2010  Occupied_2010  Vacant_2010  VacantRatio_2010  \n",
-       "0                          854            737          117          0.137002  \n",
-       "1                          881            751          130          0.147560  \n",
-       "2                          801            677          124          0.154806  \n",
-       "3                          493            418           75          0.152130  \n",
-       "4                          827            682          145          0.175333  \n",
-       "...                        ...            ...          ...               ...  \n",
-       "2244                       565            475           90          0.159292  \n",
-       "2245                      1201           1058          143          0.119067  \n",
-       "2246                       340            322           18          0.052941  \n",
-       "2247                       813            681          132          0.162362  \n",
-       "2248                       637            463          174          0.273155  \n",
+       "   Total_Housing_Units_2010  Occupied_2010  Vacant_2010  VacantRatio_2010  \n",
+       "0                       854            737          117          0.137002  \n",
+       "1                       881            751          130          0.147560  \n",
+       "2                       801            677          124          0.154806  \n",
+       "3                       493            418           75          0.152130  \n",
+       "4                       827            682          145          0.175333  \n",
        "\n",
-       "[2249 rows x 88 columns]"
+       "[5 rows x 88 columns]"
       ]
      },
      "execution_count": 10,
@@ -1526,12 +1352,12 @@
     ")\n",
     "\n",
     "# View merged dataset\n",
-    "merged_df"
+    "merged_df.head()"
    ]
   },
   {
    "cell_type": "markdown",
-   "id": "e2474980",
+   "id": "ee47b9bc",
    "metadata": {},
    "source": [
     "## Comparing Time Series \n",
@@ -1544,14 +1370,14 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "f4bf2104",
+   "id": "99dec98d",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_19340\\1793893454.py:6: FutureWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_6256\\1793893454.py:6: FutureWarning:\n",
       "\n",
       "A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.\n",
       "The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.\n",
@@ -1965,7 +1791,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a4916a69",
+   "id": "aff96cdd",
    "metadata": {},
    "source": [
     "# Plotting Graphs from IPUMS data:\n",
@@ -1978,7 +1804,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "4b1e9a73",
+   "id": "2d47e1c3",
    "metadata": {},
    "outputs": [
     {
@@ -2020,7 +1846,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a2f8d229",
+   "id": "cc7b54e4",
    "metadata": {},
    "source": [
     "This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. \n",
@@ -2031,7 +1857,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "0319de38",
+   "id": "b45ed696",
    "metadata": {},
    "outputs": [
     {
@@ -2068,7 +1894,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f105772f",
+   "id": "5319044b",
    "metadata": {},
    "source": [
     "By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.\n",
@@ -2088,7 +1914,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "f07d4b7a",
+   "id": "d1195275",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2104,7 +1930,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "deb1c944",
+   "id": "d4e8e11b",
    "metadata": {},
    "source": [
     "This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:"
@@ -2113,7 +1939,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "dd788938",
+   "id": "69161d47",
    "metadata": {},
    "outputs": [
     {
@@ -2150,7 +1976,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "67b1d01d",
+   "id": "d7f1367c",
    "metadata": {},
    "source": [
     "This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. \n",
@@ -2166,7 +1992,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "fc3e16a3",
+   "id": "2d111897",
    "metadata": {},
    "outputs": [
     {
@@ -2201,7 +2027,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cdc28fcc",
+   "id": "559b02fe",
    "metadata": {},
    "source": [
     "This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.\n",
@@ -2220,7 +2046,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "6410711c",
+   "id": "ff3ba46b",
    "metadata": {},
    "outputs": [
     {
@@ -2268,7 +2094,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "55eae885",
+   "id": "9f7c1f83",
    "metadata": {},
    "source": [
     "## Generating Age Pyramids\n",
@@ -2283,7 +2109,7 @@
   {
    "cell_type": "code",
    "execution_count": 23,
-   "id": "375401d0",
+   "id": "23f8fb15",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2296,7 +2122,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "7aeac4e1",
+   "id": "14f9b85d",
    "metadata": {},
    "source": [
     "Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:\n"
@@ -2305,7 +2131,7 @@
   {
    "cell_type": "code",
    "execution_count": 24,
-   "id": "dc3cb7ab",
+   "id": "503c3670",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2323,7 +2149,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cad64a13",
+   "id": "d90ed335",
    "metadata": {},
    "source": [
     "This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).\n",
@@ -2334,7 +2160,7 @@
   {
    "cell_type": "code",
    "execution_count": 25,
-   "id": "933010a5",
+   "id": "ab3d593b",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2359,7 +2185,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d6ada215",
+   "id": "a361d7a0",
    "metadata": {},
    "source": [
     "We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. \n",
@@ -2372,7 +2198,7 @@
   {
    "cell_type": "code",
    "execution_count": 26,
-   "id": "78eae31a",
+   "id": "86fc9172",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2414,7 +2240,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ac8afbbb",
+   "id": "145adc42",
    "metadata": {},
    "source": [
     "The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.\n",
@@ -2425,7 +2251,7 @@
   {
    "cell_type": "code",
    "execution_count": 27,
-   "id": "e167f652",
+   "id": "20f61d81",
    "metadata": {},
    "outputs": [
     {
@@ -2508,7 +2334,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2b4178ea",
+   "id": "2e99fc44",
    "metadata": {},
    "source": [
     "### Select an individual census block\n",
@@ -2519,7 +2345,7 @@
   {
    "cell_type": "code",
    "execution_count": 28,
-   "id": "9a89e26b",
+   "id": "42baa043",
    "metadata": {},
    "outputs": [
     {
@@ -2605,7 +2431,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "63f48dea",
+   "id": "69779a4d",
    "metadata": {},
    "source": [
     "### Select a large Block Group\n",
@@ -2616,14 +2442,14 @@
   {
    "cell_type": "code",
    "execution_count": 29,
-   "id": "2824ff1d",
+   "id": "ba3b6ba0",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_19340\\4281272699.py:11: SettingWithCopyWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_6256\\4281272699.py:11: SettingWithCopyWarning:\n",
       "\n",
       "\n",
       "A value is trying to be set on a copy of a slice from a DataFrame.\n",
@@ -2759,7 +2585,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "754106d7",
+   "id": "cff1e373",
    "metadata": {},
    "source": [
     "## Interactinv with ArcGIS Online Portal\n",
@@ -2770,7 +2596,7 @@
   {
    "cell_type": "code",
    "execution_count": 30,
-   "id": "e1588aaf",
+   "id": "6ee5be70",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2788,7 +2614,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "8a2fcc11",
+   "id": "920b3b31",
    "metadata": {},
    "source": [
     "We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!\n"
@@ -2797,7 +2623,7 @@
   {
    "cell_type": "code",
    "execution_count": 31,
-   "id": "57634e7c",
+   "id": "5eb26422",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2807,7 +2633,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f40bc764",
+   "id": "2db890b5",
    "metadata": {},
    "source": [
     "## Summarizing and Plotting DAta\n",
@@ -2826,7 +2652,7 @@
   {
    "cell_type": "code",
    "execution_count": 32,
-   "id": "53bf72ea",
+   "id": "7e3822a1",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2841,7 +2667,7 @@
   {
    "cell_type": "code",
    "execution_count": 33,
-   "id": "ad1e3832",
+   "id": "4100581b",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2860,7 +2686,7 @@
   {
    "cell_type": "code",
    "execution_count": 34,
-   "id": "09892705",
+   "id": "ac41e303",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2876,7 +2702,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "89e3421f",
+   "id": "cb627ffa",
    "metadata": {},
    "source": [
     "##\n"
@@ -2885,7 +2711,7 @@
   {
    "cell_type": "code",
    "execution_count": 35,
-   "id": "a25ce245",
+   "id": "87e7b9fe",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2936,7 +2762,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9d002dba",
+   "id": "ee4bea64",
    "metadata": {},
    "source": [
     "# Mapping data\n",
@@ -2953,7 +2779,7 @@
   {
    "cell_type": "code",
    "execution_count": 36,
-   "id": "588307c1",
+   "id": "36f9155c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2970,7 +2796,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ca2afad4",
+   "id": "83e32a51",
    "metadata": {},
    "source": [
     "Select the position of the \"Cansus Zip Code Tabulation Areas\" layer starting with position the first position as `0`. "
@@ -2979,7 +2805,7 @@
   {
    "cell_type": "code",
    "execution_count": 37,
-   "id": "5a42529f",
+   "id": "f8ee9259",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2992,7 +2818,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "824ee663",
+   "id": "bbb4c0fe",
    "metadata": {},
    "source": [
     "With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis"
@@ -3001,7 +2827,7 @@
   {
    "cell_type": "code",
    "execution_count": 38,
-   "id": "95f5b16d",
+   "id": "6b4f6cde",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -3018,7 +2844,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "11730f90",
+   "id": "589084a4",
    "metadata": {},
    "source": [
     "## Hieu Change this for Change this for County to display the \"COUNTY\" name in the label and either VacancyRatio_dz \n"
@@ -3027,7 +2853,7 @@
   {
    "cell_type": "code",
    "execution_count": 39,
-   "id": "6968e0cf",
+   "id": "d4b0c071",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -3094,7 +2920,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b9a650a8",
+   "id": "97b1eb6f",
    "metadata": {},
    "source": [
     "# Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.\n",

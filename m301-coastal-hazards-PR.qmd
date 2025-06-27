@@ -631,7 +631,7 @@ merged_df = pr_df_2020.merge(
 )
 
 # View merged dataset
-merged_df
+merged_df.head()
 
 ```
 
