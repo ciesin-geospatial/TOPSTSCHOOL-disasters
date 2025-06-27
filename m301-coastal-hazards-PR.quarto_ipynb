@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "9e6cc38d",
+   "id": "2b31e65c",
    "metadata": {},
    "source": [
     "---\n",
@@ -101,11 +101,336 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "b55fe589",
+   "id": "24972657",
    "metadata": {
     "results": "hide"
    },
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_BAG.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_FITS.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF4Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_HDF5Image.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_KEA.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\gdal_netCDF.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Can't load requested DLL: C:\\Program Files\\GDAL\\gdalplugins\\ogr_FileGDB.dll\n",
+      "127: The specified procedure could not be found.\r\n",
+      "\n"
+     ]
+    }
+   ],
    "source": [
     "import arcgis\n",
     "from arcgis.gis import GIS\n",
@@ -154,7 +479,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "25e7ba6f",
+   "id": "4be78f57",
    "metadata": {},
    "source": [
     "This lesson uses arcgis version of 2.4.0 or higher:\n"
@@ -163,7 +488,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "e257ba64",
+   "id": "2536900f",
    "metadata": {},
    "outputs": [
     {
@@ -172,7 +497,7 @@
        "'2.4.1.1'"
       ]
      },
-     "execution_count": 36,
+     "execution_count": 2,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -184,7 +509,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "bfc30792",
+   "id": "9086f0fd",
    "metadata": {},
    "source": [
     "If arcgis version is lower, use `pip install`:\n"
@@ -193,7 +518,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "a22d49a8",
+   "id": "e21b3330",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -205,7 +530,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b0b1c874",
+   "id": "349bc8a6",
    "metadata": {},
    "source": [
     "## Using IPUMS API to pull U.S Census Data for Puerto Rico\n",
@@ -223,7 +548,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "649db3e6",
+   "id": "2c4bd34e",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -244,7 +569,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "e92aa477",
+   "id": "25ce8313",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -264,7 +589,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "42c29377",
+   "id": "9fec8958",
    "metadata": {},
    "source": [
     "Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.\n",
@@ -275,7 +600,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "abee769b",
+   "id": "5ef2f159",
    "metadata": {},
    "outputs": [
     {
@@ -299,7 +624,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "0f1a0553",
+   "id": "d0a23dff",
    "metadata": {},
    "source": [
     "### Downlaoding shapefiles from IPUMS\n",
@@ -315,7 +640,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "ab0e3777",
+   "id": "aef6c6ba",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -345,7 +670,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f98164ef",
+   "id": "73c2fe69",
    "metadata": {},
    "source": [
     "This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.\n"
@@ -354,7 +679,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "4506f463",
+   "id": "a9680a24",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -370,7 +695,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9e320a2a",
+   "id": "35059280",
    "metadata": {},
    "source": [
     "This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:\n"
@@ -379,7 +704,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "24b85c9a",
+   "id": "7edcc334",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -397,7 +722,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "6b60d584",
+   "id": "015c259c",
    "metadata": {},
    "source": [
     "After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!"
@@ -406,7 +731,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "5a6d557c",
+   "id": "e28d1dc7",
    "metadata": {},
    "outputs": [
     {
@@ -443,7 +768,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "94c2888d",
+   "id": "918d0e54",
    "metadata": {},
    "source": [
     "This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.\n",
@@ -454,7 +779,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "6a9ff841",
+   "id": "68fe14f4",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -661,7 +986,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "3770d9f1",
+   "id": "73c8b678",
    "metadata": {},
    "source": [
     "This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis."
@@ -670,7 +995,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "f5f38a78",
+   "id": "cfda339e",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -685,7 +1010,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9b3fd3c6",
+   "id": "b52c41e7",
    "metadata": {},
    "source": [
     "This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:\n",
@@ -700,7 +1025,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "48d45985",
+   "id": "faa89546",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -737,7 +1062,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b3147573",
+   "id": "dad83c78",
    "metadata": {},
    "source": [
     "Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).\n",
@@ -748,7 +1073,7 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "fe7e9236",
+   "id": "5e3e5ed7",
    "metadata": {},
    "outputs": [
     {
@@ -781,7 +1106,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "0d40eca5",
+   "id": "1409d66d",
    "metadata": {},
    "source": [
     "This step prepares for comparison between the 2010 and 2020 datasets. \n",
@@ -794,7 +1119,7 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "967b8b5a",
+   "id": "ccd7893f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -815,7 +1140,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "fa401e20",
+   "id": "3d843f45",
    "metadata": {},
    "source": [
     "## Comparing Time Series \n",
@@ -828,7 +1153,7 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "be187d2b",
+   "id": "04044f1e",
    "metadata": {},
    "outputs": [
     {
@@ -877,7 +1202,7 @@
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\2163144468.py:6: FutureWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_14016\\2163144468.py:6: FutureWarning:\n",
       "\n",
       "A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.\n",
       "The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.\n",
@@ -907,7 +1232,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d7bfb653",
+   "id": "3d51d48c",
    "metadata": {},
    "source": [
     "# Plotting Graphs from IPUMS data:\n",
@@ -920,7 +1245,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "54c3ae75",
+   "id": "be334ccc",
    "metadata": {},
    "outputs": [
     {
@@ -962,7 +1287,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "00216a67",
+   "id": "d2620624",
    "metadata": {},
    "source": [
     "This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. \n",
@@ -973,7 +1298,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "f765dbf9",
+   "id": "09cedd64",
    "metadata": {},
    "outputs": [
     {
@@ -982,7 +1307,7 @@
        "Text(0.5, 1.0, 'Vacancy Ratio Change 2010-2020')"
       ]
      },
-     "execution_count": 47,
+     "execution_count": 13,
      "metadata": {},
      "output_type": "execute_result"
     },
@@ -1010,7 +1335,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "df8856f8",
+   "id": "0a2cffdd",
    "metadata": {},
    "source": [
     "By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.\n",
@@ -1030,7 +1355,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "a9b204fa",
+   "id": "e059d273",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1046,7 +1371,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "fade1833",
+   "id": "dccf89f1",
    "metadata": {},
    "source": [
     "This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:"
@@ -1055,7 +1380,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "caa104c9",
+   "id": "43d00d34",
    "metadata": {},
    "outputs": [
     {
@@ -1064,7 +1389,7 @@
        "Text(0.5, 1.0, 'Male/Female Ratio Total Change 2010-2020 (In thousands) Z-score')"
       ]
      },
-     "execution_count": 49,
+     "execution_count": 15,
      "metadata": {},
      "output_type": "execute_result"
     },
@@ -1092,7 +1417,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "78060f72",
+   "id": "33bcde36",
    "metadata": {},
    "source": [
     "This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. \n",
@@ -1108,7 +1433,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "5f53dc7d",
+   "id": "1d4e73b0",
    "metadata": {},
    "outputs": [
     {
@@ -1143,7 +1468,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "4e694fbe",
+   "id": "2fbba268",
    "metadata": {},
    "source": [
     "This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.\n",
@@ -1162,7 +1487,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "6b01e894",
+   "id": "d7b76077",
    "metadata": {},
    "outputs": [
     {
@@ -1210,7 +1535,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "fed6d7b2",
+   "id": "122adcb9",
    "metadata": {},
    "source": [
     "## Generating Age Pyramids\n",
@@ -1225,7 +1550,7 @@
   {
    "cell_type": "code",
    "execution_count": 23,
-   "id": "da4cc710",
+   "id": "0b72018a",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1238,7 +1563,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9acf754b",
+   "id": "885786d0",
    "metadata": {},
    "source": [
     "Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:\n"
@@ -1247,7 +1572,7 @@
   {
    "cell_type": "code",
    "execution_count": 24,
-   "id": "6e7bf948",
+   "id": "9e86a9cf",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1265,7 +1590,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5fd9dd6d",
+   "id": "1a0454ed",
    "metadata": {},
    "source": [
     "This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).\n",
@@ -1276,7 +1601,7 @@
   {
    "cell_type": "code",
    "execution_count": 25,
-   "id": "fd3d1c35",
+   "id": "1582cac3",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1301,7 +1626,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f179fdf8",
+   "id": "4ba2d087",
    "metadata": {},
    "source": [
     "We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. \n",
@@ -1314,7 +1639,7 @@
   {
    "cell_type": "code",
    "execution_count": 26,
-   "id": "e5b022e4",
+   "id": "80d4befd",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1356,7 +1681,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9eb5651b",
+   "id": "b0f4406e",
    "metadata": {},
    "source": [
     "The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.\n",
@@ -1367,7 +1692,7 @@
   {
    "cell_type": "code",
    "execution_count": 27,
-   "id": "9e7e27b3",
+   "id": "46d379f1",
    "metadata": {},
    "outputs": [
     {
@@ -1450,7 +1775,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "c51a6351",
+   "id": "5866af6e",
    "metadata": {},
    "source": [
     "### Select an individual census block\n",
@@ -1461,7 +1786,7 @@
   {
    "cell_type": "code",
    "execution_count": 28,
-   "id": "196455e3",
+   "id": "775795fa",
    "metadata": {},
    "outputs": [
     {
@@ -1547,7 +1872,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "fa4a9a78",
+   "id": "8e6f381d",
    "metadata": {},
    "source": [
     "### Select a large Block Group\n",
@@ -1558,14 +1883,14 @@
   {
    "cell_type": "code",
    "execution_count": 29,
-   "id": "fa521cac",
+   "id": "3552e1c3",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_15988\\4281272699.py:11: SettingWithCopyWarning:\n",
+      "C:\\Users\\jmartine\\AppData\\Local\\Temp\\6\\ipykernel_14016\\4281272699.py:11: SettingWithCopyWarning:\n",
       "\n",
       "\n",
       "A value is trying to be set on a copy of a slice from a DataFrame.\n",
@@ -1701,7 +2026,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "382f8af7",
+   "id": "7e713e7c",
    "metadata": {},
    "source": [
     "## Interactinv with ArcGIS Online Portal\n",
@@ -1712,7 +2037,7 @@
   {
    "cell_type": "code",
    "execution_count": 30,
-   "id": "7c3cddbd",
+   "id": "676a6108",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1730,7 +2055,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "b2fa2fb1",
+   "id": "03618c55",
    "metadata": {},
    "source": [
     "We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!\n"
@@ -1739,7 +2064,7 @@
   {
    "cell_type": "code",
    "execution_count": 31,
-   "id": "1a9ce89c",
+   "id": "b02de427",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1749,7 +2074,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "8ee87316",
+   "id": "5599810a",
    "metadata": {},
    "source": [
     "## Summarizing and Plotting DAta\n",
@@ -1768,7 +2093,7 @@
   {
    "cell_type": "code",
    "execution_count": 32,
-   "id": "51e72b05",
+   "id": "8bf72fc5",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1783,7 +2108,7 @@
   {
    "cell_type": "code",
    "execution_count": 33,
-   "id": "e8a504fe",
+   "id": "60a5bf93",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1802,7 +2127,7 @@
   {
    "cell_type": "code",
    "execution_count": 34,
-   "id": "4ba1dd5a",
+   "id": "f988005f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1818,7 +2143,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "cc6fa0e2",
+   "id": "a5c0ccc0",
    "metadata": {},
    "source": [
     "##\n"
@@ -1827,7 +2152,7 @@
   {
    "cell_type": "code",
    "execution_count": 35,
-   "id": "73fa2028",
+   "id": "d48d541f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1878,7 +2203,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d2cf5a5e",
+   "id": "08fb8f57",
    "metadata": {},
    "source": [
     "# Mapping data\n",
@@ -1895,7 +2220,7 @@
   {
    "cell_type": "code",
    "execution_count": 36,
-   "id": "290908ec",
+   "id": "ed842c94",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1912,7 +2237,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "c654e4a9",
+   "id": "a19b3346",
    "metadata": {},
    "source": [
     "Select the position of the \"Cansus Zip Code Tabulation Areas\" layer starting with position the first position as `0`. "
@@ -1921,7 +2246,7 @@
   {
    "cell_type": "code",
    "execution_count": 37,
-   "id": "dbb197a6",
+   "id": "8ec0aaad",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1934,7 +2259,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2c365cee",
+   "id": "bde58d95",
    "metadata": {},
    "source": [
     "With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis"
@@ -1943,7 +2268,7 @@
   {
    "cell_type": "code",
    "execution_count": 38,
-   "id": "5c599132",
+   "id": "9bee3ffc",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1960,7 +2285,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ece7a1cf",
+   "id": "04acab7e",
    "metadata": {},
    "source": [
     "## Hieu Change this for Change this for County to display the \"COUNTY\" name in the label and either VacancyRatio_dz \n"
@@ -1969,7 +2294,7 @@
   {
    "cell_type": "code",
    "execution_count": 39,
-   "id": "80abce07",
+   "id": "919c72d4",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -2036,7 +2361,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1fc367af",
+   "id": "4643b8dc",
    "metadata": {},
    "source": [
     "# Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.\n",
@@ -2058,6 +2383,18 @@
    "language": "python",
    "name": "python3",
    "path": "C:\\Users\\jmartine\\AppData\\Roaming\\jupyter\\kernels\\python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.9"
   }
  },
  "nbformat": 4,
