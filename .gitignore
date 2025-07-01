@@ -20,7 +20,8 @@ data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shx
 
 **/*.env
 
-
+**/data/
+/data/
 =======
 data/granule_files/AV320250116t193840_000_L1B_RDN_3f4aef90_RDN.nc
 data/granule_files/AV320250116t193840_001_L1B_RDN_3f4aef90_RDN.nc
