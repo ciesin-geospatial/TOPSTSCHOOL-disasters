@@ -45,7 +45,7 @@
         "\n",
         "You can directly request the CSV file using this URL:\n"
       ],
-      "id": "40702324"
+      "id": "d57ad2cf"
     },
     {
       "cell_type": "code",
@@ -76,7 +76,7 @@
         "    print(\"Error:\", response.status_code)\n",
         "    print(response.text)\n"
       ],
-      "id": "861bd298",
+      "id": "a11f166c",
       "execution_count": null,
       "outputs": []
     },
@@ -139,14 +139,15 @@
         "\n",
         "![NOAA Satellite Image of Rainfall Impact Over Maui](https://media.mauinow.com/file/mauinow/2024/04/noaa-nws-satellite-1024x576.jpg)"
       ],
-      "id": "482db63f"
+      "id": "b15d2ba4"
     }
   ],
   "metadata": {
     "kernelspec": {
-      "display_name": "Python 3",
+      "name": "python3",
       "language": "python",
-      "name": "python3"
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\jmartine\\AppData\\Roaming\\jupyter\\kernels\\python3"
     }
   },
   "nbformat": 4,
