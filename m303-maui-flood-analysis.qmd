@@ -38,38 +38,84 @@ This API supports datasets like global-hourly (Integrated Surface Dataset, or IS
 
 You can directly request the CSV file using this URL:
 
-
 ```{python}
-import requests
-import pandas as pd
-import io
+pip install h5py xarray h5netcdf netCDF4
 
-url = "https://www.ncei.noaa.gov/access/services/data/v1"
+```
+```{python}
+import earthaccess
 
-params = {
-    "dataset": "global-hourly",   
-    "stations": "USW00022516",        # Kahului Airport
-    "dataTypes": "HPCP",              # Hourly precipitation
-    "startDate": "2024-04-14",
-    "endDate": "2024-04-15",
-    "format": "csv",
-    "units": "metric"
-}
+# Login (will prompt once or use .netrc for credentials)
+earthaccess.login()
 
-response = requests.get(url, params=params)
-
-if response.status_code == 200:
-    df = pd.read_csv(io.StringIO(response.text))
-    print(df.head())
-else:
-    print("Error:", response.status_code)
-    print(response.text)
 
 
 ```
 
+```{python}
+results = earthaccess.search_data(
+    short_name="GPM_3IMERGHH",
+    version="07",
+    temporal=("2024-04-14", "2024-04-14"),  # Example date range
+    bounding_box=(-161.0, 18.5, -154.5, 22.5)  # Example bbox: (lon_min, lat_min, lon_max, lat_max)
+)
+
+```
+
+```{python}
+all_urls = [granule.data_links()[0] for granule in results]
+print(all_urls)
 
 
+```
+
+```{python}
+
+file_path = earthaccess.download([all_urls[0]])[0]
+file_path
+```
+
+```{python}
+import h5py
+
+with h5py.File(file_path, "r") as f:
+    print(f.keys())  # likely includes 'Grid'
+    print(list(f['Grid'].keys()))  # list of variables
+
+
+```
+
+```{python}
+
+import xarray as xr
+import matplotlib.pyplot as plt
+
+# Bounding box for Hawaii
+lat_min, lat_max = 18.5, 23.5
+lon_min, lon_max = -162.0, -154.5
+
+# Open the dataset and subset
+with xr.open_dataset(file_path, engine="h5netcdf", group="Grid") as ds:
+    # Subset by bounding box
+    precip_subset = ds["precipitation"].sel(
+        lat=slice(lat_min, lat_max),
+        lon=slice(lon_min, lon_max)
+    )
+
+    # Select the first time step
+    data = precip_subset.isel(time=0)
+
+# Plot the Hawaii subset using xarray's built-in plotting
+plt.figure(figsize=(10, 6))
+data.plot(cmap="Blues", cbar_kwargs={"label": "Precipitation (mm/hr)"})
+plt.title("GPM IMERG Precipitation over Hawaii (Half-Hourly)")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.tight_layout()
+plt.show()
+
+
+```
 
 ## Hourly Precipitation Data (HPD)
 
