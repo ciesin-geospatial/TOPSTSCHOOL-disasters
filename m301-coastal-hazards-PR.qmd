@@ -6,6 +6,7 @@ author:
    - Hieu Tran 
    - Camilla Green 
    - Shemontee Chowdhury
+   - Juan F. Martinez
 format: 
     html
 bibliography: lecz-references.bib
@@ -59,10 +60,9 @@ For example the detail on housing characteristics is limited in Guam, Northern M
 Another possible reason for omission outside of CONUS could be computational challenges or limitations. For instance US territories are subject to different map projections, which implies the need for additional functions in processing algorithms to account for spatial variations and to unify spatial structures.
 
  
-::: {.callout-tip style="color: #5a7a2b;"}
+::: {.callout-tip}
+
 ## Programming Reminder
-
-
 
 
 ### “What is a Map Projection?”
@@ -137,6 +137,14 @@ from ipumspy.api.extract import NhgisDataset
 
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+
+
+from shapely.geometry import Polygon
+
+import folium 
+  
+ 
 
 
 ```
@@ -176,8 +184,7 @@ After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. Y
 ```{python} 
 #| eval: false
 
-
-# Step 1: Load API key from .env file
+ 
 load_dotenv()
 IPUMS_API_KEY = os.getenv("EMAIL", "API_KEY")
 
@@ -206,6 +213,8 @@ ipums = IpumsApiClient(IPUMS_API_KEY)
 
 
 ```
+
+
 
 
 Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.
@@ -261,6 +270,7 @@ extract = AggregateDataExtract(
 
 
 ```
+
 
 
 
@@ -327,6 +337,7 @@ This section uses NHGIS Codebook file(s) that were automatically included in you
 
 Look for the .txt file(s) in the zipped file you downloaded, and they will shed some light on your data.
 
+### Cleaning and processing data
 
 ```{python}
 
@@ -533,6 +544,7 @@ df_2020.rename(columns=rename_2020, inplace=True)  # Rename 2020 columns
 ```
 
 This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis.
+
 ```{python}
 
 # Subset Puerto Rico (STATEA code 72)
@@ -599,7 +611,7 @@ This kind of visualization helps reveal spatial patterns or clusters related to 
 # Plot Aged Ratio vs. Vacant Ratio for 2010
 plt.scatter(pr_df_2010["VacantRatio"], pr_df_2010["AgedRatio"], alpha=0.3)  # Transparent points
 
-plt.title("Aged Ratio (60+) over Vacancy Ratio")  # Plot title
+plt.title("Puero Rico Aged Ratio (60+) over Vacancy Ratio, 2010")  # Plot title
 plt.xlabel("Vacant Ratio")  # X-axis label
 plt.ylabel("Aged Ratio")  # Y-axis label
 plt.grid(True)  # Show grid
@@ -609,23 +621,231 @@ plt.show()  # Display plot
 ```
 
 
+
+## Generating Age Pyramids
+
+Another useful way to analyze popylation is with population pyramids for Puerto Rico using male and female population by age group, based on census block-level data. The pyramid compares the age structure visually between sexes, helping identify trends like population aging or gender imbalances in specific cohorts.
+
+Key Steps in the Code:
+
+First, Extract age-by-sex columns from the dataset.
+
+```{python}
+
+
+# Define the relevant columns
+pyramid_columns_2010 = [col for col in pr_df_2010.columns if col.startswith("Male:") or col.startswith("Female:")]
+pyramid_columns_2020 = [col for col in pr_df_2020.columns if col.startswith("Male:") or col.startswith("Female:")]
+
+
+```
+ 
+ 
+
+We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. 
+
+In the plot, we manually add percentages for adjacent rows as the age group label.
+
+After combining, it prepares the data for bidirectional horizontal bar plotting by making male values negative (so they show on the left), keeping female values positive (on the right), and creating helper columns for width and placement of bars.
+
+```{python}
+
+
+
+def combine_age_groups(df, male_prefix="Male: ", female_prefix="Female: "):
+    # Define the custom age groupings
+    age_groups = {
+        "Under 5 years": ["Under 5 years"],
+        "5 to 9 years": ["5 to 9 years"],
+        "10 to 14 years": ["10 to 14 years"],
+        "15 to 19 years": ["15 to 17 years", "18 and 19 years"],
+        "20 to 24 years": ["20 years", "21 years", "22 to 24 years"],
+        "25 to 29 years": ["25 to 29 years"],
+        "30 to 34 years": ["30 to 34 years"],
+        "35 to 39 years": ["35 to 39 years"],
+        "40 to 44 years": ["40 to 44 years"],
+        "45 to 49 years": ["45 to 49 years"],
+        "50 to 54 years": ["50 to 54 years"],
+        "55 to 59 years": ["55 to 59 years"],
+        "60 to 64 years": ["60 and 61 years", "62 to 64 years"],
+        "65 to 69 years": ["65 and 66 years", "67 to 69 years"],
+        "70 to 74 years": ["70 to 74 years"],
+        "75 to 79 years": ["75 to 79 years"],
+        "80 to 84 years": ["80 to 84 years"],
+        "85 years and over": ["85 years and over"]
+    }
+
+    # Aggregate by age groups
+    rows = []
+    for label, group in age_groups.items():
+        male_cols = [male_prefix + g for g in group if male_prefix + g in df.columns]
+        female_cols = [female_prefix + g for g in group if female_prefix + g in df.columns]
+
+        male_total = df[male_cols].sum().sum() if male_cols else 0
+        female_total = df[female_cols].sum().sum() if female_cols else 0
+
+        rows.append({
+            "Age": label,
+            "Male": male_total,
+            "Female": female_total
+        })
+
+    pyramid = pd.DataFrame(rows)
+
+    # Prepare for horizontal bar plotting
+    pyramid["Female_Left"] = 0
+    pyramid["Female_Width"] = pyramid["Female"]
+    pyramid["Male_Left"] = -pyramid["Male"]
+    pyramid["Male_Width"] = pyramid["Male"]
+
+    return pyramid
+ 
+
+
+
+
+```
+
+
+```{python}
+
+pyramid_2010 = combine_age_groups(pr_df_2010)
+pyramid_2020 = combine_age_groups(pr_df_2020)
+
+```
+
+
+The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.
+
+A custom title, axis formatting, and color scheme are applied for clarity and polish.
+
+```{python}
+def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Population Pyramid (2010 vs 2020)"):
+    def abs_tick(x, pos):
+        return f"{abs(int(x)):,}"
+
+    age_labels = pyramid_2010["Age"]
+    y = np.arange(len(age_labels))
+    bar_height = 0.35
+
+    fig, ax = plt.subplots(figsize=(12, 10))
+
+    # Colors: 2010 (light), 2020 (dark)
+    male_colors = ["#c6dbef", "#2171b5"]
+    female_colors = ["#fdd0a2", "#e6550d"]
+
+    # Plot Male bars (left)
+    ax.barh(y - bar_height, -pyramid_2010["Male"], height=bar_height, color=male_colors[0], label="Male 2010")
+    ax.barh(y,              -pyramid_2020["Male"], height=bar_height, color=male_colors[1], label="Male 2020")
+
+    # Plot Female bars (right)
+    ax.barh(y - bar_height, pyramid_2010["Female"], height=bar_height, color=female_colors[0], label="Female 2010")
+    ax.barh(y,              pyramid_2020["Female"], height=bar_height, color=female_colors[1], label="Female 2020")
+
+    # Format axes
+    ax.set_yticks(y - bar_height / 2)
+    ax.set_yticklabels(age_labels)
+    ax.axvline(0, color="gray", lw=0.8)
+    ax.xaxis.set_major_formatter(FuncFormatter(abs_tick))
+    ax.grid(axis='x', linestyle='--', linewidth=0.5, alpha=0.5)
+
+    max_val = max(
+        pyramid_2010[["Male", "Female"]].values.max(),
+        pyramid_2020[["Male", "Female"]].values.max()
+    )
+    ax.set_xlim(-max_val * 1.1, max_val * 1.1)
+
+    ax.set_title(title)
+    ax.set_xlabel("Population")
+    ax.set_ylabel("Age Group")
+    ax.legend(loc="lower right")
+
+    plt.tight_layout()
+    plt.show()
+
+
+```
+
+
+```{python}
+
+plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico")
+
+```
+
+
+### Age Pyrmid of a single County
+
+```{python}
+print(pr_df_2010["COUNTY"].unique())
+```
+
+```{python}
+county_df_2010 = pr_df_2010[pr_df_2010["COUNTY"] == "Arecibo Municipio"]
+county_df_2020 = pr_df_2020[pr_df_2020["COUNTY"] == "Arecibo Municipio"]
+
+county_pyr_2010 = combine_age_groups(county_df_2010)
+county_pyr_2020 = combine_age_groups(county_df_2020)
+
+```
+
+
+```{python}
+
+plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, "Arecibo")
+
+```
+
+
+## Municipio (County) analysis
+
+```{python}
+def aggregate_to_county(df, county_col="COUNTY", male_prefix="Male", female_prefix="Female",  additional_cols=None):
+    if additional_cols is None:
+        additional_cols = [
+            'Total_Population', 'Total_Housing_Units', 
+            'Occupied', 'Vacant',  'Pop60plus_total'
+        ]
+    
+    # Identify all relevant columns to aggregate
+    population_cols = [col for col in df.columns if col.startswith(male_prefix) or col.startswith(female_prefix)]
+    
+    # Combine with additional explicitly named columns (if they exist in df)
+    valid_additional_cols = [col for col in additional_cols if col in df.columns]
+    group_cols = [county_col] + valid_additional_cols + population_cols
+
+    # Group by county and sum
+    df_aggregated = df[group_cols].groupby(county_col, as_index=False).sum()
+
+    return df_aggregated
+
+```
+
+```{python}
+county_df_2010 = aggregate_to_county(pr_df_2010)
+
+county_df_2020 = aggregate_to_county(pr_df_2020)
+
+```
+
+
+
+
+### Merginig Datasets
+
 This step prepares for comparison between the 2010 and 2020 datasets. 
 
 It selects key columns (like total population, aged population, and vacancy) from the 2010 data and merges them with the full 2020 data using GISJOIN as a unique geographic identifier. 
 
-The resulting merged_df contains side-by-side values for both years, using suffixes to distinguish 2010 and 2020 columns.
+The resulting `merged_df` DataFrame contains side-by-side values for both years, using suffixes to distinguish 2010 and 2020 columns.
 ```{python}
   
-# Key columns to compare between years
-columns_used = [
-    "Total_Population",  "Pop60plus_total", "AgedRatio",
-    "Total_Housing_Units", "Occupied", "Vacant", "VacantRatio"
-]
+
 
 # Merge 2020 data with selected 2010 columns using GISJOIN
-merged_df = pr_df_2020.merge(
-    pr_df_2010[["GISJOIN"] + columns_used],  # Keep GISJOIN + key columns from 2010
-    on="GISJOIN",  # Join on geographic ID
+merged_df = county_df_2020.merge(
+    county_df_2010,  
+    on="COUNTY",  # Join on geographic ID
     how="inner",  # Keep only matching rows
     suffixes=("_2020", "_2010")  # Label columns by year
 )
@@ -645,18 +865,27 @@ This step calculates absolute changes between 2010 and 2020 for several key indi
 merged_df["Total_Pop_Change"] = merged_df["Total_Population_2020"] - merged_df["Total_Population_2010"]  # Change in total population
 merged_df["Pop60plus_Change"] = merged_df["Pop60plus_total_2020"] - merged_df["Pop60plus_total_2010"]  # Change in 60+ population
 merged_df["Vacant_Change"] = merged_df["Vacant_2020"] - merged_df["Vacant_2010"]  # Change in vacant units
-merged_df["AgedRatio_Change"] = merged_df["AgedRatio_2020"] - merged_df["AgedRatio_2010"]  # Change in aged ratio
-merged_df["AgedRatio_Change"].fillna(0, inplace=True)  # Fill missing with 0
-merged_df["VacantRatio_Change"] = merged_df["VacantRatio_2020"] - merged_df["VacantRatio_2010"]  # Change in vacancy ratio
 
 
+# Avoid division by zero using .where()
+merged_df["Total_Pop_Change_Pct"] = (
+    (merged_df["Total_Population_2020"] - merged_df["Total_Population_2010"]) /
+    merged_df["Total_Population_2010"].where(merged_df["Total_Population_2010"] != 0)
+) * 100
 
-# View merged dataset
+merged_df["Pop60plus_Change_Pct"] = (
+    (merged_df["Pop60plus_total_2020"] - merged_df["Pop60plus_total_2010"]) /
+    merged_df["Pop60plus_total_2010"].where(merged_df["Pop60plus_total_2010"] != 0)
+) * 100
 
-print(merged_df.head())
+merged_df["Vacant_Change_Pct"] = (
+    (merged_df["Vacant_2020"] - merged_df["Vacant_2010"]) /
+    merged_df["Vacant_2010"].where(merged_df["Vacant_2010"] != 0)
+) * 100
+
+
 
 ```
-
 
 
 # Plotting Graphs from IPUMS data:
@@ -667,20 +896,10 @@ By plotting scatterplots for every pair of variables and histograms along the di
 
 ```{python}
  
-# Choose key variables to compare
-vars_to_plot = [
-    "Total_Pop_Change",
-    "Pop60plus_Change",
-    "Vacant_Change",
-    "AgedRatio_Change",
-    "VacantRatio_Change"
-]
-
-# Subset DataFrame to those variables
-data_subset = merged_df[vars_to_plot]
+ 
 
 # Create pairwise plots with histograms on the diagonal
-sns.pairplot(data_subset, diag_kind="hist", corner=True)
+sns.pairplot(merged_df[["Total_Pop_Change_Pct", "Pop60plus_Change_Pct", "Vacant_Change_Pct", "Total_Population_2020", "Total_Population_2010"]], diag_kind="hist",  corner=True, plot_kws= dict(marker="o",  facecolors='none', edgecolors = 'blue'  ))
 
 plt.suptitle("Pairwise Scatterplots and Histograms", y=1.02)  # Set overall title
 plt.tight_layout()
@@ -690,24 +909,19 @@ plt.show()  # Display the plot
 ```
 
 
-This histogram shows the distribution of changes in the number of vacant housing units from 2010 to 2020 across Puerto Rico. 
 
-It helps identify whether most areas experienced increases or decreases in vacancy—and how large those shifts were.
 
-```{python}
 
-merged_df["Vacant_Change"] .hist()
-
-plt.title("Vacancy Ratio Change 2010-2020")
-```
-
+ 
 
 By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.
+
+## Comparing Counties
 
 To better evaluate how unusual each area's change is, we compute z-scores for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
 
 
-::: {.callout-tip style="color: #5a7a2b;"}
+::: {.callout-tip }
 
 ## Math Refresher
 
@@ -719,22 +933,14 @@ A z-score tells us how many standard deviations a value is from the mean. A posi
 ```{python}
 
 # Compute means and standard deviations
-means = merged_df[vars_to_plot].mean()
-stds = merged_df[vars_to_plot].std()
+means = merged_df[["Pop60plus_Change_Pct", "Vacant_Change_Pct" ]].mean()
+stds = merged_df[["Pop60plus_Change_Pct", "Vacant_Change_Pct" ]].std()
 
 # Create z-score columns
-for var in vars_to_plot:
-    z_col = var.replace("_Change", "_dz")
+for var in ["Pop60plus_Change_Pct", "Vacant_Change_Pct" ]:
+    z_col = var.replace("_Change_Pct", "_dz")
     merged_df[z_col] = (merged_df[var] - means[var]) / stds[var]
 
-```
-
-
-This histogram displays the z-score distribution of vacant housing unit change from 2010 to 2020. Standardizing vacancy change in this way helps identify how extreme the change in each area is compared to the average:
-```{python}
-merged_df["Vacant_dz"] .hist()
-
-plt.title("Male/Female Ratio Total Change 2010-2020 (In thousands) Z-score")
 ```
 
 
@@ -746,22 +952,6 @@ This is especially useful when your original variables had different units or ra
 
 
 Can you spot any linear trends in the scatterplots?
-```{python}
-
-#
-# Select all z-score columns (those ending in "_dz")
-zscore_cols = [col for col in merged_df.columns if col.endswith("_dz")]
-data_subset = merged_df[zscore_cols]  # Subset for plotting
-
-# Create pairplot of standardized change variables
-sns.pairplot(data_subset, diag_kind="hist", corner=True)  # No duplicate plots, hist on diagonal
-
-plt.suptitle("Pairwise Scatterplots and Histograms (Z-Scores)", y=1.02)  # Title above plot
-plt.tight_layout()
-plt.show()  # Display the plot
-
-
-```
 
 
 
@@ -778,400 +968,12 @@ This type of scaling:
 
 This visualization helps identify whether increases in older populations are associated with changes in housing vacancy—and how extreme those shifts are across Puerto Rico.
 
-
- 
-```{python}
-
-# Create a scatter plot of z-score changes
-fig, ax = plt.subplots(figsize=(8, 6))
-
-ax.scatter(
-    merged_df["VacantRatio_dz"],  # X-axis: vacancy ratio z-score
-    merged_df["AgedRatio_dz"],    # Y-axis: aging ratio z-score
-    alpha=0.6,
-    color="mediumseagreen",
-    edgecolor="black"
-)
-
-# Apply symmetric log scaling to both axes
-ax.set_xscale("symlog", linthresh=1)  # Linear near 0, log beyond ±1
-ax.set_yscale("symlog", linthresh=1)
-
-# Add labels and title
-ax.set_xlabel("Vacant Housing Ratio Change")  # X-axis label
-ax.set_ylabel("Age (60+) Ratio Change")       # Y-axis label
-ax.set_title("Vacant Ratio Change vs Aged Ratio (60+) Change (in Z-Scores)")
-
-# Grid and layout
-ax.grid(True)
-plt.tight_layout()
-plt.show()
-
-
-```
-
-## Generating Age Pyramids
-
-Another useful way to analyze popylation is with population pyramids for Puerto Rico using mean percentages of male and female population by age group, based on census block-level data. The pyramid compares the age structure visually between sexes, helping identify trends like population aging or gender imbalances in specific cohorts.
-
-Key Steps in the Code:
-
-First, Extract age-by-sex columns from the dataset.
-
-```{python}
-
-# Define the relevant columns
-joined_columns = [col for col in merged_df.columns if col.startswith("Male:") or col.startswith("Female:")]
-
-# Create DataFrame for percentage values
-pct_df = merged_df[["Total_Population_2020"] + joined_columns].copy()
-
-```
-
-Convert raw population counts into percentage values by age group, making them easier to compare across geographic units regardless of their total population size. Then, it separates the age group columns into male and female categories to prepare for a population pyramid:
-
-```{python}
-
-# 4. Compute percentage for each age group column
-for col in joined_columns:
-    pct_df[f"{col}_pct"] = pct_df[col] / pct_df["Total_Population_2020"] * 100
-
-# 5. Drop original count columns, keep only percent columns
-pct_df = pct_df[[col for col in pct_df.columns if col.endswith("_pct")]]
-
-# 6. Separate by sex
-male_age_percentages = []
-female_age_percentages = []
-```
-
-This following part calculates the average percent of total population for each age group, separately for males and females, across all geographic units (e.g., blocks).
-
-It also creates a clean DataFrame that aligns age group labels with their corresponding male and female percentages, setting the foundation for the population pyramid.
-
-```{python}
-
-for col in pct_df.columns:
-    mean_pct = round(pct_df[col].mean(), 2)
-    if col.startswith("Male:"):
-        male_age_percentages.append(mean_pct)
-    elif col.startswith("Female:"):
-        female_age_percentages.append(mean_pct)
-
-# 7. Extract age labels
-new_age_columns = [col.split(": ")[1].replace("_pct", "") for col in pct_df.columns if col.startswith("Male:")]
-
-# 8. Create the base DataFrame
-population_df = pd.DataFrame({
-    "Age": new_age_columns,
-    "Male": male_age_percentages,
-    "Female": female_age_percentages
-})
-population = population_df.copy()
-
-```
-
-
-We can cambine narrow age bands into broader, more interpretable age groups (like 15–19 or 20–24) to improve the readability of the population pyramid. 
-
-In the plot, we manually add percentages for adjacent rows as the age group label.
-
-After combining, it prepares the data for bidirectional horizontal bar plotting by making male values negative (so they show on the left), keeping female values positive (on the right), and creating helper columns for width and placement of bars.
-
-```{python}
-
-# Combine select age groups
-# Combine 15-17 and 18-19 into 15-19
-population.iloc[3, 0] = "15 to 19 years"
-population.iloc[3, 1] += population.iloc[4, 1]
-population.iloc[3, 2] += population.iloc[4, 2]
-population = population.drop(index=4).reset_index(drop=True)
-
-# Combine 20, 21, 22–24 into 20–24
-population.iloc[4, 0] = "20 to 24 years"
-population.iloc[4, 1] += population.iloc[5, 1] + population.iloc[6, 1]
-population.iloc[4, 2] += population.iloc[5, 2] + population.iloc[6, 2]
-population = population.drop(index=[5, 6]).reset_index(drop=True)
-
-# Combine 60–61 and 62–64 into 60–64
-population.iloc[12, 0] = "60 to 64 years"
-population.iloc[12, 1] += population.iloc[13, 1]
-population.iloc[12, 2] += population.iloc[13, 2]
-population = population.drop(index=13).reset_index(drop=True)
-
-# Combine 65–66 and 67–69 into 65–69
-population.iloc[13, 0] = "65 to 69 years"
-population.iloc[13, 1] += population.iloc[14, 1]
-population.iloc[13, 2] += population.iloc[14, 2]
-population = population.drop(index=14).reset_index(drop=True)
-
-# Prepare for plotting
-population["Female_Left"] = 0
-population["Female_Width"] = population["Female"]
-population["Male_Left"] = -population["Male"]
-population["Male_Width"] = population["Male"]
-
-# Round for labels
-population["Male"] = population["Male"].round(2)
-population["Female"] = population["Female"].round(2)
-
-```
-
-
-The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.
-
-A custom title, axis formatting, and color scheme are applied for clarity and polish.
-```{python}
-
-# 11. Plot the population pyramid
-fig = plt.figure(figsize=(15, 10))  # Set figure size
-
-# Plot female bars to the right
-plt.barh(
-    y=population["Age"],
-    width=population["Female_Width"],
-    color="#ee7a87",
-    label="Female"
-)
-
-# Plot male bars to the left
-plt.barh(
-    y=population["Age"],
-    width=population["Male_Width"],
-    left=population["Male_Left"],
-    color="#4682b4",
-    label="Male"
-)
-
-# Add gender labels to plot
-plt.text(-5, len(population) - 1, "Male", fontsize=25, fontweight="bold")
-plt.text(4, len(population) - 1, "Female", fontsize=25, fontweight="bold")
-
-# Add percentage labels to each bar
-for idx in range(len(population)):
-    # Male label (on the left)
-    plt.text(
-        x=population["Male_Left"][idx] - 0.1,
-        y=idx,
-        s="{}%".format(population["Male"][idx]),
-        ha="right", va="center",
-        fontsize=15, color="#4682b4"
-    )
-    # Female label (on the right)
-    plt.text(
-        x=population["Female_Width"][idx] + 0.1,
-        y=idx,
-        s="{}%".format(population["Female"][idx]),
-        ha="left", va="center",
-        fontsize=15, color="#ee7a87"
-    )
-
-# Format axes and labels
-plt.xlim(-7, 7)  # Set x-axis limits
-plt.xticks(range(-7, 8), ["{}%".format(i) for i in range(-7, 8)])  # Format tick labels as percents
-plt.legend(loc="best")  # Add legend
-plt.xlabel("Percent (%)", fontsize=16, fontweight="bold")
-plt.ylabel("Age Range", fontsize=16, fontweight="bold")
-
-# Add title
-plt.title(
-    "Puerto Rico Mean Age Distribution (Census Blocks) 2020",
-    loc="left", pad=20,
-    fontsize=25, fontweight="bold"
-)
-
-plt.tight_layout()  # Optimize spacing
-plt.show()  # Display the plot
-
-
-```
-
-
-### Select an individual census block
-
-We can subset the dataframe to select a single census block and generate an age pyramid.
-
-```{python}
-
-
-# --- STEP 1: Select a census block by GEOID ---
-block_id = "G72002100310212"  # Replace with any valid GEOID
-block_df = merged_df[merged_df["GISJOIN"] == block_id].copy()
-
-assert len(block_df) == 1, f"Expected one row for GEOID {block_id}, but got {len(block_df)}"
-
-# --- STEP 2: Identify male and female age columns ---
-male_cols = [col for col in block_df.columns if col.startswith("Male:")]
-female_cols = [col for col in block_df.columns if col.startswith("Female:")]
-age_labels = [col.split(": ")[1] for col in male_cols]  # Extract age ranges
-
-# --- STEP 3: Get values (choose percent or raw counts) ---
-use_percent = True  # Set to False if you want raw counts
-
-if use_percent:
-    total_pop = block_df[male_cols + female_cols].sum(axis=1).values[0]
-    male_vals = (block_df[male_cols].values[0] / total_pop) * 100
-    female_vals = (block_df[female_cols].values[0] / total_pop) * 100
-    value_label = "Percent (%)"
-else:
-    male_vals = block_df[male_cols].values[0]
-    female_vals = block_df[female_cols].values[0]
-    value_label = "Population Count"
-
-# --- STEP 4: Build plotting dataframe ---
-population = pd.DataFrame({
-    "Age": age_labels,
-    "Male": male_vals,
-    "Female": female_vals
-})
-
-population["Female_Left"] = 0
-population["Female_Width"] = population["Female"]
-population["Male_Left"] = -population["Male"]
-population["Male_Width"] = population["Male"]
-
-# --- STEP 5: Plot the pyramid ---
-fig = plt.figure(figsize=(12, 8))
-
-plt.barh(y=population["Age"], width=population["Female_Width"], color="#ee7a87", label="Female")
-plt.barh(y=population["Age"], width=population["Male_Width"], left=population["Male_Left"],
-         color="#4682b4", label="Male")
-
-plt.text(-5, len(population) - 1, "Male", fontsize=20, fontweight="bold")
-plt.text(4, len(population) - 1, "Female", fontsize=20, fontweight="bold")
-
-for idx in range(len(population)):
-    plt.text(x=population["Male_Left"][idx] - 0.1, y=idx, s=f"{round(population['Male'][idx], 1)}",
-             ha="right", va="center", fontsize=12, color="#4682b4")
-    plt.text(x=population["Female_Width"][idx] + 0.1, y=idx, s=f"{round(population['Female'][idx], 1)}",
-             ha="left", va="center", fontsize=12, color="#ee7a87")
-
-xlim_val = max(population[["Male", "Female"]].max()) * 1.2
-plt.xlim(-xlim_val, xlim_val)
-plt.xticks([])
-plt.legend(loc="best")
-
-plt.xlabel(value_label, fontsize=14)
-plt.ylabel("Age Range", fontsize=14)
-plt.title(f"Census Block {block_id} Age Distribution 2020", fontsize=18, fontweight="bold")
-plt.tight_layout()
-plt.show()
-```
-
-### Select a large Block Group
-
-Age pyramids can also be generated by subsetting a Census Block Group by name, for example `NAME == "Block Group 1"` or "Block Group 3":
-```{python}
-bg_name = "Block Group 3"
-
-df_gb = merged_df[merged_df["NAME"] == bg_name ]
-
-
-# 1. Define the relevant columns
-joined_columns = [col for col in df_gb.columns if col.startswith("Male:") or col.startswith("Female:")]
-
-# 2. Ensure Total_Population exists (if not, create it)
-if "Total_Population" not in df_gb.columns:
-    df_gb["Total_Population"] = df_gb[joined_columns].sum(axis=1)
-
-# 3. Create DataFrame for percentage values
-pct_df = df_gb[["Total_Population"] + joined_columns].copy()
-
-# 4. Compute percentage for each age group column
-for col in joined_columns:
-    pct_df[f"{col}_pct"] = pct_df[col] / pct_df["Total_Population"] * 100
-
-# 5. Drop original count columns, keep only percent columns
-pct_df = pct_df[[col for col in pct_df.columns if col.endswith("_pct")]]
-
-# 6. Separate by sex
-male_age_percentages = []
-female_age_percentages = []
-
-for col in pct_df.columns:
-    mean_pct = round(pct_df[col].mean(), 2)
-    if col.startswith("Male:"):
-        male_age_percentages.append(mean_pct)
-    elif col.startswith("Female:"):
-        female_age_percentages.append(mean_pct)
-
-# 7. Extract age labels
-new_age_columns = [col.split(": ")[1].replace("_pct", "") for col in pct_df.columns if col.startswith("Male:")]
-
-# 8. Create the base DataFrame
-population_df = pd.DataFrame({
-    "Age": new_age_columns,
-    "Male": male_age_percentages,
-    "Female": female_age_percentages
-})
-population = population_df.copy()
-
-# 9. Combine select age groups
-# Combine 15-17 and 18-19 into 15-19
-population.iloc[3, 0] = "15 to 19 years"
-population.iloc[3, 1] += population.iloc[4, 1]
-population.iloc[3, 2] += population.iloc[4, 2]
-population = population.drop(index=4).reset_index(drop=True)
-
-# Combine 20, 21, 22–24 into 20–24
-population.iloc[4, 0] = "20 to 24 years"
-population.iloc[4, 1] += population.iloc[5, 1] + population.iloc[6, 1]
-population.iloc[4, 2] += population.iloc[5, 2] + population.iloc[6, 2]
-population = population.drop(index=[5, 6]).reset_index(drop=True)
-
-# Combine 60–61 and 62–64 into 60–64
-population.iloc[12, 0] = "60 to 64 years"
-population.iloc[12, 1] += population.iloc[13, 1]
-population.iloc[12, 2] += population.iloc[13, 2]
-population = population.drop(index=13).reset_index(drop=True)
-
-# Combine 65–66 and 67–69 into 65–69
-population.iloc[13, 0] = "65 to 69 years"
-population.iloc[13, 1] += population.iloc[14, 1]
-population.iloc[13, 2] += population.iloc[14, 2]
-population = population.drop(index=14).reset_index(drop=True)
-
-# 10. Prepare for plotting
-population["Female_Left"] = 0
-population["Female_Width"] = population["Female"]
-population["Male_Left"] = -population["Male"]
-population["Male_Width"] = population["Male"]
-
-# Round for labels
-population["Male"] = population["Male"].round(2)
-population["Female"] = population["Female"].round(2)
-
-# 11. Plot the population pyramid
-fig = plt.figure(figsize=(15, 10))
-
-plt.barh(y=population["Age"], width=population["Female_Width"], color="#ee7a87", label="Female")
-plt.barh(y=population["Age"], width=population["Male_Width"], left=population["Male_Left"],
-         color="#4682b4", label="Male")
-
-plt.text(-5, len(population) - 1, "Male", fontsize=25, fontweight="bold")
-plt.text(4, len(population) - 1, "Female", fontsize=25, fontweight="bold")
-
-# Add labels
-for idx in range(len(population)):
-    plt.text(x=population["Male_Left"][idx] - 0.1, y=idx, s="{}%".format(population["Male"][idx]),
-             ha="right", va="center", fontsize=15, color="#4682b4")
-    plt.text(x=population["Female_Width"][idx] + 0.1, y=idx, s="{}%".format(population["Female"][idx]),
-             ha="left", va="center", fontsize=15, color="#ee7a87")
-
-plt.xlim(-7, 7)
-plt.xticks(range(-7, 8), ["{}%".format(i) for i in range(-7, 8)])
-plt.legend(loc="best")
-plt.xlabel("Percent (%)", fontsize=16, fontweight="bold")
-plt.ylabel("Age Range", fontsize=16, fontweight="bold")
-plt.title(f"Puerto Rico Mean Age Distribution ({bg_name}) 2020", loc="left", pad=20, fontsize=25, fontweight="bold")
-
-plt.tight_layout()
-plt.show()
-```
-
-## Interactinv with ArcGIS Online Portal
+## Interact with ArcGIS Online Portal
 
 ArcGIS Online or Enterprise portal are tools that retrieve a specific hosted feature layers. We use the `arcgis` package to find features of U.S. counties (2020), and filter it to include only features where STATEFP = '72', which corresponds to Puerto Rico. The resulting spatial data is converted into a Spatially Enabled DataFrame (sedf) using ArcGIS' Python API.
+
 ```{python}
+
 # Get the layer from the published data
 
 # Connect to ArcGIS Online (anonymous session)
@@ -1182,252 +984,516 @@ layer = gis.content.get("3132216944b249a08d13b1aa0ee6fda2").layers[0]  # PR coun
 
 # Query Puerto Rico counties using the state FIPS code '72'
 sedf = layer.query(where="STATEFP = '72'").sdf  # Convert to Spatially Enabled DataFrame
+
 ```
 
 We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
 
 ```{python}
+
+# merged_df_cleaned = merged_df[['COUNTY', 'Total_Population_2020',  'Total_Pop_Change_Pct',   'Pop60plus_dz', 'Vacant_dz']]
+
 #Merge the feature to the merged 2010-2020 df
-pr_sedf_ipums = sedf.merge(merged_df, on = "GISJOIN", how = "inner")
-```
+print("`merged_df` DataFrame row count before table join: ", len(merged_df))
+pr_sedf_ipums = sedf.merge(merged_df, left_on="NAMELSAD", right_on="COUNTY", how = "inner")
 
-
-## Summarizing and Plotting DAta
-
-Let's combine the Block Groups into Counties and Map the results.
-
-
-
-## HIEU SUMMARIZE merged_df TO COUNTY (pd_county_df) using "sum" to add:  "Total_Population", "Male", "Female", "Pop60plus_total",  "Total_Housing_Units", "Occupied", "Vacant",  for all have _2010 and _2020 at the end. 
-
-
-
-### Hieu Recalculate CHange
-
-```{python}
-
-# pr_county_df["AgedRatio_2010"] = pr_county_df["Pop60plus_total_2010"] /  pr_county_df["Total_Population_2010"]
-# pr_county_df["VacantRatio_2010"] = pr_county_df["Vacant_2010"] /  pr_county_df["Total_Housing_Units_2010"]
-
-
-# pr_county_df["AgedRatio_2020"] = pr_county_df["Pop60plus_total_2020"] /  pr_county_df["Total_Population_2020"]
-# pr_county_df["VacantRatio_2020"] = pr_county_df["Vacant_2020"] /  pr_county_df["Total_Housing_Units_2020"]
-
-```
-
-```{python}
-
-# pr_county_df["Total_Pop_Change"] = pr_county_df["Total_Population_2020"] - pr_county_df["Total_Population_2010"]
-# pr_county_df["Pop60plus_Change"] = pr_county_df["Pop60plus_total_2020"] - pr_county_df["Pop60plus_total_2010"]
-# pr_county_df["Vacant_Change"] = (pr_county_df["Vacant_2020"] - pr_county_df["Vacant_2010"])
-
-# pr_county_df["VacantRatio_Change"] = pr_county_df["VacantRatio_2020"] - pr_county_df["VacantRatio_2010"]
-
-# pr_county_df["AgedRatio_Change"] = (pr_county_df["AgedRatio_2020"] - pr_county_df["AgedRatio_2010"])
-
-
-# pr_county_df
-
-```
-
-
-```{python}
-
-# # Compute means and standard deviations
-# means = pr_county_df[vars_to_plot].mean()
-# stds = pr_county_df[vars_to_plot].std()
-
-# # Create z-score columns
-# for var in vars_to_plot:
-#     z_col = var.replace("_Change", "_dz")
-#     pr_county_df[z_col] = (pr_county_df[var] - means[var]) / stds[var]
-```
-
-##
-
-```{python}
-# Filter for lowest and highest vacancy quantile groups
-# lowest = pr_county_df[pr_county_df["AgedRatio_dz"] == 1]
-# highest = pr_county_df[pr_county_df["AgedRatio_dz"] == 5]
-
-
-# # Use COUNTYA for grouping (could be COUNTY if preferred)
-# # Step 1: Find common counties between the two groups
-# common_counties = sorted(
-#     set(lowest["COUNTY"]).intersection(set(highest["COUNTY"]))
-# )
-
-# # Step 2: Group and sum vacant housing units for 2010 and 2020, reindexed by common counties
-# vacant_low_2010 = lowest[lowest["COUNTY"].isin(common_counties)] \
-#     .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
-# vacant_low_2020 = lowest[lowest["COUNTYA"].isin(common_counties)] \
-#     .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
-
-# vacant_high_2010 = highest[highest["COUNTY"].isin(common_counties)] \
-#     .groupby("COUNTY")["VacantRatio_2010"].sum().reindex(common_counties)
-# vacant_high_2020 = highest[highest["COUNTY"].isin(common_counties)] \
-#     .groupby("COUNTY")["VacantRatio_2020"].sum().reindex(common_counties)
-
-# # Step 3: Plot
-# x = np.arange(len(common_counties))  # consistent X positions
-
-# fig, ax = plt.subplots(figsize=(12, 6))
-
-# ax.scatter(x, vacant_low_2010.values, label='Lowest Age Ratio 2010', color='skyblue', marker='o', s=60)
-# ax.scatter(x, vacant_low_2020.values, label='Lowest Age Ratio 2020', color='blue', marker='o', s=60)
-# ax.scatter(x, vacant_high_2010.values, label='Highest Age Ratio 2010', color='orange', marker='^', s=60)
-# ax.scatter(x, vacant_high_2020.values, label='Highest Age Ratio 2020', color='darkred', marker='^', s=60)
-
-# # Formatting
-# ax.set_ylabel('Vacant Housing Ratio')
-# ax.set_xlabel('County (COUNTYA)')
-# ax.set_title('Vacant Housing Units by County: Lowest vs Highest Age Ratio Change Quantile (2010 & 2020)')
-# ax.set_xticks(x)
-# ax.set_xticklabels(common_counties, rotation=90)
-# ax.legend()
-# ax.grid(True, axis='y')
-
-# plt.tight_layout()
-# plt.show()
-
-
-```
-
-
-
-# Mapping data
-
-
-
-## Start preprocessing the Census data downloaded from IPUMS API
-
-To map the shapefile to the map, we have to publish the shapefile as feature layer on MapViewer on ArcGIS Online by adding layer from your shapefile zipped folder. 
-
-This lesson is public facing so we already published the layers for the learners.
-
-
-```{python}
-
-# # Explicit interactive authentication
-# gis = GIS("https://www.arcgis.com", authenticate='interactive')
-
-
-# # Get the layer from the published data
-
-# results = gis.content.search("Census County Esri_US_Federal_Data", item_type="Feature Layer")
-# for r in results:
-#     print(r)
-
-```
-
-Select the position of the "Cansus Zip Code Tabulation Areas" layer starting with position the first position as `0`. 
-```{python}
-
-# #select the appropiate item
-# zip_item = results[3]
-# item_id = zip_item.id
-# print(f"Title: {zip_item.title}")
-# print(f"ID: {item_id}")
+print("`pr_sedf_ipums` DataFrame results after table join: ", len(pr_sedf_ipums))
  
+
+# # # Function to safely convert Esri-style rings to shapely geometry
+# def esri_to_shapely(geom):
+#     try:
+#         rings = geom["rings"]
+#         if len(rings) == 1:
+#             return Polygon(rings[0])
+#         else:
+#             return MultiPolygon([Polygon(r) for r in rings])
+#     except Exception as e:
+#         print(f"Error in geometry: {e}")
+#         return None
+
+# # Apply the function to create a shapely geometry column
+# pr_sedf_ipums["geometry"] = pr_sedf_ipums["SHAPE"].apply(esri_to_shapely)
+
+# Create a GeoDataFrame with correct CRS (Esri Web Mercator)
+# pr_sedf_ipums = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry", crs="EPSG:3857")
+
+# pr_sedf_ipums = GeoAccessor.from_geodataframe(pr_sedf_ipums)
+
+
 ```
 
-With the item's ID (ccfe5a9e3eea4ec68b7945b610422b0a) from ablove, we can  use the layers for analysis
+
+
 ```{python}
+ 
 
-# from arcgis.features import FeatureLayer
-# # Authenticate interactively
-# gis = GIS("https://www.arcgis.com", authenticate='interactive')
-# layer = gis.content.get(item_id).layers[0] # The layer of PR county 2020 published to the portal
-# # Print all field names
-# field_names = [field['name'] for field in layer.properties.fields]
-# print(field_names)
-# print(layer.url)
-# layer = FeatureLayer(layer.url)
+# Set up map
+gis = GIS()
+m = gis.map("Puerto Rico")
+
+# Classify values manually (e.g., quantiles)
+num_classes = 5
+field = "Pop60plus_dz"
+column_values = pr_sedf_ipums[field].dropna()
+
+# Create class breaks
+breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]  # RdBu reversed
+
+# Define classBreaksRenderer
+renderer = {
+    "type": "classBreaks",
+    "field": field,
+    "classificationMethod": "esriClassifyQuantile", 
+    "minValue": float(min(column_values)),
+    "classBreakInfos": [
+        {
+            "classMaxValue": float(breaks[i + 1]),
+            "label": f"{breaks[i]:.2f} – {breaks[i+1]:.2f}",
+            "description": "",
+            "symbol": {
+                "type": "esriSFS",
+                "style": "esriSFSSolid",
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],
+                "outline": {
+                    "color": [0, 0, 0, 40],
+                    "width": 0.4,
+                    "type": "esriSLS",
+                    "style": "esriSLSSolid"
+                }
+            }
+        }
+        for i, c in enumerate(colors)
+    ]
+}
+
+# Plot with renderer
+pr_sedf_ipums.spatial.plot(
+    map_widget=m,
+    renderer=renderer,
+    legend=True
+)
+
+m.legend.enabled = True
+m
+
 
 ```
 
+Red representing high values and blue representing low values
 
  
-## Hieu Change this for Change this for County to display the "COUNTY" name in the label and either VacancyRatio_dz 
-
-```{python}
-
-
-# # Build unique value info entries
-# unique_value_infos = []
-# for i in range(5):
-#     unique_value_infos.append({
-#         "value": i + 1,
-#         "label": quantile_labels[i],
-#         "symbol": symbols[i]
-#     })
-
-# # Define the unique value renderer
-# pr_uvr = {
-#     "type": "uniqueValue",
-#     "field1": "Total_Population",
-#     "uniqueValueInfos": unique_value_infos
-# }
-
-# # Define labeling info
-# pr_labeling_info = [
-#     {
-#         "labelExpression": "[NAME_x]",
-#         "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
-#         "repeatLabel": True,
-#         "symbol": {
-#             "type": "esriTS",
-#             "color": [0, 0, 0, 255],
-#             "font": {
-#                 "family": "Arial",
-#                 "size": 12
-#             },
-#             "horizontalAlignment": "center",
-#             "kerning": True
-#         }
-#     }
-# ]
-
-# # Layer display options
-# pr_options_dict = {
-#     "showLabels": True,
-#     "layerDefinition": {
-#         "drawingInfo": {
-#             "labelingInfo": pr_labeling_info,
-#             "renderer": pr_uvr
-#         }
-#     },
-#     "opacity": 0.5,
-#     "title": "Vacant Housing Units Decadal Change"
-# }
-
-
-
-# gis = GIS()
-# m1 = gis.map("Puerto Rico") 
- 
-# m1.content.add(pr_sedf_ipums, options = pr_options_dict) 
-# # update the legend label for LECZ layer in Notebooks
- 
-# m1.legend.enabled = True
-
-# m1
-```
-
-
-
-
 
 # Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.
 
 With the arcgis package, we can search online for the polygons of the LECZ areas in Puerto Rico
 
 
-## Hieu  Overlay LECZ polygons and add a classification column of 1 or 0 to the counties dataframe
+```{python}
+lecz = gis.content.search("title:Low Elevation Coastal Zone (LECZ) for Puerto Rico", item_type="Feature")
 
-## Plot bloxplot showing differences in Vacant and Aged Ratios in the two groups (in lecz, not in lecz)
+for item in lecz:
+    display(item)
 
-## Display map with counties in LEZ only with colors displaying AgedRatio_dz
+
+lecz_layer = lecz[0].layers[0]  # Assuming the first layer is the one you want
+
+
+
+
+```
+
+```{python}
+
+lecz_sdf = lecz_layer.query(where="lecz_zone > 0").sdf
+
+``` 
+
+## Examine which counties are exposed to LECZ visually
+
+
+```{python}
+
+
+# Set up map
+gis = GIS()
+m = gis.map("Puerto Rico")
+
+# Classify values manually (e.g., quantiles)
+num_classes = 5
+field = "Pop60plus_dz"
+column_values = pr_sedf_ipums[field].dropna()
+
+# Create class breaks
+breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]  # RdBu reversed
+
+# Define classBreaksRenderer
+renderer = {
+    "type": "classBreaks",
+    "field": "Pop60plus_dz",
+    "classificationMethod": "esriClassifyQuantile", 
+    "minValue": float(min(column_values)),
+    "classBreakInfos": [
+        {
+            "classMaxValue": float(breaks[i + 1]),
+            "label": f"{breaks[i]:.2f} – {breaks[i+1]:.2f}",
+            "description": "",
+            "symbol": {
+                "type": "esriSFS",
+                "style": "esriSFSSolid",
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],
+                "outline": {
+                    "color": [0, 0, 0, 40],
+                    "width": 0.4,
+                    "type": "esriSLS",
+                    "style": "esriSLSSolid"
+                }
+            }
+        }
+        for i, c in enumerate(colors)
+    ]
+}
+
+# Plot with renderer
+pr_sedf_ipums.spatial.plot(
+    map_widget=m,
+    renderer=renderer,
+    legend=True
+)
+
+lecz_sdf.spatial.plot(
+    map_widget=m
+) 
+m.legend.enabled = True
+
+m
+
+
+```
+
+
 
  
+##  Overlay Analysis
+
+
+
+```{python}
+
+ 
+ 
+# 2. Apply to create valid Shapely geometry column
+
+lecz_sdf['geometry'] = lecz_sdf['SHAPE']  
+
+pr_sedf_ipums['geometry'] = pr_sedf_ipums['SHAPE']  
+
+ 
+
+lecz_gdf = gpd.GeoDataFrame(lecz_sdf, geometry='geometry')
+
+
+pr_ipums_gdf = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry")
+
+
+
+lecz_gdf.set_crs(epsg=3857, inplace=True)
+
+pr_ipums_gdf.set_crs(epsg=3857, inplace=True)
+
+
+ 
+lecz_gdf["dissolve_id"] = 1
+
+# Dissolve all rows into one MultiPolygon
+lecz_union_gdf = lecz_gdf.dissolve(by=None)
+ 
+
+
+```
+
+
+
+
+```{python}
+
+pr_counties_lecz_intersect = gpd.sjoin(pr_ipums_gdf, lecz_union_gdf, how="left", predicate="intersects")
+
+```
+
+
+
+```{python}
+ 
+ 
+# Rename the column
+pr_counties_lecz_intersect = pr_counties_lecz_intersect.rename(columns={"dissolve_id": "lecz"})
+
+# Replace NaN with 0 and 1.0 with 1
+pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].fillna(0)  # Replace NaN with 0
+pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].replace(1.0, 1)  # Replace 1.0 with 1
+pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].astype(int)
+
+
+
+```
+
+
+```{python}
+
+ 
+gdf = pr_counties_lecz_intersect.to_crs(epsg=4326)
+
+# Ensure 'lecz' is binary int and 'id' is string
+gdf["lecz"] = gdf["lecz"].fillna(0).astype(int)
+
+
+# Add unique ID column for choropleth
+gdf = gdf.reset_index(drop=True)
+gdf["id"] = gdf.index.astype(str)
+
+
+# Get bounds
+minx, miny, maxx, maxy = gdf.total_bounds
+
+# Compute center of bounding box
+center = [(miny + maxy) / 2, (minx + maxx) / 2]
+
+```
+
+```{python}
+
+
+
+m = folium.Map(location=center, zoom_start=8)
+
+
+# Choropleth layer for one variable (e.g., 'TotalPopulation_2020')
+folium.Choropleth(
+    geo_data=gdf,
+    data=gdf,
+    columns=["id", "lecz"],
+    key_on="feature.properties.id",
+    fill_color="PuOr",
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name="LECZ zone (1 = Inside, 0 = Outside)"
+).add_to(m)
+
+# Show map
+m
+
+```
+
+
+
+# Comparing populaitons in and out of the LECZ
+
+```{python}
+
+ 
+
+
+cols_to_include = ["lecz", "Total_Population_2020"] + [
+    col for col in gdf.columns if col.endswith("_Pct") or col.endswith("_dz")
+]
+
+df = gdf[cols_to_include].dropna()
+df["lecz"] = df["lecz"].astype(int)
+
+# Step 2: Build aggregation dictionary
+agg_dict = {
+    "Total_Population_2020": ("Total_Population_2020", "mean"),
+}
+for col in df.columns:
+    if col.endswith("_Pct") or col.endswith("_dz"):
+        agg_dict[col] = (col, "mean")
+
+# Add count separately
+agg_dict["count"] = ("Total_Population_2020", "count")
+
+# Step 3: Group and aggregate
+summary = df.groupby("lecz").agg(**agg_dict)
+
+# Step 4: Rename index for readability
+summary.index = summary.index.map({0: "Outside LECZ Mean", 1: "Inside LECZ Mean"})
+
+# Create a new DataFrame with rounded summary
+summary_df = summary.round(2)
+
+
+
+# Group and sum
+population_sums = df.groupby("lecz")["Total_Population_2020"].sum()
+
+# Optional: Rename for clarity
+population_sums.index = population_sums.index.map({0: "Outside LECZ", 1: "Inside LECZ"})
+
+# Print result
+print("Total Population by LECZ Group:")
+print(population_sums)
+
+# Now you can use it like any regular DataFrame
+print(summary_df)
+
+```
+
+
+
+
+
+```{python} 
+
+# Select variables to plot
+plot_vars = [
+    "Total_Pop_Change_Pct",
+    "Pop60plus_Change_Pct",
+    "Vacant_Change_Pct",
+    "Total_Population_2020",
+    "Total_Population_2010",
+    "lecz"
+]
+
+# Drop missing values
+df_pair = gdf[plot_vars].dropna()
+df_pair["lecz"] = df_pair["lecz"].astype(int)  # Ensure it's an int or categorical
+
+# Optional: relabel LECZ for nicer legend
+df_pair["LECZ_Label"] = df_pair["lecz"].map({0: "Outside LECZ", 1: "Inside LECZ"})
+
+# Now plot (omit 'lecz' itself from x/y vars)
+sns.pairplot(
+    df_pair,
+    vars=plot_vars[:-1],  # exclude 'lecz'
+    hue="LECZ_Label",
+    diag_kind="hist",
+    corner=True,
+    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7)
+)
+
+plt.suptitle("Pairwise Scatterplots by LECZ", y=1.02)
+plt.tight_layout()
+plt.show()  
+
+```
+
+
+
+# Pyramid Comparison
+
+
+```{python}
+
+
+# ─────────────────────────────────────────
+# Helper: Combine narrow age bands
+# ─────────────────────────────────────────
+def combine_age_groups(df, suffix="", male_prefix="Male: ", female_prefix="Female: "):
+    age_groups = {
+        "Under 5 years": ["Under 5 years"],
+        "5 to 9 years": ["5 to 9 years"],
+        "10 to 14 years": ["10 to 14 years"],
+        "15 to 19 years": ["15 to 17 years", "18 and 19 years"],
+        "20 to 24 years": ["20 years", "21 years", "22 to 24 years"],
+        "25 to 29 years": ["25 to 29 years"],
+        "30 to 34 years": ["30 to 34 years"],
+        "35 to 39 years": ["35 to 39 years"],
+        "40 to 44 years": ["40 to 44 years"],
+        "45 to 49 years": ["45 to 49 years"],
+        "50 to 54 years": ["50 to 54 years"],
+        "55 to 59 years": ["55 to 59 years"],
+        "60 to 64 years": ["60 and 61 years", "62 to 64 years"],
+        "65 to 69 years": ["65 and 66 years", "67 to 69 years"],
+        "70 to 74 years": ["70 to 74 years"],
+        "75 to 79 years": ["75 to 79 years"],
+        "80 to 84 years": ["80 to 84 years"],
+        "85 years and over": ["85 years and over"]
+    }
+
+    rows = []
+    for label, group in age_groups.items():
+        row = {"Age": label}
+        for lecz in [0, 1]:
+            male_cols = [f"{male_prefix}{g}{suffix}" for g in group if f"{male_prefix}{g}{suffix}" in df.columns]
+            female_cols = [f"{female_prefix}{g}{suffix}" for g in group if f"{female_prefix}{g}{suffix}" in df.columns]
+
+            male_total = df[df["lecz"] == lecz][male_cols].sum().sum() if male_cols else 0
+            female_total = df[df["lecz"] == lecz][female_cols].sum().sum() if female_cols else 0
+
+            row[f"Male_{lecz}"] = male_total
+            row[f"Female_{lecz}"] = female_total
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
+# ─────────────────────────────────────────
+# Plot function
+# ─────────────────────────────────────────
+def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020): 
+    def abs_tick(x, pos):
+        return f"{abs(int(x)):,}"
+
+    age_labels = pyr2010["Age"]
+    y = np.arange(len(age_labels))
+    bar_height = 0.4
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 14), sharex=True)
+
+    # OUTSIDE LECZ (lecz = 0) — Top
+    ax1.barh(y - bar_height/2, -pyr2010["Male_0"], height=bar_height, color="#c6dbef", label="Male 2010")
+    ax1.barh(y + bar_height/2, -pyr2020["Male_0"], height=bar_height, color="#2171b5", label="Male 2020")
+    ax1.barh(y - bar_height/2, pyr2010["Female_0"], height=bar_height, color="#fdd0a2", label="Female 2010")
+    ax1.barh(y + bar_height/2, pyr2020["Female_0"], height=bar_height, color="#e6550d", label="Female 2020")
+    ax1.set_title("Population Pyramid – Outside LECZ")
+    ax1.set_yticks(y)
+    ax1.set_yticklabels(age_labels)
+    ax1.axvline(0, color="gray", lw=0.8)
+    ax1.legend(loc="lower right")
+    ax1.xaxis.set_major_formatter(FuncFormatter(abs_tick))
+    ax1.grid(axis="x", linestyle="--", linewidth=0.5, alpha=0.5)
+
+    # INSIDE LECZ (lecz = 1) — Bottom
+    ax2.barh(y - bar_height/2, -pyr2010["Male_1"], height=bar_height, color="#c6dbef")
+    ax2.barh(y + bar_height/2, -pyr2020["Male_1"], height=bar_height, color="#2171b5")
+    ax2.barh(y - bar_height/2, pyr2010["Female_1"], height=bar_height, color="#fdd0a2")
+    ax2.barh(y + bar_height/2, pyr2020["Female_1"], height=bar_height, color="#e6550d")
+    ax2.set_title("Population Pyramid – Inside LECZ")
+    ax2.set_yticks(y)
+    ax2.set_yticklabels(age_labels)
+    ax2.axvline(0, color="gray", lw=0.8)
+    ax2.xaxis.set_major_formatter(FuncFormatter(abs_tick))
+    ax2.set_xlabel("Population")
+    ax2.grid(axis="x", linestyle="--", linewidth=0.5, alpha=0.5)
+
+    max_val = max(
+        pyr2010[["Male_0", "Male_1", "Female_0", "Female_1"]].values.max(),
+        pyr2020[["Male_0", "Male_1", "Female_0", "Female_1"]].values.max()
+    )
+    ax1.set_xlim(-max_val * 1.1, max_val * 1.1)
+
+    plt.tight_layout()
+    plt.show()
+
+
+# ─────────────────────────────────────────
+# Full execution
+# ─────────────────────────────────────────
+# Extract columns by suffix
+pyr_cols_2010 = [col for col in gdf.columns if col.endswith("_2010") and (col.startswith("Male:") or col.startswith("Female:"))]
+pyr_cols_2020 = [col for col in gdf.columns if col.endswith("_2020") and (col.startswith("Male:") or col.startswith("Female:"))]
+
+# Filter and clean
+df_2010 = gdf[["lecz"] + pyr_cols_2010].dropna()
+df_2020 = gdf[["lecz"] + pyr_cols_2020].dropna()
+
+# Combine age groups by LECZ
+pyramid_2010 = combine_age_groups(df_2010, suffix="_2010")
+pyramid_2020 = combine_age_groups(df_2020, suffix="_2020")
+
+# Plot pyramids
+plot_pyramid_stacked_by_lecz(pyramid_2010, pyramid_2020)
+
+```
 
