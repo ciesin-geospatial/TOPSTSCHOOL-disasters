@@ -2,11 +2,14 @@
 title: "Who is Exposed to Coastal Hazards in Puerto Rico?"
 author: 
    - Deborah Balk 
-   - Kytt MacManus
-   - Hieu Tran 
-   - Camilla Green 
    - Shemontee Chowdhury
+   - Camilla Green 
+   - Kytt MacManus
    - Juan F. Martinez
+   - Hieu Tran 
+   
+   
+   
 format: 
     html
 bibliography: lecz-references.bib
@@ -27,37 +30,68 @@ bibliography: lecz-references.bib
 
 # Overview
 
-In this lesson, you will use a dataset delineating [Low Elevation Coastal Zones](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) from the NASA Socioeconomic Data and Applications Center (SEDAC) website along with census data from the [US Census Bureau](https://www.census.gov/data.html) from the [IPUMS](https://www.ipums.org/) National Historical Geographic Information System (NHGIS). 
+This lesson introduces students to coastal hazard exposure in Puerto Rico using demographic and spatial data. You will use the [Low Elevation Coastal Zones (LECZ)](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) dataset from NASA SEDAC and census block group data from the [US Census Bureau](https://www.census.gov/data.html) via the [IPUMS](https://www.ipums.org/) National Historical Geographic Information System (NHGIS) portal to understand which populations live in low-lying areas vulnerable to flooding and sea level rise. 
 
-You will perform various preprocessing tasks to combina tabular and spatial boundary data for analysis. These steps include exploring the dataset with visualizations and thematic mapping tools. You will then learn how to generate summary statistics based on combinations of these two layers, over two different time periods. 
-
-You will learn how to perform numerous data manipulations, create statistical summaries of population-at-risk (and related housing characteristics), and examine a decade of change throughout this lesson.
 
 # Learning Objectives
 
-- Become familiar with Census Block and County census data for 5-year age groups from the U.S. Census.
-- Become familiar with Low Elevation Coastal Zones (LECZs) in Puerto Rico and explain their significance (as well as limitations) in assessing coastal hazard exposure.
-- Access, integrate, explore, and use LECZ data from NASA SEDAC and demographic data from the US Census Bureau for Puerto Rico.
-- Assess decadal changes (2010–2020) in population and housing characteristics in coastal versus non-coastal zones in Puerto Rico.
-- Create regional and local scale maps and statistical figures of exposure and decadal change.
-- Identify venues for sharing output (for example, discussion board associated with data, policy briefs, op-eds).
+Through this hands-on activity, you will:
+
+- Extract population and housing data for 2010 and 2020 using the IPUMS API.
+- Preprocess and clean data using Python.
+- Create statistical summaries and **population pyramids** by age and sex.
+- Visualize patterns of population groups and vacancy in Puerto Rico’s counties.
+- Perform a **spatial overlay** with LECZ boundaries to assess exposure.
+- Use `ArcGIS` and `folium` Python packages to explore spatial patterns interactively.
+
+This lesson emphasizes both **data science skills** and **critical spatial reasoning** about demographic vulnerability and environmental risk.
 
 # Introduction
 
-## Low Elevation Coastal Zones (LECZs)
+You may wonder why studies of the “entire” US often restrict themselves to the CONUS? The simplest answer: data or computational limitations. Some U.S. territories lack full census variable coverage. 
 
-Low Elevation Coastal Zones (LECZs) have been defined globally, with population estimates for areas below 5m and 10m elevations [@mcgranahan2007; @macmanus2021]. 
 
-In the continental U.S. (CONUS), 1 in 10 people live in the 10m LECZ, and studies highlight that urban residents, people of color, and older adults are disproportionately exposed. For instance, about 1 in 5 urban Black residents live in this zone [@tagtachian2023; @hauer2020sea].
+Several U.S. territories, including **Puerto Rico**, are frequently excluded from national analyses because of inconsistent or incomplete data coverage, as well as geospatial processing challenges. For example:
 
-This is the sneak peak of what LECZ looks like:
-![](data/lecz_pr/lecz_satellite.png)
+-   The **American Community Survey (ACS)** is not conducted in U.S. territories.
+-   Housing detail is limited in Guam, Northern Mariana Islands, U.S. Virgin Islands, and American Samoa.
+-   Puerto Rico conducts its own Community Survey, separate from ACS.
 
-You may wonder why studies of the “entire” US often restrict themselves to the CONUS? The simplest answer is limitations either data or computational power. For example, this happens because of incomplete coverage in one data set or another. Some US territories may not collect the full suite of census variables that are collected in CONUS. 
+Satellite-derived elevation data, such as NASA's Shuttle Radar Topography Mission (SRTM), also suffer from variable accuracy near polar regions and small islands [See this U.S. Census Bureau note for more.](https://docs.google.com/document/d/1bKYopZoMLCD2djl2vc3pwNSKwGDk6TKRI79swefIvKY/edit?tab=t.0). 
 
-For example the detail on housing characteristics is limited in Guam, Northern Mariana Islands, US Virgin Islands and American Samoa, and the Census’ American Community Survey is not conducted in any of the territories, though Puerto Rico conducts its own Community Survey. In some other cases, data collected from satellites (such as SRTM) have variable accuracy toward polar regions [U.S Census Bureau](https://docs.google.com/document/d/1bKYopZoMLCD2djl2vc3pwNSKwGDk6TKRI79swefIvKY/edit?tab=t.0). 
 
 Another possible reason for omission outside of CONUS could be computational challenges or limitations. For instance US territories are subject to different map projections, which implies the need for additional functions in processing algorithms to account for spatial variations and to unify spatial structures.
+
+This lesson helps address these issues by showing how to **combine demographic data with geospatial boundaries and Low Elevation Coastal Zones (LECZs)** to assess who is most at risk from coastal hazards in **Puerto Rico**.
+
+## IPUMS and U.S. Census Geography
+
+To support this analysis, we will use data from **IPUMS**, the *Integrated Public Use Microdata Series*. IPUMS is a long-standing data infrastructure project hosted at the **University of Minnesota**, which curates, harmonizes, and provides access to large-scale population and census datasets for research and education.
+
+A key IPUMS resource is the **[National Historical Geographic Information System (NHGIS)](https://www.nhgis.org/)**. NHGIS offers tabular census data and matching **geographic boundary files** (e.g., block groups, tracts, counties) going back to the 1790s. These data are essential for conducting spatial analysis of population, housing, and social change.
+
+
+By using the API, you can create **reproducible and automated workflows** to study population vulnerability in places like Puerto Rico—regions that are too often overlooked in national assessments.
+
+## Low Elevation Coastal Zones (LECZs)
+
+In this lesson, you will assess **who is most exposed** to coastal hazards by combining **demographic data**, **geographic boundaries**, and **Low Elevation Coastal Zones (LECZs)**.
+
+LECZs are areas of land located at or below a specified elevation threshold—commonly **5 meters** or **10 meters** above mean sea level. These zones have been globally mapped to estimate population exposure to sea-level rise and storm surge risks [@mcgranahan2007; @macmanus2021].
+
+In the **continental United States (CONUS)**, approximately **1 in 10 people** live in the 10m LECZ. Research shows that exposure is not evenly distributed: 
+
+- **Urban residents**,  
+- **People of color**, and  
+- **Older adults**  
+
+are **disproportionately** located within these low-lying zones.  
+
+For example, **1 in 5 urban Black residents** lives in the 10m LECZ [@tagtachian2023; @hauer2020sea].
+
+Below is a satellite preview of LECZ coverage in **Puerto Rico**: 
+
+![](data/images/lecz_pr/lecz_satellite.png)
 
  
 ::: {.callout-tip}
@@ -85,13 +119,18 @@ There are many resources to guide a new learner, so enjoy learning!
 # Accessing Data
 
 
-This lesson uses the Python language. These are the equired packages to run this lesson `impumspy`, `pandas`, `arcgis`, `zipfile`, and `numpy`. Optional packages include `glob`, `geopandas`, and `earthaccess`.
+In this section, you'll load the required Python libraries to work with census data, geospatial files, and visualization tools. These packages allow you to:
 
-Use `import` to import the necessary packages:
+- Authenticate and extract data from the IPUMS API
+- Manipulate and analyze tabular and spatial data
+- Create maps and statistical graphics
+- Work with ArcGIS-hosted feature layers and Earthdata content
+
+Below is the full import block. Core packages are required; others are optional or used for extended functionality.
+
 
 ```{python}
 #| results: hide
-
 
  
 import arcgis
@@ -115,9 +154,7 @@ import matplotlib.colors as colors
 from matplotlib.ticker import FuncFormatter
 
 # Geospatial libraries
-import geopandas as gpd
-import arcgis
-from arcgis.gis import GIS
+import geopandas as gpd  
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from arcgis.raster import Raster
 import arcgis.mapping  # For using WebMap, MapView, etc.
@@ -129,28 +166,27 @@ import earthaccess as ea
 from ipumspy.api import IpumsApiClient
 from ipumspy import AggregateDataExtract, readers, ddi
 
-from ipumspy import readers, ddi
-from ipumspy.api import IpumsApiClient
-from ipumspy import AggregateDataExtract
+from ipumspy import readers, ddi 
 
 from ipumspy.api.extract import NhgisDataset
 
 import seaborn as sns
+
 import matplotlib.pyplot as plt
+
 from matplotlib.ticker import FuncFormatter
 
 
 from shapely.geometry import Polygon
 
 import folium 
-  
  
 
 
 ```
 
 
-This lesson uses arcgis version of 2.4.0 or higher:
+This lesson uses `arcgis` version of 2.4.0 or higher:
 
 ```{python}
 # Check the arcgis version for mapping properly 
@@ -183,18 +219,20 @@ After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. Y
 
 ```{python} 
 #| eval: false
-
  
-load_dotenv()
-IPUMS_API_KEY = os.getenv("EMAIL", "API_KEY")
 
-if IPUMS_API_KEY is None:
-    raise ValueError("API key not found. Make sure IPUMS_API_KEY is defined in your .env file.")
+# # Step 1: Load environment variables
+# load_dotenv()
 
-# Step 2: Initialize IPUMS client
-ipums = IpumsApiClient(IPUMS_API_KEY)
+# # Step 2: Retrieve API key from .env file
+# IPUMS_API_KEY = os.getenv("IPUMS_API_KEY")  # Replace with your actual key name if different
 
+# # Step 3: Validate that the key was loaded
+# if IPUMS_API_KEY is None:
+#     raise ValueError("API key not found. Ensure 'IPUMS_API_KEY' is set in your .env file.")
 
+# # Step 4: Initialize the IPUMS API client
+# ipums = IpumsApiClient(IPUMS_API_KEY)
 ```
 
 ```{python} 
@@ -214,25 +252,26 @@ ipums = IpumsApiClient(IPUMS_API_KEY)
 
 ```
 
+### Downlaoding shapefiles from IPUMS
 
+Before downloading spatial data, we need to identify the correct **shapefile name** for our area of interest—in this case, **Puerto Rico block groups for 2010**
 
-
-Getting shapefile metadata in order to get the filename for downloading the shapefile in the below chunk.
-
-This block will be returning the shapefile name of interest so that we can download it in the next block
-
+The code below queries the NHGIS metadata catalog using the IPUMS API and lists matching shapefiles based on geography, level, and year.
 
 ```{python}
 
-# After registering to NHGIS, please run this code
+# Search IPUMS NHGIS metadata for shapefiles related to Puerto Rico block groups (2010)
 
 for page in ipums.get_metadata_catalog("nhgis", metadata_type="shapefiles"):
     for shapefile in page["data"]:
-        if shapefile["extent"] == "Puerto Rico":
-            if shapefile["geographicLevel"] == "Block Group" and shapefile["year"] == "2010":
-                print( "Name: " + shapefile["name"] + " | Year: " + shapefile["year"])
+        if (
+            shapefile["extent"] == "Puerto Rico"
+            and shapefile["geographicLevel"] == "Block Group"
+            and shapefile["year"] == "2010"
+        ):
+            print(f"Name: {shapefile['name']} | Year: {shapefile['year']}")
 ```
-### Downlaoding shapefiles from IPUMS
+
 
 With this API key, we can extract geospatial data from the IPUMS API. Using the geo level `blck_grp`, we can speicify that we want to extract data at the Block Group level.
 
@@ -270,9 +309,6 @@ extract = AggregateDataExtract(
 
 
 ```
-
-
-
 
 This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.
  
@@ -333,11 +369,11 @@ with ZipFile(csv) as z:
 ```
 
 
+### Cleaning and processing IPUMS data
+
 This section uses NHGIS Codebook file(s) that were automatically included in your data extract to rename cryptic column codes in the 2010 and 2020 datasets to human-readable labels. These codes correspond to census tables on sex by age and housing occupancy. Renaming makes analysis and visualization much easier later in your workflow.
 
 Look for the .txt file(s) in the zipped file you downloaded, and they will shed some light on your data.
-
-### Cleaning and processing data
 
 ```{python}
 
@@ -558,11 +594,11 @@ pr_df_2020 = pr_df_2020.dropna(axis=1, how='all')  # Clean 2020 data
 ```
 
 
-This step calculates the total population aged 60 and over by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:
+This step calculates the total population aged 60 and over (Population 60+) by summing the relevant male and female age group columns. It then computes two new indicators for both 2010 and 2020:
 
--   AgedRatio: the share of the total population that is 60+
+-   `Pop60pRatio`: the share of the total population that is 60+
 
--   VacantRatio: the share of housing units that are vacant
+-   `VacantRatio`: the share of housing units that are vacant
 
 These ratios help measure aging and housing vacancy patterns in Puerto Rico over time.
 
@@ -591,29 +627,37 @@ pop60plus_cols = [
 
 # Calculate totals and ratios for 2010
 pr_df_2010["Pop60plus_total"] = pr_df_2010[pop60plus_cols].sum(axis=1)  # Sum 60+ pop
-pr_df_2010["AgedRatio"] = pr_df_2010["Pop60plus_total"] / pr_df_2010["Total_Population"]  # 60+ share
+pr_df_2010["Pop60pRatio"] = pr_df_2010["Pop60plus_total"] / pr_df_2010["Total_Population"]  # 60+ share
 pr_df_2010["VacantRatio"] = pr_df_2010["Vacant"] / pr_df_2010["Total_Housing_Units"]  # Vacancy share
 
 # Calculate totals and ratios for 2020
 pr_df_2020["Pop60plus_total"] = pr_df_2020[pop60plus_cols].sum(axis=1)
-pr_df_2020["AgedRatio"] = pr_df_2020["Pop60plus_total"] / pr_df_2020["Total_Population"]
+pr_df_2020["Pop60pRatio"] = pr_df_2020["Pop60plus_total"] / pr_df_2020["Total_Population"]
 pr_df_2020["VacantRatio"] = pr_df_2020["Vacant"] / pr_df_2020["Total_Housing_Units"]
 
 
 ```
 
-Lets create a scatter plot to explore the relationship between aging and housing vacancy in Puerto Rico in 2010. Each point represents a geographic unit (e.g., block group), where the x-axis shows the Vacant Ratio (share of housing units that are vacant), and the y-axis shows the Aged Ratio (share of population aged 60+).
+# Exploring data with graphs
 
-This kind of visualization helps reveal spatial patterns or clusters related to population aging and housing dynamics.
+## Compare two variables in Scatterplot
+
+ To explore the relationship between **Population 60+** and **housing vacancy**, we'll create a **scatter plot** using data from 2010. Each point represents a block group in Puerto Rico:
+
+- The **x-axis** shows the **vacant housing ratio** 
+- The **y-axis** shows the **Population 60+ ratio**
+
+This kind of visualization helps reveal spatial patterns or clusters related to population 60+ and housing dynamics.
+
 
 ```{python}
 
 # Plot Aged Ratio vs. Vacant Ratio for 2010
-plt.scatter(pr_df_2010["VacantRatio"], pr_df_2010["AgedRatio"], alpha=0.3)  # Transparent points
+plt.scatter(pr_df_2010["VacantRatio"], pr_df_2010["Pop60pRatio"], alpha=0.3)  # Transparent points
 
-plt.title("Puero Rico Aged Ratio (60+) over Vacancy Ratio, 2010")  # Plot title
+plt.title("Puero Rico Population 60 + Ratio  over Vacancy Ratio, 2010")  # Plot title
 plt.xlabel("Vacant Ratio")  # X-axis label
-plt.ylabel("Aged Ratio")  # Y-axis label
+plt.ylabel("Population 60+ Ratio")  # Y-axis label
 plt.grid(True)  # Show grid
 plt.tight_layout()  # Adjust layout
 plt.show()  # Display plot
@@ -621,8 +665,7 @@ plt.show()  # Display plot
 ```
 
 
-
-## Generating Age Pyramids
+## Generating Population Pyramids
 
 Another useful way to analyze popylation is with population pyramids for Puerto Rico using male and female population by age group, based on census block-level data. The pyramid compares the age structure visually between sexes, helping identify trends like population aging or gender imbalances in specific cohorts.
 
@@ -706,33 +749,44 @@ def combine_age_groups(df, male_prefix="Male: ", female_prefix="Female: "):
 
 ```
 
+To prepare for visualizing population structure, we first apply the `combine_age_groups()` function to our cleaned census data for 2010 and 2020. This step transforms narrow age bands into broader, more interpretable categories and reshapes the data for plotting population pyramids.
 
 ```{python}
 
-pyramid_2010 = combine_age_groups(pr_df_2010)
-pyramid_2020 = combine_age_groups(pr_df_2020)
+pyramid_2010 = combine_age_groups(pr_df_2010) #use defined function and apply the dataframe `pr_df_2010`
+pyramid_2020 = combine_age_groups(pr_df_2020) #use defined function and apply the dataframe `pr_df_2020`
 
 ```
 
 
-The horizontal population pyramid displays the average percent of Puerto Rico’s population in each age group, broken down by sex. Male bars extend left using negative values while Female bars extend right using positive values.
+The function below creates a horizontal population pyramid to compare Puerto Rico’s population structure in 2010 and 2020. Each bar represents the total population within a given age group, broken down by sex:
 
-A custom title, axis formatting, and color scheme are applied for clarity and polish.
+- Male values are shown on the left .
+- Female values are shown on the right.
+- Lighter colors represent 2010, and darker colors represent 2020.
+
+Custom axis formatting, color palettes, and layout tweaks are used to enhance visual clarity.
 
 ```{python}
-def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Population Pyramid (2010 vs 2020)"):
-    def abs_tick(x, pos):
+
+# Format axis ticks to show positive labels for both male and female sides
+def abs_tick(x, pos):
         return f"{abs(int(x)):,}"
 
-    age_labels = pyramid_2010["Age"]
-    y = np.arange(len(age_labels))
-    bar_height = 0.35
 
-    fig, ax = plt.subplots(figsize=(12, 10))
+def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Population Pyramid (2010 vs 2020)"):
+    
+    # Extract age group labels and set bar positions
+    age_labels = pyramid_2010["Age"]
+    y = np.arange(len(age_labels))        # One row per age group
+    bar_height = 0.35                     # Half-height bars for side-by-side comparison
+
+
+    fig, ax = plt.subplots()
 
     # Colors: 2010 (light), 2020 (dark)
-    male_colors = ["#c6dbef", "#2171b5"]
-    female_colors = ["#fdd0a2", "#e6550d"]
+    male_colors = ["#c6dbef", "#2171b5"]     # Blues
+    female_colors = ["#fdd0a2", "#e6550d"]   # Oranges
 
     # Plot Male bars (left)
     ax.barh(y - bar_height, -pyramid_2010["Male"], height=bar_height, color=male_colors[0], label="Male 2010")
@@ -745,53 +799,66 @@ def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Pop
     # Format axes
     ax.set_yticks(y - bar_height / 2)
     ax.set_yticklabels(age_labels)
+    # Add vertical axis line at center
     ax.axvline(0, color="gray", lw=0.8)
+    # Format x-axis with absolute values for readability
     ax.xaxis.set_major_formatter(FuncFormatter(abs_tick))
+     # Add light grid lines to x-axis
     ax.grid(axis='x', linestyle='--', linewidth=0.5, alpha=0.5)
 
+    # Dynamically set x-axis limits based on the largest population value
     max_val = max(
         pyramid_2010[["Male", "Female"]].values.max(),
         pyramid_2020[["Male", "Female"]].values.max()
     )
     ax.set_xlim(-max_val * 1.1, max_val * 1.1)
 
+    # Add chart title and axis labels
     ax.set_title(title)
     ax.set_xlabel("Population")
     ax.set_ylabel("Age Group")
+
+    # Add legend
     ax.legend(loc="lower right")
 
+    # Adjust layout to prevent label cutoff
     plt.tight_layout()
     plt.show()
 
 
 ```
 
+To generate the population pyramid comparing Puerto Rico in 2010 and 2020, we call the plotting function and pass in the pre-processed DataFrames.
 
 ```{python}
 
+# Plot population pyramid comparing Puerto Rico (2010 vs 2020)
 plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico")
 
 ```
 
 
-### Age Pyrmid of a single County
+### Visualizing Population 60+ in a Single County
+
+To compare demographic structure at a finer spatial scale, you can generate a population pyramid for any individual municipio (county) in Puerto Rico. The steps below demonstrate how to do this for Arecibo Municipio.
 
 ```{python}
+#show unique names of COUNTY column
 print(pr_df_2010["COUNTY"].unique())
 ```
 
+Select and change the COUNTY you want to plot below:
 ```{python}
+
+#Filter 2010 and 2020 datasets to only include Arecibo Municipio
 county_df_2010 = pr_df_2010[pr_df_2010["COUNTY"] == "Arecibo Municipio"]
 county_df_2020 = pr_df_2020[pr_df_2020["COUNTY"] == "Arecibo Municipio"]
 
+# Combine narrow age bands into broader categories for plotting
 county_pyr_2010 = combine_age_groups(county_df_2010)
 county_pyr_2020 = combine_age_groups(county_df_2020)
 
-```
-
-
-```{python}
-
+#Plot population pyramid for Arecibo Municipio
 plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, "Arecibo")
 
 ```
@@ -799,45 +866,65 @@ plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, "Arecibo")
 
 ## Municipio (County) analysis
 
+To compare demographic patterns at the **municipio (county)** level, we need to aggregate block group-level data up to the county level.
+
+The code below defines a helper function that:
+
+-   Sums total population, housing units, and selected variables by county
+-   Aggregates all age/sex columns needed for further analysis (like population pyramids)
+
+
 ```{python}
-def aggregate_to_county(df, county_col="COUNTY", male_prefix="Male", female_prefix="Female",  additional_cols=None):
+
+
+# Define a function to aggregate data from block group to county (municipio) level
+
+def aggregate_to_county(df, county_col="COUNTY", male_prefix="Male", female_prefix="Female", additional_cols=None):
     if additional_cols is None:
+        # Specify default columns to aggregate if not provided
         additional_cols = [
             'Total_Population', 'Total_Housing_Units', 
-            'Occupied', 'Vacant',  'Pop60plus_total'
+            'Occupied', 'Vacant', 'Pop60plus_total'
         ]
     
-    # Identify all relevant columns to aggregate
+    # Identify all male and female population columns by prefix
     population_cols = [col for col in df.columns if col.startswith(male_prefix) or col.startswith(female_prefix)]
     
-    # Combine with additional explicitly named columns (if they exist in df)
+    # Filter to additional columns that actually exist in the input DataFrame
     valid_additional_cols = [col for col in additional_cols if col in df.columns]
+    
+    # Final list of columns to group and aggregate
     group_cols = [county_col] + valid_additional_cols + population_cols
 
-    # Group by county and sum
+    # Group by county and sum all selected columns
     df_aggregated = df[group_cols].groupby(county_col, as_index=False).sum()
 
     return df_aggregated
 
 ```
 
+Now we apply the function to both the 2010 and 2020 datasets to produce county-level summaries.
+
 ```{python}
+
+# Apply the aggregation function to the 2010 data
 county_df_2010 = aggregate_to_county(pr_df_2010)
 
+# Apply the aggregation function to the 2020 data
 county_df_2020 = aggregate_to_county(pr_df_2020)
+
 
 ```
 
 
-
-
 ### Merginig Datasets
 
-This step prepares for comparison between the 2010 and 2020 datasets. 
+To enable side-by-side comparisons between 2010 and 2020, we merge the two county-level datasets. This allows us to compute changes in key indicators like total population, population 60+, and vacant housing units.
 
-It selects key columns (like total population, aged population, and vacancy) from the 2010 data and merges them with the full 2020 data using GISJOIN as a unique geographic identifier. 
+We use `"COUNTY"` as the merge key (geographic identifier) and apply suffixes to distinguish columns from the two years.
 
 The resulting `merged_df` DataFrame contains side-by-side values for both years, using suffixes to distinguish 2010 and 2020 columns.
+
 ```{python}
   
 
@@ -853,11 +940,19 @@ merged_df = county_df_2020.merge(
 
 ```
 
-## Comparing Time Series 
+### Comparing Time Series 
 
-To understand demographic and housing trends over time, we compare key indicators from different time periods. By calculating the absolute changes we can assess patterns of population decline, aging, and housing dynamics at the local level.
 
-This step calculates absolute changes between 2010 and 2020 for several key indicators: total population, population aged 60+, vacant housing units, and the ratios of aged population and vacancy. These new columns will help identify trends across geographic areas. Missing values in the AgedRatio_Change column are filled with 0 to ensure clean outputs.
+To evaluate demographic and housing shifts between 2010 and 2020, we calculate both **absolute** and **percentage** changes in key indicators at the county level.
+
+This includes:
+- Total population
+- Population 60+
+- Vacant housing units
+
+By comparing these metrics across decades, we can detect trends such as **population decline**, **housing vacancy growth**, and shifts in the **share of older adults**.
+
+The code below creates new columns in the `merged_df` DataFrame to store the absolute and percent changes for each indicator. Division-by-zero cases are handled safely using `.where()`
 
 ```{python}
  
@@ -888,37 +983,7 @@ merged_df["Vacant_Change_Pct"] = (
 ```
 
 
-# Plotting Graphs from IPUMS data:
-
-This visualization step uses a `Seaborn pairplot` to explore the relationships between key change variables from 2010 to 2020. 
-
-By plotting scatterplots for every pair of variables and histograms along the diagonal we can quickly spot correlations or patterns in population decline, aging, and housing vacancy across Puerto Rico’s geographic units.
-
-```{python}
- 
- 
-
-# Create pairwise plots with histograms on the diagonal
-sns.pairplot(merged_df[["Total_Pop_Change_Pct", "Pop60plus_Change_Pct", "Vacant_Change_Pct", "Total_Population_2020", "Total_Population_2010"]], diag_kind="hist",  corner=True, plot_kws= dict(marker="o",  facecolors='none', edgecolors = 'blue'  ))
-
-plt.suptitle("Pairwise Scatterplots and Histograms", y=1.02)  # Set overall title
-plt.tight_layout()
-plt.show()  # Display the plot
-
-
-```
-
-
-
-
-
- 
-
-By looking more closely at the histogram and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.
-
-## Comparing Counties
-
-To better evaluate how unusual each area's change is, we compute z-scores for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
+By looking more closely at the graphs and comparing vacancy differences between 2010 and 2020, it becomes evident that quantile-based classification may not accurately reflect true differences across areas. In cases with extreme outliers, quantile breaks can distort interpretation.
 
 
 ::: {.callout-tip }
@@ -928,6 +993,9 @@ To better evaluate how unusual each area's change is, we compute z-scores for ea
 A z-score tells us how many standard deviations a value is from the mean. A positive z-score means the value is above the mean. A negative z-score means it's below the mean. Z-scores help us compare variables on different scales and identify outliers—typically anything above +2 or below –2 is considered unusually high or low.
 
 :::
+
+
+To better evaluate how unusual each area's change is, we compute z-scores for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
 
 
 ```{python}
@@ -944,6 +1012,19 @@ for var in ["Pop60plus_Change_Pct", "Vacant_Change_Pct" ]:
 ```
 
 
+
+## Plotting Graphs from IPUMS data:
+
+To visually explore the relationships between key demographic and housing changes from 2010 to 2020, we use a Seaborn `pairplot()`. This plot creates:
+
+- **Scatterplots** for each pair of variables to reveal possible correlations
+- **Histograms** along the diagonal to show the distribution of each variable
+
+This is a quick way to identify patterns such as **population decline**, **growth in the 60+ population**, or **rising housing vacancy** across Puerto Rico’s counties.
+
+
+
+
 This `pairplot` function uses the z-score standardized versions of the change variables to compare their relative behavior across Block Groups in a **scatterplot matrix**. 
 
 By putting all variables on the same scale (mean = 0, std = 1), we can asily spot strong linear relationships, identify clusters or outliers, and ompare change intensity across different domains (e.g., aging vs. vacancy).
@@ -955,22 +1036,56 @@ Can you spot any linear trends in the scatterplots?
 
 
 
+```{python}
 
-This scatterplot shows the relationship between changes in vacancy rates and aging ratios (ages 60+) using their z-scores, allowing for meaningful comparison on a standardized scale for the two variables.
 
-This type of scaling:
+# Select key columns to compare
+plot_vars = [
+    "Total_Pop_Change_Pct",      # % change in total population
+    "Pop60plus_Change_Pct",      # % change in population 60+
+    "Vacant_Change_Pct",         # % change in vacant housing units
+    "Total_Population_2020",     # Population in 2020
+    "Total_Population_2010"      # Population in 2010
+]
 
-- Keeps the area near zero linear (for interpretability)
+# Generate pairwise scatterplots with histograms on the diagonal
+sns.pairplot(
+    merged_df[plot_vars],
+    diag_kind="hist",
+    corner=True,  # Show only lower triangle
+    plot_kws=dict(marker="o", facecolors='none', edgecolors='blue')
+)
 
-- Compresses extreme values
+# Add overall title and adjust layout
+plt.suptitle("Pairwise Scatterplots and Histograms (2010–2020 Changes)", y=1.02)
+plt.tight_layout()
+plt.show()
 
-- Handles both positive and negative changes symmetrically.
+```
 
-This visualization helps identify whether increases in older populations are associated with changes in housing vacancy—and how extreme those shifts are across Puerto Rico.
+
+
+# Comparing Counties Spatially
+
+
+To fully understand how population and housing trends vary across **Puerto Rico’s counties**, we need to combine *attribute data* (e.g., census population values) with *spatial boundaries*.
+
+In this section, we will:
+- Use the `arcgis` Python package to access a **hosted feature layer** from ArcGIS Online containing county (municipio) geometries for Puerto Rico.
+- Merge this geometry with our 2010–2020 demographic dataset to form a **Spatially Enabled DataFrame (SEDF)** ready for mapping.
+- Create an interactive map that classifies counties based on changes in population 60+.
+- Overlay the **Low Elevation Coastal Zone (LECZ)** polygon layer to highlight which counties intersect with flood-prone coastal zones.
+- Generate a second map to visualize LECZ exposure and examine spatial patterns.
+
+This spatial analysis allows us to move beyond raw tables and visually explore which areas are experiencing population shifts, housing vacancies, and environmental vulnerability in tandem.
+
 
 ## Interact with ArcGIS Online Portal
 
-ArcGIS Online or Enterprise portal are tools that retrieve a specific hosted feature layers. We use the `arcgis` package to find features of U.S. counties (2020), and filter it to include only features where STATEFP = '72', which corresponds to Puerto Rico. The resulting spatial data is converted into a Spatially Enabled DataFrame (sedf) using ArcGIS' Python API.
+To retrieve official county boundaries for Puerto Rico, we use the `arcgis` Python package to access a "hosted feature layer" from **ArcGIS Online**. This layer includes U.S. county geometries from the 2020 Census.
+
+We filter the layer to include only features where `STATEFP = '72'`, which corresponds to Puerto Rico, and convert the result into a **Spatially Enabled DataFrame (SEDF)** for further analysis.
+
 
 ```{python}
 
@@ -987,7 +1102,7 @@ sedf = layer.query(where="STATEFP = '72'").sdf  # Convert to Spatially Enabled D
 
 ```
 
-We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `GISJOIN` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
+We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `COUNTY` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
 
 ```{python}
 
@@ -999,53 +1114,37 @@ pr_sedf_ipums = sedf.merge(merged_df, left_on="NAMELSAD", right_on="COUNTY", how
 
 print("`pr_sedf_ipums` DataFrame results after table join: ", len(pr_sedf_ipums))
  
-
-# # # Function to safely convert Esri-style rings to shapely geometry
-# def esri_to_shapely(geom):
-#     try:
-#         rings = geom["rings"]
-#         if len(rings) == 1:
-#             return Polygon(rings[0])
-#         else:
-#             return MultiPolygon([Polygon(r) for r in rings])
-#     except Exception as e:
-#         print(f"Error in geometry: {e}")
-#         return None
-
-# # Apply the function to create a shapely geometry column
-# pr_sedf_ipums["geometry"] = pr_sedf_ipums["SHAPE"].apply(esri_to_shapely)
-
-# Create a GeoDataFrame with correct CRS (Esri Web Mercator)
-# pr_sedf_ipums = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry", crs="EPSG:3857")
-
-# pr_sedf_ipums = GeoAccessor.from_geodataframe(pr_sedf_ipums)
+ 
 
 
 ```
 
 
+Now that we've merged demographic data with county geometries, we can use `arcgis` to create an interactive **choropleth map**. The map classifies Puerto Rico’s counties based on **z-scores of Population 60+ change** (`Pop60plus_dz`).
 
 ```{python}
  
 
-# Set up map
+## Set up an interactive map centered on Puerto Rico
 gis = GIS()
 m = gis.map("Puerto Rico")
 
-# Classify values manually (e.g., quantiles)
-num_classes = 5
-field = "Pop60plus_dz"
-column_values = pr_sedf_ipums[field].dropna()
+# Define classification settings for choropleth
+num_classes = 5                                      # Number of quantile classes
+field = "Pop60plus_dz"                               # Field to visualize (z-score of 60+ population change)
+column_values = pr_sedf_ipums[field].dropna()        # Drop missing values
 
-# Create class breaks
+# Create class breaks using quantiles
 breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
-colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]  # RdBu reversed
 
-# Define classBreaksRenderer
+# Define a color palette (RdBu reversed)
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]
+
+# Build a renderer to style the polygons
 renderer = {
     "type": "classBreaks",
     "field": field,
-    "classificationMethod": "esriClassifyQuantile", 
+    "classificationMethod": "esriClassifyQuantile",
     "minValue": float(min(column_values)),
     "classBreakInfos": [
         {
@@ -1055,7 +1154,7 @@ renderer = {
             "symbol": {
                 "type": "esriSFS",
                 "style": "esriSFSSolid",
-                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],  # RGBA color
                 "outline": {
                     "color": [0, 0, 0, 40],
                     "width": 0.4,
@@ -1068,72 +1167,87 @@ renderer = {
     ]
 }
 
-# Plot with renderer
+# Plot the spatial data with the custom renderer
 pr_sedf_ipums.spatial.plot(
     map_widget=m,
     renderer=renderer,
     legend=True
 )
 
+# Enable legend display
 m.legend.enabled = True
+
+# Display the interactive map
 m
 
 
 ```
 
-Red representing high values and blue representing low values
+Map of relative change in population 60+ in Puerto Rico's Municipios. Red representing high values and blue representing low values.
 
- 
+## Low Elevation Coastal Zone Spatial Analysis with IPUMS counties
 
-# Search for LECZ MERIT-DEM layer on ArcGIS Online's Living Atlas portal.
+To examine which counties in Puerto Rico are exposed to coastal hazards, we will overlay **LECZ (Low Elevation Coastal Zone)** polygons with our county-level IPUMS data. These polygons identify areas vulnerable to sea-level rise and storm surge—typically defined by elevation thresholds (e.g., 5 or 10 meters).
 
-With the arcgis package, we can search online for the polygons of the LECZ areas in Puerto Rico
+The first step is to search **ArcGIS Online’s Living Atlas** using the `arcgis` Python package to locate an LECZ feature layer for Puerto Rico.
 
 
 ```{python}
-lecz = gis.content.search("title:Low Elevation Coastal Zone (LECZ) for Puerto Rico", item_type="Feature")
 
+# Search ArcGIS Online for LECZ feature layers specific to Puerto Rico
+lecz = gis.content.search(
+    "title:Low Elevation Coastal Zone (LECZ) for Puerto Rico",
+    item_type="Feature"
+)
+
+# Display search results to verify that relevant layers were found
 for item in lecz:
     display(item)
 
-
-lecz_layer = lecz[0].layers[0]  # Assuming the first layer is the one you want
-
-
+# Select the first matching layer (assumes the most relevant appears first)
+lecz_layer = lecz[0].layers[0]
 
 
 ```
 
+Once we've identified the appropriate LECZ layer from ArcGIS Online, we query it to retrieve only the polygons where `lecz_zone > 0`. These represent areas that fall within low-elevation thresholds and are considered exposed to coastal flooding or sea-level rise.
+ 
 ```{python}
 
+# Query the selected LECZ layer to extract only the zones with elevation risk
+# The field `lecz_zone > 0` filters out non-exposed areas (e.g., 0 = not LECZ)
 lecz_sdf = lecz_layer.query(where="lecz_zone > 0").sdf
 
 ``` 
 
-## Examine which counties are exposed to LECZ visually
+### Map Counties with Population 60+ Change and LECZ Exposure
 
-
+This interactive map overlays two spatial layers:
+- A **choropleth** of Puerto Rico counties, colored by standardized change in **population 60+** from 2010–2020.
+- Polygons representing the **Low Elevation Coastal Zone (LECZ)**
 ```{python}
 
 
-# Set up map
+# Set up ArcGIS map centered on Puerto Rico
 gis = GIS()
 m = gis.map("Puerto Rico")
 
-# Classify values manually (e.g., quantiles)
+# Define number of quantile-based classes
 num_classes = 5
-field = "Pop60plus_dz"
+field = "Pop60plus_dz"  # Z-score of population 60+ change
 column_values = pr_sedf_ipums[field].dropna()
 
-# Create class breaks
+# Generate class breaks using quantiles
 breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
-colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]  # RdBu reversed
 
-# Define classBreaksRenderer
+# Define a reversed RdBu color palette
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]
+
+# Construct classBreaksRenderer for county layer
 renderer = {
     "type": "classBreaks",
-    "field": "Pop60plus_dz",
-    "classificationMethod": "esriClassifyQuantile", 
+    "field": field,
+    "classificationMethod": "esriClassifyQuantile",
     "minValue": float(min(column_values)),
     "classBreakInfos": [
         {
@@ -1143,7 +1257,7 @@ renderer = {
             "symbol": {
                 "type": "esriSFS",
                 "style": "esriSFSSolid",
-                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],  # RGBA
                 "outline": {
                     "color": [0, 0, 0, 40],
                     "width": 0.4,
@@ -1156,18 +1270,20 @@ renderer = {
     ]
 }
 
-# Plot with renderer
+# Plot county choropleth using the custom renderer
 pr_sedf_ipums.spatial.plot(
     map_widget=m,
     renderer=renderer,
     legend=True
 )
 
+# Overlay the LECZ polygon layer (unclassified)
 lecz_sdf.spatial.plot(
     map_widget=m
-) 
-m.legend.enabled = True
+)
 
+# Enable legend and display the map
+m.legend.enabled = True
 m
 
 
@@ -1176,212 +1292,246 @@ m
 
 
  
-##  Overlay Analysis
+###  Overlay Analysis
 
 
+To assess which counties intersect with **Low Elevation Coastal Zones (LECZs)**, we perform a spatial overlay. This involves:
+
+1. Converting both LECZ and county feature layers into **GeoDataFrames** with proper geometries.
+2. Dissolving the LECZ polygons into a single **MultiPolygon** for simplified spatial comparison.
+3. Using a **spatial join** to check which counties intersect with LECZ areas.
+4. Flagging each county with a binary value (`lecz = 1` if exposed, `0` if not).
+5. Visualizing the results with a **Folium choropleth map**.
 
 ```{python}
 
  
- 
-# 2. Apply to create valid Shapely geometry column
+ # Convert SHAPE field to valid Shapely geometry
+lecz_sdf["geometry"] = lecz_sdf["SHAPE"]
+pr_sedf_ipums["geometry"] = pr_sedf_ipums["SHAPE"]
 
-lecz_sdf['geometry'] = lecz_sdf['SHAPE']  
-
-pr_sedf_ipums['geometry'] = pr_sedf_ipums['SHAPE']  
-
- 
-
-lecz_gdf = gpd.GeoDataFrame(lecz_sdf, geometry='geometry')
-
-
+# Convert both to GeoDataFrames
+lecz_gdf = gpd.GeoDataFrame(lecz_sdf, geometry="geometry")
 pr_ipums_gdf = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry")
 
-
-
+# Set projection (Esri Web Mercator)
 lecz_gdf.set_crs(epsg=3857, inplace=True)
-
 pr_ipums_gdf.set_crs(epsg=3857, inplace=True)
 
-
- 
+# Create a single dissolved LECZ polygon (MultiPolygon)
 lecz_gdf["dissolve_id"] = 1
-
-# Dissolve all rows into one MultiPolygon
 lecz_union_gdf = lecz_gdf.dissolve(by=None)
- 
 
 
 ```
 
 
-
+To determine which counties are geographically exposed to coastal risk, we perform a spatial join with the `sjoin()` function. This operation checks whether each county geometry **intersects** the dissolved LECZ polygon.
 
 ```{python}
 
-pr_counties_lecz_intersect = gpd.sjoin(pr_ipums_gdf, lecz_union_gdf, how="left", predicate="intersects")
+# Perform spatial join: find counties that intersect the dissolved LECZ zone
+pr_counties_lecz_intersect = gpd.sjoin(
+    pr_ipums_gdf, lecz_union_gdf, how="left", predicate="intersects"
+)
 
 ```
 
 
+After the spatial join, we rename and standardize the LECZ flag column. 
+
+Counties that intersect the LECZ polygon are assigned `1`; all others are assigned `0`
 
 ```{python}
- 
- 
-# Rename the column
+
+ # Rename the joined column to 'lecz' for clarity
 pr_counties_lecz_intersect = pr_counties_lecz_intersect.rename(columns={"dissolve_id": "lecz"})
 
-# Replace NaN with 0 and 1.0 with 1
-pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].fillna(0)  # Replace NaN with 0
-pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].replace(1.0, 1)  # Replace 1.0 with 1
+# Replace missing values (non-intersections) with 0
+pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].fillna(0)
+
+# Ensure values are binary: convert float 1.0 to integer 1
+pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].replace(1.0, 1)
+
+# Final conversion to integer type
 pr_counties_lecz_intersect["lecz"] = pr_counties_lecz_intersect["lecz"].astype(int)
 
 
-
 ```
 
+### Plot Ovelay Analysis on Map
+
+
+To display the LECZ exposure choropleth in a web map, we:
+- Reproject to WGS84 (`EPSG:4326`)
+- Ensure column types are correct
+- Add a unique string `id` field
+- Calculate map center for display
 
 ```{python}
 
  
+# Reproject to WGS84 (required for most web maps)
 gdf = pr_counties_lecz_intersect.to_crs(epsg=4326)
 
-# Ensure 'lecz' is binary int and 'id' is string
+# Ensure LECZ flag is binary integer
 gdf["lecz"] = gdf["lecz"].fillna(0).astype(int)
 
-
-# Add unique ID column for choropleth
+# Add unique string ID column for folium mapping
 gdf = gdf.reset_index(drop=True)
 gdf["id"] = gdf.index.astype(str)
 
-
-# Get bounds
+# Calculate map center from spatial extent
 minx, miny, maxx, maxy = gdf.total_bounds
-
-# Compute center of bounding box
 center = [(miny + maxy) / 2, (minx + maxx) / 2]
 
+
 ```
+
+We use `folium` to render an interactive **choropleth map** that shows which counties intersect with the **Low Elevation Coastal Zone (LECZ)**. Counties are colored based on a binary indicator: 
+
+- `1` = exposed to LECZ  
+- `0` = not exposed
 
 ```{python}
 
 
-
+# Initialize a folium map centered on Puerto Rico
 m = folium.Map(location=center, zoom_start=8)
 
-
-# Choropleth layer for one variable (e.g., 'TotalPopulation_2020')
+# Add a choropleth layer based on LECZ exposure
 folium.Choropleth(
-    geo_data=gdf,
-    data=gdf,
-    columns=["id", "lecz"],
-    key_on="feature.properties.id",
-    fill_color="PuOr",
-    fill_opacity=0.7,
-    line_opacity=0.2,
-    legend_name="LECZ zone (1 = Inside, 0 = Outside)"
+    geo_data=gdf,                        # GeoJSON geometry source
+    data=gdf,                            # Data with values to map
+    columns=["id", "lecz"],              # Key columns (unique ID, value)
+    key_on="feature.properties.id",      # Match using 'id' property
+    fill_color="PuOr",                   # Color scheme (purple-orange diverging)
+    fill_opacity=0.7,                    # Transparency of fill
+    line_opacity=0.2,                    # Border opacity
+    legend_name="LECZ Zone (1 = Inside, 0 = Outside)"  # Legend label
 ).add_to(m)
 
-# Show map
+# Display the map
 m
 
 ```
 
 
 
-# Comparing populaitons in and out of the LECZ
+### Comparing populations in and out of the LECZ
+
+
+To explore how demographic indicators differ between counties exposed to the **Low Elevation Coastal Zone (LECZ)** and those that are not, we:
+- Subset relevant columns
+- Group data by `lecz` status (`1 = inside`, `0 = outside`)
+- Compute summary statistics for each group
 
 ```{python}
 
  
-
-
+# Step 1: Select columns to include in the analysis
 cols_to_include = ["lecz", "Total_Population_2020"] + [
     col for col in gdf.columns if col.endswith("_Pct") or col.endswith("_dz")
 ]
 
+# Subset and clean the data
 df = gdf[cols_to_include].dropna()
 df["lecz"] = df["lecz"].astype(int)
 
 # Step 2: Build aggregation dictionary
+# Start with average total population
 agg_dict = {
     "Total_Population_2020": ("Total_Population_2020", "mean"),
 }
+
+# Add all percentage and z-score columns to be averaged
 for col in df.columns:
     if col.endswith("_Pct") or col.endswith("_dz"):
         agg_dict[col] = (col, "mean")
 
-# Add count separately
+# Also include a count of counties per group
 agg_dict["count"] = ("Total_Population_2020", "count")
 
-# Step 3: Group and aggregate
+# Step 3: Group by LECZ (0 = outside, 1 = inside) and compute means
 summary = df.groupby("lecz").agg(**agg_dict)
 
-# Step 4: Rename index for readability
+# Step 4: Rename index values for clarity
 summary.index = summary.index.map({0: "Outside LECZ Mean", 1: "Inside LECZ Mean"})
 
-# Create a new DataFrame with rounded summary
+# Step 5: Round values for display
 summary_df = summary.round(2)
 
-
-
-# Group and sum
+# Step 6: Compute total population for each group
 population_sums = df.groupby("lecz")["Total_Population_2020"].sum()
-
-# Optional: Rename for clarity
 population_sums.index = population_sums.index.map({0: "Outside LECZ", 1: "Inside LECZ"})
 
-# Print result
+# Display results
 print("Total Population by LECZ Group:")
 print(population_sums)
 
-# Now you can use it like any regular DataFrame
+print("\nAverage Demographic and Housing Indicators by LECZ Group:")
 print(summary_df)
+
 
 ```
 
 
 
 
+This step uses a Seaborn `pairplot` to explore pairwise relationships among key demographic and housing variables. The scatterplots are grouped by **LECZ exposure (`Inside` vs. `Outside`)**, allowing visual comparison of patterns such as population loss, aging, and housing vacancy.
+ 
 
 ```{python} 
 
-# Select variables to plot
+# Select key variables to include in the pairplot
 plot_vars = [
-    "Total_Pop_Change_Pct",
-    "Pop60plus_Change_Pct",
-    "Vacant_Change_Pct",
-    "Total_Population_2020",
-    "Total_Population_2010",
-    "lecz"
+    "Total_Pop_Change_Pct",      # % change in total population (2010–2020)
+    "Pop60plus_Change_Pct",      # % change in 60+ population
+    "Vacant_Change_Pct",         # % change in vacant housing units
+    "Total_Population_2020",     # Total population in 2020
+    "Total_Population_2010",     # Total population in 2010
+    "lecz"                       # LECZ exposure (binary)
 ]
 
-# Drop missing values
+# Drop any rows with missing values in selected columns
 df_pair = gdf[plot_vars].dropna()
-df_pair["lecz"] = df_pair["lecz"].astype(int)  # Ensure it's an int or categorical
 
-# Optional: relabel LECZ for nicer legend
-df_pair["LECZ_Label"] = df_pair["lecz"].map({0: "Outside LECZ", 1: "Inside LECZ"})
+# Ensure 'lecz' is treated as an integer for grouping
+df_pair["lecz"] = df_pair["lecz"].astype(int)
 
-# Now plot (omit 'lecz' itself from x/y vars)
+# Create a readable LECZ label for plotting
+df_pair["LECZ_Label"] = df_pair["lecz"].map({
+    0: "Outside LECZ",
+    1: "Inside LECZ"
+})
+
+# Create pairwise scatterplots for all selected variables (excluding 'lecz')
 sns.pairplot(
     df_pair,
-    vars=plot_vars[:-1],  # exclude 'lecz'
-    hue="LECZ_Label",
-    diag_kind="hist",
-    corner=True,
-    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7)
+    vars=plot_vars[:-1],          # Exclude 'lecz' from axes
+    hue="LECZ_Label",             # Color by LECZ category
+    diag_kind="hist",             # Histogram on diagonal
+    corner=True,                  # Lower triangle only
+    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7)  # Styling
 )
 
+# Add a super title and adjust layout
 plt.suptitle("Pairwise Scatterplots by LECZ", y=1.02)
 plt.tight_layout()
-plt.show()  
+plt.show()
 
 ```
 
 
 
-# Pyramid Comparison
+### LECZ Population Pyramid Comparison
+
+ 
+To assess how age structure varies by coastal exposure, we build **two population pyramids**: One for counties **inside** the Low Elevation Coastal Zone (LECZ); One for counties **outside** the LECZ. 
+
+This allows us to compare how the age distribution—particularly among older populations—differs by exposure to coastal flood risk.
+
+
 
 
 ```{python}
@@ -1439,7 +1589,7 @@ def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020):
     y = np.arange(len(age_labels))
     bar_height = 0.4
 
-    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 14), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(nrows=2,  sharex=True)
 
     # OUTSIDE LECZ (lecz = 0) — Top
     ax1.barh(y - bar_height/2, -pyr2010["Male_0"], height=bar_height, color="#c6dbef", label="Male 2010")
@@ -1496,4 +1646,19 @@ pyramid_2020 = combine_age_groups(df_2020, suffix="_2020")
 plot_pyramid_stacked_by_lecz(pyramid_2010, pyramid_2020)
 
 ```
+
+
+# Conclusion
+
+You’ve just completed a comprehensive, data-rich lesson that explored how to integrate **demographic** and **geospatial** information to understand population vulnerability in Puerto Rico—especially in relation to **Low Elevation Coastal Zones (LECZs)**.
+
+Throughout this lesson, we were able to:
+
+- Extract detailed **block group–level census data** for Puerto Rico from 2010 and 2020.
+- Visualize **population pyramids** and track demographic changes, including the increase in the population aged 60 and older.
+- Merge demographic indicators with **spatial boundaries** from ArcGIS Online to support spatial analysis.
+- Conduct an **overlay analysis** with LECZ polygons to identify counties most exposed to coastal flooding.
+- Compare key metrics (e.g., population loss, vacancy, aging) **inside vs. outside** of the LECZ.
+ 
+
 
