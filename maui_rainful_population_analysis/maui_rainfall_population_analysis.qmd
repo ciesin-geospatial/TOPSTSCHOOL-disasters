@@ -1,0 +1,195 @@
+---
+title: "Mapping Maui Rainfall and Population – Census and Rain Gauge Data Integration"
+author: 
+  - "Raphael Sutiono, Kytt MacManus, Juan Martinez"
+format: 
+  html 
+bibliography: m303-maui-flood-bibliography.bib
+---
+
+## Overview
+
+This lesson demonstrates how to integrate U.S. Census population data with local rainfall station data for Maui. By combining demographic and environmental datasets, you can visualize which communities experienced the most rainfall during a flood event, supporting disaster impact analysis and response planning.
+
+## Learning Objectives
+
+By the end of this lesson, you will be able to:
+
+- Access and process U.S. Census tract population data using Python and the Census API.
+- Clean and map local rainfall station data from CSV format.
+- Overlay population and rainfall data to identify high-risk communities.
+- Create a reproducible, automated workflow for spatial disaster analysis.
+
+## Introduction
+
+Understanding the intersection of population and environmental hazards is crucial for effective disaster response. In this lesson, you will use Python to:
+
+- Download and map Maui census tracts and their populations.
+- Read and process rainfall observations from local weather stations.
+- Overlay these datasets on a single map, highlighting areas where heavy rainfall and high population density coincide.
+
+## Required Python Packages
+
+Before starting, ensure you have the following Python packages installed:
+
+- `pandas`
+- `geopandas`
+- `matplotlib`
+- `requests`
+- `zipfile`
+- `os`
+
+You can install any missing packages with:
+
+```
+pip install pandas geopandas matplotlib requests
+```
+
+## Data Sources
+
+- **Census Tract Boundaries:** U.S. Census Bureau TIGER/Line shapefiles (2023)
+- **Population Data:** U.S. Census Bureau ACS 1-Year Estimates (2023)
+- **Rainfall Data:** Local station CSV (e.g., `maui_rainfall.csv`)
+
+## Step 1: Download and Extract Maui Census Tract Boundaries
+
+This section downloads the latest census tract shapefile for Hawaii and loads it as a GeoDataFrame.
+
+```{python}
+import requests
+import zipfile
+import os
+import geopandas as gpd
+
+# Set URLs and file paths
+tiger_url = "https://www2.census.gov/geo/tiger/TIGER2023/TRACT/tl_2023_15_tract.zip"
+shapefile_zip = "tl_2023_15_tract.zip"
+shapefile_dir = "tl_2023_15_tract"
+
+# Download and extract if not already present
+if not os.path.exists(shapefile_dir):
+    r = requests.get(tiger_url)
+    with open(shapefile_zip, 'wb') as f:
+        f.write(r.content)
+    with zipfile.ZipFile(shapefile_zip, 'r') as zip_ref:
+        zip_ref.extractall(shapefile_dir)
+
+# Load shapefile
+tracts = gpd.read_file(os.path.join(shapefile_dir, 'tl_2023_15_tract.shp'))
+```
+
+## Step 2: Fetch ACS 2023 Population Data for Maui Tracts
+
+This section retrieves the latest census population data for Maui tracts and merges it with the shapefile.
+
+```{python}
+# Provide your Census API key
+API_KEY = "8c50345a791508c9286af54259245077f6e48c62"
+acs_url = (
+    "https://api.census.gov/data/2023/acs/acs1"
+    "?get=NAME,B01003_001E&for=tract:*&in=state:15+county:009"
+    f"&key={API_KEY}"
+)
+
+response = requests.get(acs_url)
+data = response.json()
+census_df = pd.DataFrame(data[1:], columns=data[0])
+census_df['GEOID'] = census_df['state'] + census_df['county'] + census_df['tract']
+
+# Merge population data with tracts
+tracts = tracts.merge(
+    census_df[['GEOID', 'B01003_001E']],
+    on='GEOID',
+    how='left'
+)
+tracts['B01003_001E'] = pd.to_numeric(tracts['B01003_001E'])
+```
+
+## Step 3: Read and Process Rainfall Station Data
+
+This section loads your rainfall station CSV, cleans it, and converts it to a spatial points layer.
+
+```{python}
+# Read rainfall CSV
+rain = pd.read_csv('maui_rainfall.csv')
+
+# Clean column names and convert rainfall to numeric
+rain.columns = [c.replace('"', '').strip() for c in rain.columns]
+rain['PRCP'] = pd.to_numeric(rain['PRCP'], errors='coerce')
+rain = rain.dropna(subset=['LATITUDE', 'LONGITUDE', 'PRCP'])
+
+# Convert to GeoDataFrame
+rain_gdf = gpd.GeoDataFrame(
+    rain,
+    geometry=gpd.points_from_xy(rain['LONGITUDE'], rain['LATITUDE']),
+    crs='EPSG:4326'
+)
+```
+
+
+## Step 4: Plot Maui Population and Rainfall Stations
+
+This section creates a map showing population by census tract (shaded blue) and overlays rainfall stations as red dots, sized by rainfall amount.
+
+```{python}
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(12, 10))
+tracts.plot(
+    column='B01003_001E',
+    cmap='Blues',
+    linewidth=0.8,
+    ax=ax,
+    edgecolor='0.8',
+    legend=True,
+    legend_kwds={'label': "Population by Tract"}
+)
+rain_gdf.plot(
+    ax=ax,
+    color='red',
+    markersize=rain_gdf['PRCP'] * 2,  # Adjust for visibility
+    alpha=0.7,
+    label='Rainfall (size = amount)'
+)
+plt.title('Maui Population by Census Tract and Rainfall Stations')
+plt.axis('off')
+plt.legend()
+plt.show()
+```
+
+## Step 5: Rainfall Time Series Analysis
+
+To complement the spatial map, we can visualize how rainfall changed over time across Maui by plotting the mean rainfall recorded at all stations for each date in the dataset.
+
+```{python}
+# Group by DATE and calculate mean rainfall across all stations
+rain_by_date = rain.groupby('DATE')['PRCP'].mean().reset_index()
+
+# Plot the time series
+plt.figure(figsize=(12, 6))
+plt.plot(rain_by_date['DATE'], rain_by_date['PRCP'], marker='o', linestyle='-')
+plt.title('Mean Rainfall Over Maui by Date')
+plt.xlabel('Date')
+plt.ylabel('Mean Rainfall (inches or mm)')
+plt.xticks(rotation=45)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
+
+## Interpretation
+
+- **Blue areas:** Census tracts with higher populations.
+- **Red dots:** Rainfall stations, with larger dots indicating more rainfall.
+- **Purpose:** This map helps identify communities at higher risk during the January 2024 flood event, supporting disaster response and planning.
+
+## Summary
+
+This workflow demonstrates how to:
+
+- Download and merge census tract boundaries and population data for Maui.
+- Process and map local rainfall station observations.
+- Overlay demographic and environmental data for actionable disaster analysis.
+
+You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.
