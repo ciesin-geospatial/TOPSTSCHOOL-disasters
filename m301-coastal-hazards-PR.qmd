@@ -809,7 +809,7 @@ def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Pop
     bar_height = 0.35                     # Half-height bars for side-by-side comparison
 
 
-    fig, ax = plt.subplots(constrained_layout=True)
+    fig, ax = plt.subplots(constrained_layout=True, figsize=(6.5, 6.5) )
 
     # Colors: 2010 (light), 2020 (dark)
     male_colors = ["#c6dbef", "#2171b5"]     # Blues
@@ -1596,7 +1596,7 @@ def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020):
     y = np.arange(len(age_labels))
     bar_height = 0.4
 
-    fig, (ax1, ax2) = plt.subplots(nrows=2,  sharex=True)
+    fig, (ax1, ax2) = plt.subplots(nrows=2,  sharex=True, figsize=(6.5, 7.5))
 
     # OUTSIDE LECZ (lecz = 0) — Top
     ax1.barh(y - bar_height/2, -pyr2010["Male_0"], height=bar_height, color="#c6dbef", label="Male 2010")
