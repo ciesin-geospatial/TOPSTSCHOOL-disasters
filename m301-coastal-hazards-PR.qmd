@@ -1079,7 +1079,8 @@ sns.pairplot(
     merged_df[plot_vars],
     diag_kind="hist",
     corner=True,  # Show only lower triangle
-    plot_kws=dict(marker="o", facecolors='none', edgecolors='blue')
+    plot_kws=dict(marker="o", facecolors='none', edgecolors='blue'),
+    height=2
 )
 
 # Add overall title and adjust layout
@@ -1519,8 +1520,10 @@ sns.pairplot(
     hue="LECZ_Label",             # Color by LECZ category
     diag_kind="hist",             # Histogram on diagonal
     corner=True,                  # Lower triangle only
-    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7)  # Styling
-)
+    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7),
+    height=2  # Styling 
+    )
+
 
 # Add a super title and adjust layout
 plt.suptitle("Pairwise Scatterplots by LECZ", y=1.02)
