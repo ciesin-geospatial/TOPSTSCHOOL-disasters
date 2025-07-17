@@ -133,15 +133,9 @@ Below is the full import block. Core packages are required; others are optional 
 ```{python}
 #| results: hide
 
- 
-print("1") 
-
-
 from arcgis.gis import GIS
 from arcgis.features import FeatureSet
  
-
-print("2")
 # Standard libraries
 import os
 import glob
@@ -151,26 +145,16 @@ from zipfile import ZipFile
 import pprint
 import requests
 
-
-
-print("3")
 # Data manipulation and plotting
 import pandas as pd
 import numpy as np
 
-
-
-    
 
 import matplotlib
 import matplotlib.pyplot as plt
  
 import matplotlib.colors as colors
 from matplotlib.ticker import FuncFormatter
- 
-
-
-
 
 
 # Geospatial libraries
@@ -178,8 +162,6 @@ import geopandas as gpd
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from arcgis.raster import Raster
 import arcgis.mapping  # For using WebMap, MapView, etc.
- 
-print("5") 
 
 # Earthdata access
 import earthaccess as ea
@@ -190,10 +172,6 @@ from ipumspy import AggregateDataExtract,   ddi
 from ipumspy import readers 
 
 from ipumspy.api.extract import NhgisDataset
-
-
-
-print("6")
 
 import seaborn as sns 
  
@@ -243,18 +221,18 @@ After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. Y
 #| eval: false
  
 
-# # Step 1: Load environment variables
-# load_dotenv()
+# Step 1: Load environment variables
+load_dotenv()
 
-# # Step 2: Retrieve API key from .env file
-# IPUMS_API_KEY = os.getenv("IPUMS_API_KEY")  # Replace with your actual key name if different
+# Step 2: Retrieve API key from .env file
+IPUMS_API_KEY = os.getenv("IPUMS_API_KEY")  # Replace with your actual key name if different
 
-# # Step 3: Validate that the key was loaded
-# if IPUMS_API_KEY is None:
-#     raise ValueError("API key not found. Ensure 'IPUMS_API_KEY' is set in your .env file.")
+# Step 3: Validate that the key was loaded
+if IPUMS_API_KEY is None:
+    raise ValueError("API key not found. Ensure 'IPUMS_API_KEY' is set in your .env file.")
 
-# # Step 4: Initialize the IPUMS API client
-# ipums = IpumsApiClient(IPUMS_API_KEY)
+# Step 4: Initialize the IPUMS API client
+ipums = IpumsApiClient(IPUMS_API_KEY)
 ```
 
 ```{python} 
@@ -275,7 +253,7 @@ ipums = IpumsApiClient(IPUMS_API_KEY)
 
 ```
 
-### Downlaoding shapefiles from IPUMS
+### Downloading shapefiles from IPUMS
 
 Before downloading spatial data, we need to identify the correct **shapefile name** for our area of interest—in this case, **Puerto Rico block groups for 2010**
 
@@ -1080,7 +1058,7 @@ sns.pairplot(
     diag_kind="hist",
     corner=True,  # Show only lower triangle
     plot_kws=dict(marker="o", facecolors='none', edgecolors='blue'),
-    height=2
+    height=1.7
 )
 
 # Add overall title and adjust layout
@@ -1521,8 +1499,8 @@ sns.pairplot(
     diag_kind="hist",             # Histogram on diagonal
     corner=True,                  # Lower triangle only
     plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7),
-    height=2  # Styling 
-    )
+    height=1.7  # Styling 
+)
 
 
 # Add a super title and adjust layout

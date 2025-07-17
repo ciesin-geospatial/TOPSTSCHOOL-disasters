@@ -4,7 +4,7 @@
 .Ruserdata
 
 /.quarto/
-data/yellowknife_boundary.zip
+data/yellowknife_boundary.zip 
 data/VNP64A1.002/VNP64A1.A2023213.h12v02.002.2023276103300.hdf
 data/VNP64A1.002/VNP64A1.A2023244.h12v02.002.2023312150240.hdf
 data/yellowknife_boundaries/yk_municipal_boundary.dbf
@@ -14,15 +14,7 @@ data/yellowknife_boundaries/yk_municipal_boundary.shx
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.dbf
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.prj
 data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shp
-data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shx
-<<<<<<< HEAD
-
-
-**/*.env
-
-**/data/
-/data/
-=======
+data/yk_Municipal_Boundary_shp/yk_municipal_boundary.shx 
 data/granule_files/AV320250116t193840_000_L1B_RDN_3f4aef90_RDN.nc
 data/granule_files/AV320250116t193840_001_L1B_RDN_3f4aef90_RDN.nc
 data/granule_files/AV320250116t193840_002_L1B_RDN_3f4aef90_RDN.nc
@@ -35,3 +27,13 @@ data/granule_files/merged_radiance_05.tif
 TOPS Proposal -2.ipynb
 data/stevaughnborders-Global-Warming-e3d0012.zip
 >>>>>>> 833b4be22e509f42136d77b956dc60dae50c36be
+data/2025-07-07-47e9ab/*
+data/ipums/*
+data/maui_rain/tl_2023_15_tract.zip
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.cpg
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.dbf
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.prj
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp.ea.iso.xml
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp.iso.xml
+data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shx
