@@ -523,6 +523,7 @@ ani.save("data/images/maui_precip.gif", writer="pillow", fps=3)  # Save to file 
 
 ![Maui GIF](data/images/maui_precip.gif)
 
+
 ### Extracting Time Series of Mean Precipitation Over Maui
 
 
@@ -629,11 +630,90 @@ plt.show()
 
 
 
+## Comparing IMERG Sattelite data and Oberved Precipitation data
+
+The data for this report comes from the Kahului Airport and downloaded from [WeatherSpark](https://weatherspark.com/h/d/150359/2024/1/16/Historical-Weather-on-Tuesday-January-16-2024-in-Maui-Hawaii-United-States#metar-00-14).
+
+
+
+```{python}
+ 
+# Load your CSV (update with your actual file path)
+obs_df = pd.read_csv("data/maui_rain/maui_rain_gauge_Jan2024.csv")
+ 
+
+# Parse datetime
+obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
+
+# Convert precipitation to float
+obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
+ 
+
+ 
+```
+
+Plot the data with dual y-axis without proportional scaling to visually compare the two datasets.
+
+```{python} 
+
+# Make sure datetime columns are parsed
+obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
+obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
+
+results_df["datetime"] = pd.to_datetime(results_df["datetime"])
+
+# Create the plot
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+# Plot observed precipitation on left y-axis
+line1, = ax1.plot(
+    obs_df["datetime"], obs_df["obs_precip"],
+    label="Observed (inches)", color="tab:blue", marker="o"
+)
+ax1.set_ylabel("Precipitation (inches)", color="tab:blue")
+ax1.tick_params(axis='y', labelcolor="tab:blue")
+
+# Create right y-axis
+ax2 = ax1.twinx()
+
+# Plot IMERG precipitation on right y-axis (assumed in mm)
+line2, = ax2.plot(
+    results_df["datetime"], results_df["mean_precip"],
+    label="IMERG (mm)", color="tab:green", marker="x", linestyle="--"
+)
+ax2.set_ylabel("Precipitation (mm)", color="tab:green")
+ax2.tick_params(axis='y', labelcolor="tab:green")
+
+# Combine legends
+lines = [line1, line2]
+labels = [line.get_label() for line in lines]
+ax1.legend(lines, labels, loc="upper left")
+
+# Formatting
+plt.title("Observed vs IMERG Precipitation")
+ax1.set_xlabel("Datetime")
+fig.autofmt_xdate()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+
+
+```
+
+
+
+
+
+
+
 ## Integrating Maui Census Tract Data
 
 This section downloads the latest census tract shapefile for Hawaii and loads it as a GeoDataFrame.
 
 ```{python}
+
 shapefile_zip = "data/maui_rain/tl_2023_15_tract.zip"
 shapefile_dir = "data/maui_rain/tl_2023_15_tract"
 ```
@@ -830,32 +910,7 @@ ani.save("data/images/maui_precip_population.gif", writer="pillow", fps=3)
 
 
 
-
-
-
-```{python}
-# ## Step 3: Read and Process Rainfall Station Data
-
-# This section loads your rainfall station CSV, cleans it, and converts it to a spatial points layer.
-
  
-# # Read rainfall CSV
-# rain = pd.read_csv('data/maui_rain/maui_rainfall.csv')
-
-# # Clean column names and convert rainfall to numeric
-# rain.columns = [c.replace('"', '').strip() for c in rain.columns]
-# rain['PRCP'] = pd.to_numeric(rain['PRCP'], errors='coerce')
-# rain = rain.dropna(subset=['LATITUDE', 'LONGITUDE', 'PRCP'])
-
-# # Convert to GeoDataFrame
-# rain_gdf = gpd.GeoDataFrame(
-#     rain,
-#     geometry=gpd.points_from_xy(rain['LONGITUDE'], rain['LATITUDE']),
-#     crs='EPSG:4326'
-# )
-``` 
-
-
    
 
 ## Summary
