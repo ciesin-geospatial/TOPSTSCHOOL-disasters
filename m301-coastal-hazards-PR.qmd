@@ -131,19 +131,14 @@ Below is the full import block. Core packages are required; others are optional 
 
 
 ```{python}
-#| results: hide
-
-from arcgis.gis import GIS
-from arcgis.features import FeatureSet
+#| echo: false
+ 
  
 # Standard libraries
-import os
-import glob
-import re
+import os 
 from zipfile import ZipFile
 # from dotenv import load_dotenv
-import pprint
-import requests
+ 
 
 # Data manipulation and plotting
 import pandas as pd
@@ -159,23 +154,20 @@ from matplotlib.ticker import FuncFormatter
 
 # Geospatial libraries
 import geopandas as gpd  
-from arcgis.features import GeoAccessor, GeoSeriesAccessor
-from arcgis.raster import Raster
-import arcgis.mapping  # For using WebMap, MapView, etc.
 
-# Earthdata access
-import earthaccess as ea
+
+from arcgis.gis import GIS
+from arcgis.features import FeatureSet, GeoAccessor, GeoSeriesAccessor
+ 
+ 
 
 # IPUMS API and DDI access
 from ipumspy.api import IpumsApiClient
-from ipumspy import AggregateDataExtract,   ddi
+from ipumspy import AggregateDataExtract, ddi
 from ipumspy import readers 
-
 from ipumspy.api.extract import NhgisDataset
 
-import seaborn as sns 
- 
-from shapely.geometry import Polygon
+import seaborn as sns  
 
 import folium 
  
@@ -1057,7 +1049,7 @@ sns.pairplot(
     merged_df[plot_vars],
     diag_kind="hist",
     corner=True,  # Show only lower triangle
-    plot_kws=dict(marker="o", facecolors='none', edgecolors='blue'),
+    plot_kws=dict(marker="o", facecolors='none', edgecolor='blue'),
     height=1.7
 )
 
@@ -1091,14 +1083,24 @@ To retrieve official county boundaries for Puerto Rico, we use the `arcgis` Pyth
 
 We filter the layer to include only features where `STATEFP = '72'`, which corresponds to Puerto Rico, and convert the result into a **Spatially Enabled DataFrame (SEDF)** for further analysis.
 
+```{python}
+from arcgis.features import FeatureLayer
+from arcgis.gis import GIS
 
+# Anonymous GIS connection (with SSL disabled if needed)
+gis = GIS( )
+
+# Directly connect to the FeatureLayer by URL
+url = "https://services2.arcgis.com/IsDCghZ73NgoYoz5/arcgis/rest/services/US_county_2020/FeatureServer/0"
+layer = FeatureLayer(url)
+
+# Query Puerto Rico counties (STATEFP = '72')
+sedf = layer.query(where="STATEFP = '72'").sdf
+```
 ```{python}
 
 # Get the layer from the published data
-
-
-# Connect to ArcGIS Online (anonymous session)
-gis = GIS()
+ 
 
 # Access a specific hosted feature layer by its Item ID
 layer = gis.content.get("3132216944b249a08d13b1aa0ee6fda2").layers[0]  # PR counties 2020 layer
