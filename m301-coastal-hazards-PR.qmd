@@ -7,30 +7,16 @@ author:
    - Kytt MacManus
    - Juan F. Martinez
    - Hieu Tran 
-   
-   
+   - Eldar Imanbekov 
    
 format: 
     html
 bibliography: lecz-references.bib
 ---
-
-## Datasets:
-- VIIRS Nighttime Lights
-- LECZ
-- NHGIS
-- LiDAR SAR
-
-## Areas of Interest (AOIs):
-- Puerto Rico (PRI)
-
-## Functions:
-- Image segmentation
-- Validation with SAR or LiDAR
-
+  
 # Overview
 
-This lesson introduces students to coastal hazard exposure in Puerto Rico using demographic and spatial data. You will use the [Low Elevation Coastal Zones (LECZ)](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) dataset from NASA SEDAC and census block group data from the [US Census Bureau](https://www.census.gov/data.html) via the [IPUMS](https://www.ipums.org/) National Historical Geographic Information System (NHGIS) portal to understand which populations live in low-lying areas vulnerable to flooding and sea level rise. 
+This lesson introduces students to coastal hazards analysis in Puerto Rico using demographic and spatial data. You will use the [Low Elevation Coastal Zones (LECZ)](https://sedac.ciesin.columbia.edu/data/set/lecz-low-elevation-coastal-zones) dataset from NASA SEDAC and census block group data from the [US Census Bureau](https://www.census.gov/data.html) via the [IPUMS](https://www.ipums.org/) National Historical Geographic Information System (NHGIS) portal to understand which populations live in low-lying areas vulnerable to flooding and sea level rise. 
 
 
 # Learning Objectives
@@ -41,15 +27,20 @@ Through this hands-on activity, you will:
 - Preprocess and clean data using Python.
 - Create statistical summaries and **population pyramids** by age and sex.
 - Visualize patterns of population groups and vacancy in Puerto Rico’s counties.
-- Perform a **spatial overlay** with LECZ boundaries to assess exposure.
-- Use `ArcGIS` and `folium` Python packages to explore spatial patterns interactively.
+- Perform a **spatial overlay** with LECZ boundaries to assess coastal exposure.
+- Use Python packages to explore spatial patterns interactively.
+- Generate Age pyrimids to compare population groups in and out of the LECZ. 
 
 This lesson emphasizes both **data science skills** and **critical spatial reasoning** about demographic vulnerability and environmental risk.
 
 # Introduction
 
-You may wonder why studies of the “entire” US often restrict themselves to the CONUS? The simplest answer: data or computational limitations. Some U.S. territories lack full census variable coverage. 
+Coastal zones are inherently hazardous because they are exposed to sea-level rise, storm surge, and recurrent flooding, and Puerto Rico’s concentration of people, housing, and infrastructure along the shoreline heightens that risk. These hazards impact not only the environment but also public health, economic stability, and the daily lives of residents, especially the elderly and other vulnerable groups. By connecting demographic data with exposure to LECZs, this study helps find out who is most at risk and why understanding coastal hazard vulnerability in Puerto Rico is important.
 
+
+## U.S. Census Geography
+
+You may wonder why studies of the “entire” US often restrict themselves to the Continental U.S. (CONUS)? The simplest answer: data or computational limitations. Some U.S. territories lack full census variable coverage. 
 
 Several U.S. territories, including **Puerto Rico**, are frequently excluded from national analyses because of inconsistent or incomplete data coverage, as well as geospatial processing challenges. For example:
 
@@ -62,7 +53,7 @@ Satellite-derived elevation data, such as NASA's Shuttle Radar Topography Missio
 
 Another possible reason for omission outside of CONUS could be computational challenges or limitations. For instance US territories are subject to different map projections, which implies the need for additional functions in processing algorithms to account for spatial variations and to unify spatial structures.
 
-This lesson helps address these issues by showing how to **combine demographic data with geospatial boundaries and Low Elevation Coastal Zones (LECZs)** to assess who is most at risk from coastal hazards in **Puerto Rico**.
+While these limitations explain why Puerto Rico is often left out of national right assessments, these regions are subject to environmental vulnerabilities. This lesson helps address these issues by showing how to **combine demographic data with geospatial boundaries and Low Elevation Coastal Zones (LECZs)** to assess who is most at risk from coastal hazards in **Puerto Rico**.
 
 ## IPUMS and U.S. Census Geography
 
@@ -85,36 +76,13 @@ In the **continental United States (CONUS)**, approximately **1 in 10 people** l
 - **People of color**, and  
 - **Older adults**  
 
-are **disproportionately** located within these low-lying zones.  
-
-For example, **1 in 5 urban Black residents** lives in the 10m LECZ [@tagtachian2023; @hauer2020sea].
+are **disproportionately** located within these low-lying zones. For example, **1 in 5 urban Black residents** lives in the 10m LECZ [@tagtachian2023; @hauer2020sea].
 
 Below is a satellite preview of LECZ coverage in **Puerto Rico**: 
 
 ![](data/images/lecz_pr/lecz_satellite.png)
 
  
-::: {.callout-tip}
-
-## Programming Reminder
-
-
-### “What is a Map Projection?”
-
-Map projections have existed for thousands of years. They help map makers render the spherical surface of the Earth flat -- so it can be seen on a piece of paper or computer screen, and so that the unit of measure is uniform throughout the area of interest. As a result, map projections distort something -- area, shape, distance, direction -- to make this possible. 
-
-Here are some resources to learn more about map projections:
-
-[A brief video explainer](https://www.youtube.com/watch?v=wlfLW1j05Dg)
-
-[A brief guide from USGS](https://pubs.usgs.gov/gip/70047422/report.pdf)
-
-There are many resources to guide a new learner, so enjoy learning! 
-
-
-
-:::
-
 
 # Accessing Data
 
@@ -131,14 +99,21 @@ Below is the full import block. Core packages are required; others are optional 
 
 
 ```{python}
-#| echo: false
+
+
  
- 
+import arcgis
+from arcgis.gis import GIS
+
+
 # Standard libraries
 import os 
 from zipfile import ZipFile
-# from dotenv import load_dotenv
- 
+
+from dotenv import load_dotenv
+
+import pprint
+import requests
 
 # Data manipulation and plotting
 import pandas as pd
@@ -197,14 +172,12 @@ pip install arcgis==2.4.1.1
 
 
 
-## Using IPUMS API to pull U.S Census Data for Puerto Rico
+## Using IPUMS API to access U.S Census Data for Puerto Rico
 
 
 ### Registering to IPUMS and the National Historical Geographic Information System (NHGIS) 
 
-In order to retrieve an IPUMS API Key, you will have to register for an account for IPUMS and request your [API Key](https://account.ipums.org/api_keys).
-
-Additionally register, to [The National Historical Geographic Information System (NHGIS)](https://uma.pop.umn.edu/nhgis/registration)
+In order to retrieve an IPUMS API Key, you will have to register for an account for IPUMS and request your [API Key](https://account.ipums.org/api_keys). Additionally you must register to [The National Historical Geographic Information System (NHGIS)](https://uma.pop.umn.edu/nhgis/registration) to access Puerto Rico's ACS data.
 
 After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. You will need your registration email and the API Key:
 
@@ -275,7 +248,7 @@ With this API key, we can extract geospatial data from the IPUMS API. Using the 
 
 The `AggregateDataExtract` function specifies the collection to use, in this case NHGIS, give it a human-readable label for the extract request, and requests the 2010 and 2020 Summary File 1 (SF1a) dataset with tables P12 (sex by age) and H3 (vacancy status) at the block group geographic level. It also limits the extract to geographic extent code "720" (Puerto Rico).
 
-Getting data from 2010 and 2020 with the variables for 5-year Age Groups (P12) and the Housing (H3). 
+Getting data from 2010 and 2020 with the variables for **5-year Age Groups (P12)** and **Housing (H3)**. 
 
 
 ```{python}
@@ -338,30 +311,65 @@ ipums.download_extract(extract, download_dir=DOWNLOAD_DIR)  # Download files to 
 ```
 
 After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!
-```{python}
 
+```{python}
 current = os.getcwd()  # Get current working directory
 DOWNLOAD_DIR = os.path.join(f"{current}/data/ipums/block")  # Set path to downloaded extract
 file_list = os.listdir(DOWNLOAD_DIR)  # List files in download folder
-csv_zip = [f for f in file_list if f.endswith('_csv.zip')]  # Find ZIP with CSVs
-csv = f"{DOWNLOAD_DIR}/{csv_zip[0]}"  # Get full path to ZIP
+csv_zip = [f for f in file_list if f.endswith('_csv.zip')] 
+file_list
+```
 
-# Read zip data file in the extract
-with ZipFile(csv) as z:
-    csv_data = z.namelist()  # List files inside ZIP
-    print("Contents of zip: ", csv_data)
-    
-    # Find the correct CSVs using filename patterns
-    file_2020 = next(f for f in csv_data if '2020' in f and f.endswith('.csv'))  # 2020 file
-    file_2010 = next(f for f in csv_data if '2010' in f and f.endswith('.csv'))  # 2010 file
+```{python}
 
-    # Read CSVs into DataFrames
-    with z.open(file_2020) as f:
-        df_2020 = pd.read_csv(f)  # Load 2020 data
+current = os.getcwd()  # Get current working directory
+DOWNLOAD_DIR = os.path.join(current, "data/ipums/block")  # Path to downloaded extract
+file_list = os.listdir(DOWNLOAD_DIR)  # List files in download folder
 
-    with z.open(file_2010) as f:
-        df_2010 = pd.read_csv(f)  # Load 2010 data
+# ---- Case 1: ZIP file ----
+csv_zip = [f for f in file_list if f.endswith('_csv.zip')]
 
+if csv_zip:  # If we found a zip file
+    csv_path = os.path.join(DOWNLOAD_DIR, csv_zip[0])
+    print(f"Found zip file: {csv_path}")
+
+    with ZipFile(csv_path) as z:
+        csv_data = z.namelist()
+        print("Contents of zip:", csv_data)
+
+        # Find the CSVs
+        file_2020 = next(f for f in csv_data if '2020' in f and f.endswith('.csv'))
+        file_2010 = next(f for f in csv_data if '2010' in f and f.endswith('.csv'))
+
+        # Read into DataFrames
+        with z.open(file_2020) as f:
+            df_2020 = pd.read_csv(f)
+
+        with z.open(file_2010) as f:
+            df_2010 = pd.read_csv(f)
+
+# ---- Case 2: FOLDER ending in "_csv" ----
+else:
+    csv_folders = [f for f in file_list if f.endswith('_csv') and os.path.isdir(os.path.join(DOWNLOAD_DIR, f))]
+    if not csv_folders:
+        raise FileNotFoundError("No _csv.zip file or _csv folder found in the download directory.")
+
+    csv_folder = os.path.join(DOWNLOAD_DIR, csv_folders[0])
+    print(f"Found folder: {csv_folder}")
+
+    folder_files = os.listdir(csv_folder)
+    print("Contents of folder:", folder_files)
+
+    # Find and read the CSVs
+    file_2020 = next(f for f in folder_files if '2020' in f and f.endswith('.csv'))
+    file_2010 = next(f for f in folder_files if '2010' in f and f.endswith('.csv'))
+
+    df_2020 = pd.read_csv(os.path.join(csv_folder, file_2020))
+    df_2010 = pd.read_csv(os.path.join(csv_folder, file_2010))
+
+print("Data loaded successfully!")
+print("2020 shape:", df_2020.shape)
+print("2010 shape:", df_2010.shape)
 
 ```
 
@@ -771,7 +779,7 @@ def abs_tick(x, pos):
         return f"{abs(int(x)):,}"
 
 
-def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Population Pyramid (2010 vs 2020)"):
+def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Population Pyramid (2010 vs 2020)"):
     
     # Extract age group labels and set bar positions
     age_labels = pyramid_2010["Age"]
@@ -829,7 +837,7 @@ To generate the population pyramid comparing Puerto Rico in 2010 and 2020, we ca
 ```{python}
 
 # Plot population pyramid comparing Puerto Rico (2010 vs 2020)
-plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico")
+plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Puerto Rico Population Pyramid (2010 vs 2020)")
 
 ```
 
@@ -855,7 +863,7 @@ county_pyr_2010 = combine_age_groups(county_df_2010)
 county_pyr_2020 = combine_age_groups(county_df_2020)
 
 #Plot population pyramid for Arecibo Municipio
-plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, "Arecibo")
+plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, "Arecibo, PR, Population Pyramid (2010 vs 2020)")
 
 ```
 
@@ -986,12 +994,12 @@ By looking more closely at the graphs and comparing vacancy differences between 
 
 ## Math Refresher
 
-A z-score tells us how many standard deviations a value is from the mean. A positive z-score means the value is above the mean. A negative z-score means it's below the mean. Z-scores help us compare variables on different scales and identify outliers—typically anything above +2 or below –2 is considered unusually high or low.
+A **z-score** tells us how many standard deviations a value is from the mean. A positive z-score means the value is above the mean. A negative z-score means it's below the mean. Z-scores help us compare variables on different scales and identify outliers—typically anything above +2 or below –2 is considered unusually high or low.
 
 :::
 
 
-To better evaluate how unusual each area's change is, we compute z-scores for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
+To better evaluate how unusual each area's change is, we compute **z-scores** for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.
 
 
 ```{python}
@@ -1113,9 +1121,7 @@ sedf = layer.query(where="STATEFP = '72'").sdf
 We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `COUNTY` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
 
 ```{python}
-
-# merged_df_cleaned = merged_df[['COUNTY', 'Total_Population_2020',  'Total_Pop_Change_Pct',   'Pop60plus_dz', 'Vacant_dz']]
-
+ 
 #Merge the feature to the merged 2010-2020 df
 print("`merged_df` DataFrame row count before table join: ", len(merged_df))
 pr_sedf_ipums = sedf.merge(merged_df, left_on="NAMELSAD", right_on="COUNTY", how = "inner")
@@ -1579,14 +1585,14 @@ def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020):
     y = np.arange(len(age_labels))
     bar_height = 0.4
 
-    fig, (ax1, ax2) = plt.subplots(nrows=2,  sharex=True, figsize=(6.5, 7.5))
+    fig, (ax1, ax2) = plt.subplots(nrows=2,  sharex=True, figsize=(8, 8))
 
     # OUTSIDE LECZ (lecz = 0) — Top
     ax1.barh(y - bar_height/2, -pyr2010["Male_0"], height=bar_height, color="#c6dbef", label="Male 2010")
     ax1.barh(y + bar_height/2, -pyr2020["Male_0"], height=bar_height, color="#2171b5", label="Male 2020")
     ax1.barh(y - bar_height/2, pyr2010["Female_0"], height=bar_height, color="#fdd0a2", label="Female 2010")
     ax1.barh(y + bar_height/2, pyr2020["Female_0"], height=bar_height, color="#e6550d", label="Female 2020")
-    ax1.set_title("Population Pyramid – Outside LECZ")
+    ax1.set_title("Puerto Rico Population Pyramid – Outside LECZ")
     ax1.set_yticks(y)
     ax1.set_yticklabels(age_labels)
     ax1.axvline(0, color="gray", lw=0.8)
@@ -1600,7 +1606,7 @@ def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020):
     ax2.barh(y + bar_height/2, -pyr2020["Male_1"], height=bar_height, color="#2171b5")
     ax2.barh(y - bar_height/2, pyr2010["Female_1"], height=bar_height, color="#fdd0a2")
     ax2.barh(y + bar_height/2, pyr2020["Female_1"], height=bar_height, color="#e6550d")
-    ax2.set_title("Population Pyramid – Inside LECZ")
+    ax2.set_title("Puerto Rico Population Pyramid – Inside LECZ")
     ax2.set_yticks(y)
     ax2.set_yticklabels(age_labels)
     ax2.axvline(0, color="gray", lw=0.8)
@@ -1638,6 +1644,38 @@ plot_pyramid_stacked_by_lecz(pyramid_2010, pyramid_2020)
 
 ```
 
+Preview the pyramid tables:
+
+```{python}
+
+#print head shows the first few rows of the table
+print(pyramid_2010.head(5))
+
+print(pyramid_2020.head(5))
+
+```
+
+# Discussion 
+
+Despite gaps and inconsistencies in territorial data, we showed that using open-source data and Python-based workflows makes it feasible to build comparable population pyramids for places in Puerto Rico that fall inside and outside the LECZ and to track change from 2010 to 2020.
+
+Puerto Rico’s age structure has shifted markedly. Younger cohorts (roughly under age 50) have shrunk, while older cohorts have held steady or grown, reshaping the pyramid from a more youthful base toward an older, more top-heavy profile. Arecibo Municipio mirrors this island-wide pattern: declines in younger cohorts alongside growth in older cohorts.
+
+Standardized (z-score) measures of change in the 60+ population suggest that several coastal counties—especially along the west and southwest—experienced above-average increases relative to inland counties.
+
+The LECZ overlay indicates that counties intersecting the LECZ tend to show larger increases in the 60+ population on average. Comparing pyramids for LECZ vs. non-LECZ counties, LECZ counties generally have larger total populations yet show similar demographic shifts: fewer young residents and stable or rising older cohorts.
+
+Overall, the patterns are consistent with selective migration: younger adults are more mobile and more likely to move away, while older adults—often with stronger place attachment and fewer labor-market incentives to move—remain, increasing the relative share of older residents in many counties.
+
+### Limitations and notes on interpretation
+
+Classification choices matter. Quantile breaks can obscure meaningful differences when distributions are skewed; alternative schemes (e.g., natural breaks, equal intervals) or standardization (z-scores) can complement interpretation.
+
+LECZ is an exposure proxy, not a loss estimate. It captures low-lying terrain; it does not model storm surge, local defenses, or building elevation.
+
+Data harmonization across 2010 and 2020 required table/code matching; any residual inconsistencies (e.g., boundary changes, item definitions) may affect county comparisons.
+
+Vacancy can reflect multiple processes (damage, seasonal housing, out-migration); interpreting direction and magnitude should be paired with local knowledge.
 
 # Conclusion
 
@@ -1651,5 +1689,7 @@ Throughout this lesson, we were able to:
 - Conduct an **overlay analysis** with LECZ polygons to identify counties most exposed to coastal flooding.
 - Compare key metrics (e.g., population loss, vacancy, aging) **inside vs. outside** of the LECZ.
  
+Coupling small-area demographics with a simple exposure proxy (LECZ) helps reveal who lives in potentially flood-exposed zones and how local population structure is changing—critical context for risk reduction, health services planning, and adaptation.
+
 
 

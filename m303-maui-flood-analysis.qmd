@@ -28,7 +28,7 @@ By the end of this lesson, you should be able to:
 
 ## Introduction
 
-Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. On the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers].
+Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. In the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers]. In this research, learners will use NASA’s GPM IMERG rainfall data [@huffman2023imerg], MODIS Imagery, and drone photographies to analyze how the storm has impacted the island, its infrastructure, and people [@WHATEVER2020].
 
 Heavy rains, particularly over windward and wildfire-scarred slopes, threatened roads, homes, and infrastructure. This report explores the event using simulated rainfall data and visual  tools to assess possible flood impact zones.
 
