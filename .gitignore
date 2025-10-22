@@ -37,3 +37,15 @@ data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp
 data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp.ea.iso.xml
 data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shp.iso.xml
 data/maui_rain/tl_2023_15_tract/tl_2023_15_tract.shx
+data/.DS_Store
+data/images/hawaii_precip.gif
+data/images/maui_precip_population.gif
+data/images/maui_precip.gif
+data/images/maui_precip/hawaii_precip.gif
+data/images/maui_precip/maui_precip.gif
+data/maui_rain/maui_rain_gauge_Jan2024.csv
+docs/data/images/hawaii_precip.gif
+docs/data/images/maui_precip_population.gif
+docs/data/images/maui_precip.gif
+docs/data/lecz_pr/lecz_satellite.png
+maui_rainful_population_analysis/maui_rainfall.csv

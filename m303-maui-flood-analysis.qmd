@@ -9,11 +9,7 @@ bibliography: m303-maui-flood-bibliography.bib
 
 ## Overview
 
-In this lesson, you will analyze the **Flash Flood Watch for Maui** issued in January 15, 2024 due to prolonged, heavy rainfall. You will simulate rainfall data to evaluate flood risks across different regions of the island. 
-
-This lesson demonstrates how to integrate U.S. Census population data with rainfall data for Maui. By combining demographic and environmental datasets, you can visualize which communities experienced the most rainfall during a flood event, supporting disaster impact analysis and response planning.
-
-This type of hazard analysis helps develop early-warning systems and improve response strategies for climate-related emergencies.
+In this lesson, you will analyze the **Flash Flood Watch for Maui** issued in January 15, 2024 due to prolonged, heavy rainfall. You will simulate rainfall data to evaluate flood risks across different regions of the island. This type of hazard analysis helps develop early-warning systems and improve response strategies for climate-related emergencies.
 
 ## Learning Objectives
 
@@ -22,9 +18,7 @@ By the end of this lesson, you should be able to:
 - Understand the meteorological cause and risk factors of flash floods in Maui.
 - Access and work with NASA rainfall data using Python.
 - Compare NASA data and rain gauge data to see similarities.
-- Access and process U.S. Census tract population data using Python and the Census API.
-- Overlay population and rainfall data to identify high-risk communities.
-- Create a reproducible, automated workflow for spatial disaster analysis.
+- Use U.S. Cenus data to determine how many households were affected by the event.
 
 ## Introduction
 
@@ -55,8 +49,7 @@ In this lesson, we use `osmnx` to retrieve the geographic boundary of Hawaii fro
 
 ## Data Analysis
 
-::: {.callout-tip }
-
+::: {.callout-tip style="color: #5a7a2b;"}
 #### Data Science Review
 
 Before beginning, please note that this lesson uses the Python programming language and the following Python packages:
@@ -86,8 +79,9 @@ Before beginning, please note that this lesson uses the Python programming langu
 
 -   [`earthaccess`](https://earthaccess.readthedocs.io/): Simplifies NASA Earthdata access by managing authentication and dataset queries in a user-friendly way.
 
-:::
 
+
+:::
 
 
 ```{python}
@@ -96,12 +90,8 @@ import os
 import re
 from datetime import datetime, timedelta
 
-import requests
-import zipfile
-
 import numpy as np
 import pandas as pd
-import geopandas as gpd
 import xarray as xr
 
 import matplotlib.pyplot as plt
@@ -112,11 +102,6 @@ from rasterio.transform import from_origin
 from rasterstats import zonal_stats
 
 import earthaccess
-
-import cftime 
-
-
-from matplotlib.colors import LogNorm
 
  
 ```
@@ -169,19 +154,15 @@ print(len(all_urls), "URLs found.")
 
 
 Finally, this code will download and create a list of the file paths of the downloaded data from `earthaccess`:
-
 ```{python}
 #| eval: false
 #| 
-
 file_path = earthaccess.download(all_urls)
-
 ```
 
 
-
  ```{python}
-#| echo: false
+#| include: false
 
 
 
@@ -189,7 +170,7 @@ folder = r"F:\TOPSSCHOOL\git\TOPSTSCHOOL-disasters\data\2025-07-07-47e9ab"
 
 file_path = [os.path.join(folder, f) for f in os.listdir(folder) if \
   os.path.isfile(os.path.join(folder, f))]
- 
+print(file_path)
 
  
  ```
@@ -199,30 +180,27 @@ file_path = [os.path.join(folder, f) for f in os.listdir(folder) if \
 Once we’ve downloaded the GPM IMERG precipitation data, we can use `xarray` to open the **NetCDF** file and subset it to the region of interest (in this case, Hawaii). This subset is then visualized using `matplotlib` and xarray’s built-in plotting utilities to generate a precipitation map for the first available half-hourly time step.
 
 ```{python}
-
 # Display the number of observations (files) found
 print(len(file_path), "observations found.")
 
-
-for file in file_path:
 # Open the selected GPM IMERG dataset (e.g., 16th file in list)
-    with xr.open_dataset(file_path[15], engine="h5netcdf", group="Grid") as ds:
+with xr.open_dataset(file_path[15], engine="h5netcdf", group="Grid") as ds:
 
-        # Subset the precipitation variable to the Hawaii bounding box
-        precip_subset = ds["precipitation"].sel(
-            lat=slice(bounding_box[1], bounding_box[3]),
-            lon=slice(bounding_box[0], bounding_box[2])
-        )
+    # Subset the precipitation variable to the Hawaii bounding box
+    precip_subset = ds["precipitation"].sel(
+        lat=slice(bounding_box[1], bounding_box[3]),
+        lon=slice(bounding_box[0], bounding_box[2])
+    )
 
-        # Select the first time step and reorient data for plotting
-        ras_data = precip_subset.isel(time=0)
-        ras_data = ras_data.transpose("lat", "lon")
+    # Select the first time step and reorient data for plotting
+    data = precip_subset.isel(time=0)
+    data = data.transpose("lat", "lon")
 
 # Create a figure and axis
-fig, ax = plt.subplots( )
+fig, ax = plt.subplots(figsize=(10, 6))
 
 # Plot the precipitation data
-ras_data.plot(ax=ax, cmap="Blues", cbar_kwargs={"label": "Precipitation (mm/hr)"})
+data.plot(ax=ax, cmap="Blues", cbar_kwargs={"label": "Precipitation (mm/hr)"})
 
 # Overlay the Hawaii boundary geometry from OSM
 hawaii.boundary.plot(ax=ax, edgecolor="black", linewidth=1.5)
@@ -241,106 +219,114 @@ plt.show()
 ## Animation: Visualizing Half-Hourly Rainfall Over Time
 
 To understand how precipitation evolves over time, we can animate the sequence of GPM IMERG half-hourly rainfall images. This animation cycles through each file, extracts the timestamp, overlays the precipitation data on the Hawaii boundary, and renders a smooth temporal visualization using `matplotlib.animation`. This is especially helpful for spotting storm patterns and tracking rainfall intensity across the region.
- 
+
+
 ```{python}
 #| eval: false
 
+# Initialize the figure
+fig, ax = plt.subplots(figsize=(10, 6))
 
-
-# Compute global min/max across all rasters
-global_min = np.inf
-global_max = -np.inf
-
-for file in file_path:
-    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
-        precip = ds["precipitation"].sel(
-            lat=slice(bounding_box[1], bounding_box[3]),
-            lon=slice(bounding_box[0], bounding_box[2])
-        ).isel(time=0).transpose("lat", "lon")
-
-        current_min = precip.min().item()
-        current_max = precip.max().item()
-
-        if np.isfinite(current_min):
-            global_min = min(global_min, current_min)
-        if np.isfinite(current_max):
-            global_max = max(global_max, current_max)
-
-# --- Start Plotting ---
-fig, ax = plt.subplots( )  # Moved this up
-
-# Load first frame just for layout
+# Load first dataset 
+# Open the first NetCDF file using xarray
 with xr.open_dataset(file_path[0], engine="h5netcdf", group="Grid") as ds:
+    
+    # Subset the precipitation variable by latitude and longitude bounds
     data0 = ds["precipitation"].sel(
-        lat=slice(bounding_box[1], bounding_box[3]),
-        lon=slice(bounding_box[0], bounding_box[2])
-    ).isel(time=0).transpose("lat", "lon")
+        lat=slice(bounding_box[1], bounding_box[3]),    # min_lat to max_lat
+        lon=slice(bounding_box[0], bounding_box[2])     # min_lon to max_lon
+    ).isel(time=0).transpose("lat", "lon")              # Select first time step and orient for plotting
 
+    # Extract longitude and latitude values as 1D arrays
     lon = data0.lon.values
     lat = data0.lat.values
 
-lon2d, lat2d = np.meshgrid(lon, lat)
+    # Create 2D meshgrid from lat/lon arrays for plotting
+    lon2d, lat2d = np.meshgrid(lon, lat)
 
-# Plot the first frame using global vmin/vmax
-mesh = ax.pcolormesh(
-    lon2d, lat2d, data0.values,
-    cmap="Blues", shading="auto",
-    vmin=global_min, vmax=global_max
-)
+    # Plot the initial frame with pcolormesh and add color shading
+    mesh = ax.pcolormesh(lon2d, lat2d, data0.values, cmap="Blues", shading="auto")
 
-# Add a consistent colorbar
-cbar = fig.colorbar(mesh, ax=ax, label="Precipitation (mm/hr)")
+    # Add a colorbar to indicate precipitation scale
+    cbar = fig.colorbar(mesh, ax=ax, label="Precipitation (mm/hr)")
 
-# Overlay the Hawaii boundary outline
+# Overlay the Hawaii boundary outline from OSM data
 hawaii.boundary.plot(ax=ax, edgecolor="black", linewidth=1.5, zorder=2)
 
-# Set up the title and axes
+# Add static plot title with frame info
 title_text = ax.set_title(f"GPM IMERG Precipitation over Hawaii - Frame 1/{len(file_path)}")
+
+# Set axis labels
 ax.set_xlabel("Longitude")
 ax.set_ylabel("Latitude")
+
+# Auto-adjust layout to prevent overlap of labels and plot
 plt.tight_layout()
 
 # --- Define update function for animation ---
 
 def update(frame_index):
+    # Get the file for the current frame
     file = file_path[frame_index]
 
+    # Open and subset the current file's data
     with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
         data = ds["precipitation"].sel(
-            lat=slice(bounding_box[1], bounding_box[3]),
-            lon=slice(bounding_box[0], bounding_box[2])
-        ).isel(time=0).transpose("lat", "lon")
+            lat=slice(bounding_box[1], bounding_box[3]),  # Subset latitude
+            lon=slice(bounding_box[0], bounding_box[2])   # Subset longitude
+        ).isel(time=0).transpose("lat", "lon")            # Select first time slice and orient for plotting
 
-    # Parse timestamp
+    # Extract filename from full path
     filename = os.path.basename(file)
+
+    # Use regex to extract date (YYYYMMDD) from filename
     match = re.search(r"3IMERG\.(\d{8})", filename)
     date_str = match.group(1)
+
+    # Use regex to extract time (HHMM) from filename
     match = re.search(r"(\d{4}).V07B", filename)
     time_str = match.group(1)
-    time_str = int(time_str)
+    time_str = int(time_str)  # Convert to integer (minutes)
 
-    try:
-        dt = datetime.strptime(date_str, "%Y%m%d") + timedelta(minutes=time_str)
-        dt -= timedelta(hours=10)
-        timestamp_str = dt.strftime("%Y-%m-%d %H:%M:%S HST")
+    # Convert extracted date/time to a datetime object in Hawaii Standard Time (HST)
+    try: 
+        datetime_obj = datetime.strptime(date_str, "%Y%m%d")           # Parse date string
+        datetime_obj = datetime_obj + timedelta(minutes=time_str)      # Add minutes offset
+        datetime_obj = datetime_obj - timedelta(hours=10)              # Convert UTC to HST
+        timestamp_str = datetime_obj.strftime("%Y-%m-%d %H:%M:%S HST") # Format timestamp string
+
     except ValueError:
+        # Handle parsing errors
         timestamp_str = f"Invalid time in filename: {time_str}"
 
-    # Update the mesh
+    # Update the plot data with the current frame
     mesh.set_array(data.values.ravel())
+
+    # Update the title with the new timestamp
     title_text.set_text(f"GPM IMERG Precipitation over Hawaii — {timestamp_str}")
+
+    # Return updated elements for blitting
     return mesh, title_text
 
-# --- Animate and Save ---
+# --- Create the animation ---
 
 print("Creating animation...")
 
 ani = animation.FuncAnimation(
-    fig, update, frames=len(file_path),
-    interval=200, blit=True, repeat=False
+    fig,                # Target figure object
+    update,             # Function to call for each frame
+    frames=len(file_path), # Total number of frames (data files)
+    interval=200,       # Delay between frames in milliseconds
+    blit=True,          # Only redraw changed elements for efficiency
+    repeat=False        # Stop at the last frame
 )
 
-ani.save("data/images/hawaii_precip.gif", writer="pillow", fps=3)
+# --- Save the animation as a GIF ---
+
+ani.save("data/images/hawaii_precip.gif", writer="pillow", fps=3)  # Save at 3 frames per second
+
+ 
+ 
 
 
 ```
@@ -353,7 +339,6 @@ ani.save("data/images/hawaii_precip.gif", writer="pillow", fps=3)
 To focus analysis on our location of analysis, we use `osmnx` to retrieve the geographic boundary for Maui County, Hawaii from **OpenStreetMap**. We then extract its bounding box and apply a small buffer (0.1 degrees) to ensure that nearby data just outside the strict boundary is included. This padded extent will be used to spatially filter satellite precipitation data or other geospatial layers relevant to the region.
 
 ```{python}
-
 # Get the geometry for Maui County, Hawaii from OpenStreetMap
 maui = ox.geocode_to_gdf("Maui County, Hawaii, USA").to_crs("EPSG:4326")
 
@@ -369,7 +354,6 @@ lat_max = bounding_box[3] + pad  # Northern boundary
 lon_min = bounding_box[0] - pad  # Western boundary
 lon_max = bounding_box[2] + pad  # Eastern boundary
 
- 
 
 ```
 
@@ -377,25 +361,26 @@ After defining the padded bounding box for Maui, we can visualize GPM IMERG half
 
 ```{python} 
 
-
-# Initialize figure and axis for the plot
-fig, ax = plt.subplots()
-
+# Open the 16th GPM IMERG data file and extract the "Grid" group
 with xr.open_dataset(file_path[15], engine="h5netcdf", group="Grid") as ds:
-
-    # Subset the precipitation variable to the Hawaii bounding box
+    
+    # Subset the precipitation variable using the padded Maui bounding box
     precip_subset = ds["precipitation"].sel(
-        lat=slice(lat_min, lat_max),
-        lon=slice(lon_min, lon_max)
+        lat=slice(lat_min, lat_max),   # Latitude range from bounding box
+        lon=slice(lon_min, lon_max)    # Longitude range from bounding box
     )
 
-    # Select the first time step and reorient data for plotting
-    ras_data = precip_subset.isel(time=0)
-    ras_data = ras_data.transpose("lat", "lon")
+    # Select the first time step in the file
+    data = precip_subset.isel(time=0)
 
+    # Rearrange dimensions for plotting: lat first, then lon
+    data = data.transpose("lat", "lon")
+
+# Initialize figure and axis for the plot
+fig, ax = plt.subplots(figsize=(10, 6))
 
 # Plot the precipitation data on the map
-ras_data.plot(ax=ax, cmap="Blues", cbar_kwargs={"label": "Precipitation (mm/hr)"})
+data.plot(ax=ax, cmap="Blues", cbar_kwargs={"label": "Precipitation (mm/hr)"})
 
 # Overlay the Maui County boundary using OSM data
 maui.boundary.plot(ax=ax, edgecolor="black", linewidth=1.5)
@@ -419,102 +404,92 @@ To visualize how rainfall evolves across Maui County, this animation cycles thro
 ```{python}
 #| eval: false
 
+# Initialize the figure and axis for the animation
+fig, ax = plt.subplots(figsize=(10, 6))
 
+# Inform the user that we're starting the first frame setup
+print("Initializing plot with first data file...")
 
-# Compute global min/max across all rasters
-global_min = np.inf
-global_max = -np.inf
+# Extract longitude and latitude from the preloaded 'data' array
+lon = data.lon.values                       # 1D longitude array
+lat = data.lat.values                       # 1D latitude array
 
-for file in file_path:
-    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
-        precip = ds["precipitation"].sel(
-        lat=slice(lat_min, lat_max),
-        lon=slice(lon_min, lon_max)
-        ).isel(time=0).transpose("lat", "lon")
-
-        current_min = precip.min().item()
-        current_max = precip.max().item()
-
-        if np.isfinite(current_min):
-            global_min = min(global_min, current_min)
-        if np.isfinite(current_max):
-            global_max = max(global_max, current_max)
-
-# --- Start Plotting ---
-fig, ax = plt.subplots( )  # Moved this up
-
-# Load first frame just for layout
-with xr.open_dataset(file_path[0], engine="h5netcdf", group="Grid") as ds:
-    data0 = ds["precipitation"].sel(
-        lat=slice(lat_min, lat_max),
-        lon=slice(lon_min, lon_max)
-    ).isel(time=0).transpose("lat", "lon")
-
-    lon = data0.lon.values
-    lat = data0.lat.values
-
+# Create 2D coordinate grids from the lat/lon arrays
 lon2d, lat2d = np.meshgrid(lon, lat)
 
-norm = LogNorm(vmin=max(global_min, 0.01), vmax=global_max)
-
+# Create the first pcolormesh using initial data values
 mesh = ax.pcolormesh(
-    lon2d, lat2d, data0.values,
-    cmap="Blues", shading="auto",
-    norm=norm
+    lon2d, lat2d, data.values,              # Coordinates and initial data
+    cmap="Blues", shading="auto"           # Colormap and smoothing style
 )
 
-# Add a consistent colorbar
+# Add a colorbar to show precipitation intensity
 cbar = fig.colorbar(mesh, ax=ax, label="Precipitation (mm/hr)")
 
-# Overlay the Hawaii boundary outline
+# Overlay Maui County's boundary for spatial context
 maui.boundary.plot(ax=ax, edgecolor="black", linewidth=1.5, zorder=2)
 
-# Set up the title and axes
+# Set static elements for the plot: title and axis labels
 title_text = ax.set_title(f"GPM IMERG Precipitation over Hawaii - Frame 1/{len(file_path)}")
 ax.set_xlabel("Longitude")
 ax.set_ylabel("Latitude")
-plt.tight_layout()
+plt.tight_layout()  # Optimize spacing to prevent overlap
 
-# --- Define update function for animation ---
+# --- Define the animation update function ---
 
 def update(frame_index):
+    # Get the file corresponding to the current animation frame
     file = file_path[frame_index]
 
+    # Open and subset the dataset for Maui bounding box
     with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
         data = ds["precipitation"].sel(
-            lat=slice(lat_min, lat_max),
-            lon=slice(lon_min, lon_max)
-        ).isel(time=0).transpose("lat", "lon")
+            lat=slice(lat_min, lat_max),   # Subset latitude
+            lon=slice(lon_min, lon_max)    # Subset longitude
+        ).isel(time=0).transpose("lat", "lon")  # Select first timestep and rearrange dimensions
 
-    # Parse timestamp
+    # Extract the base filename (no directory)
     filename = os.path.basename(file)
+
+    # Extract date string (YYYYMMDD) from filename using regex
     match = re.search(r"3IMERG\.(\d{8})", filename)
     date_str = match.group(1)
+
+    # Extract time offset (HHMM in minutes) from filename
     match = re.search(r"(\d{4}).V07B", filename)
     time_str = match.group(1)
-    time_str = int(time_str)
+    time_str = int(time_str)  # Convert to integer
 
-    try:
-        dt = datetime.strptime(date_str, "%Y%m%d") + timedelta(minutes=time_str)
-        dt -= timedelta(hours=10)
-        timestamp_str = dt.strftime("%Y-%m-%d %H:%M:%S HST")
+    # Attempt to convert extracted date and time to formatted timestamp
+    try: 
+        datetime_obj = datetime.strptime(date_str, "%Y%m%d")       # Parse date
+        datetime_obj += timedelta(minutes=time_str)                # Add time offset
+        datetime_obj -= timedelta(hours=10)                        # Convert from UTC to HST
+        timestamp_str = datetime_obj.strftime("%Y-%m-%d %H:%M:%S HST")  # Format timestamp
     except ValueError:
+        # Handle invalid or missing time values
         timestamp_str = f"Invalid time in filename: {time_str}"
 
-    # Update the mesh
-    mesh.set_array(data.values.ravel())
-    title_text.set_text(f"GPM IMERG Precipitation over Maui, Hawaii — {timestamp_str}")
-    return mesh, title_text
+    # Update plot with new data values and title
+    mesh.set_array(data.values.ravel())  # Flatten the data into 1D for pcolormesh
+    title_text.set_text(f"GPM IMERG Precipitation over Hawaii — {timestamp_str}")
 
-# --- Animate and Save ---
+    return mesh, title_text  # Return updated elements for blitting
+
+# --- Generate the animation ---
 
 print("Creating animation...")
 
 ani = animation.FuncAnimation(
-    fig, update, frames=len(file_path),
-    interval=200, blit=True, repeat=False
+    fig,            # The figure object to update
+    update,         # The update function called per frame
+    frames=len(file_path),  # Number of frames = number of files
+    interval=200,   # Delay between frames (ms)
+    blit=True,      # Use blitting for efficient updates
+    repeat=False    # Run only once
 )
-  
+
+# --- Save the animation as a GIF ---
 
 ani.save("data/images/maui_precip.gif", writer="pillow", fps=3)  # Save to file at 3 frames per second
 
@@ -522,7 +497,6 @@ ani.save("data/images/maui_precip.gif", writer="pillow", fps=3)  # Save to file 
 
 
 ![Maui GIF](data/images/maui_precip.gif)
-
 
 ### Extracting Time Series of Mean Precipitation Over Maui
 
@@ -604,7 +578,7 @@ Now that we’ve extracted mean precipitation values for each GPM IMERG file, we
 
 ```{python}
 # Create the time series line plot
-plt.figure( )  # Set figure size for clarity and legibility
+plt.figure(figsize=(12, 6))  # Set figure size for clarity and legibility
 
 # Plot datetime vs. mean precipitation with markers and connecting lines
 plt.plot(results_df['datetime'], results_df['mean_precip'], marker='o', linestyle='-')
@@ -627,298 +601,3 @@ plt.tight_layout()
 plt.show()
 
 ```
-
-
-
-## Comparing IMERG Sattelite data and Oberved Precipitation data
-
-The data for this report comes from the Kahului Airport and downloaded from [WeatherSpark](https://weatherspark.com/h/d/150359/2024/1/16/Historical-Weather-on-Tuesday-January-16-2024-in-Maui-Hawaii-United-States#metar-00-14).
-
-
-
-```{python}
- 
-# Load your CSV (update with your actual file path)
-obs_df = pd.read_csv("data/maui_rain/maui_rain_gauge_Jan2024.csv")
- 
-
-# Parse datetime
-obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
-
-# Convert precipitation to float
-obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
- 
-
- 
-```
-
-Plot the data with dual y-axis without proportional scaling to visually compare the two datasets.
-
-```{python} 
-
-# Make sure datetime columns are parsed
-obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
-obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
-
-results_df["datetime"] = pd.to_datetime(results_df["datetime"])
-
-# Create the plot
-fig, ax1 = plt.subplots(figsize=(12, 6))
-
-# Plot observed precipitation on left y-axis
-line1, = ax1.plot(
-    obs_df["datetime"], obs_df["obs_precip"],
-    label="Observed (inches)", color="tab:blue", marker="o"
-)
-ax1.set_ylabel("Precipitation (inches)", color="tab:blue")
-ax1.tick_params(axis='y', labelcolor="tab:blue")
-
-# Create right y-axis
-ax2 = ax1.twinx()
-
-# Plot IMERG precipitation on right y-axis (assumed in mm)
-line2, = ax2.plot(
-    results_df["datetime"], results_df["mean_precip"],
-    label="IMERG (mm)", color="tab:green", marker="x", linestyle="--"
-)
-ax2.set_ylabel("Precipitation (mm)", color="tab:green")
-ax2.tick_params(axis='y', labelcolor="tab:green")
-
-# Combine legends
-lines = [line1, line2]
-labels = [line.get_label() for line in lines]
-ax1.legend(lines, labels, loc="upper left")
-
-# Formatting
-plt.title("Observed vs IMERG Precipitation")
-ax1.set_xlabel("Datetime")
-fig.autofmt_xdate()
-plt.grid(True)
-plt.tight_layout()
-plt.show()
-
-
-
-
-```
-
-
-
-
-
-
-
-## Integrating Maui Census Tract Data
-
-This section downloads the latest census tract shapefile for Hawaii and loads it as a GeoDataFrame.
-
-```{python}
-
-shapefile_zip = "data/maui_rain/tl_2023_15_tract.zip"
-shapefile_dir = "data/maui_rain/tl_2023_15_tract"
-```
-
-```{python}
-#| eval: false
-
-# Set URLs and file paths
-tiger_url = "https://www2.census.gov/geo/tiger/TIGER2023/TRACT/tl_2023_15_tract.zip"
-
-
-
-# Ensure the directory exists
-os.makedirs(os.path.dirname(shapefile_zip), exist_ok=True)
-
-# Download and extract if not already present
-if not os.path.exists(shapefile_dir):
-    r = requests.get(tiger_url, verify=False)
-    with open(shapefile_zip, 'wb') as f:
-        f.write(r.content)
-    with zipfile.ZipFile(shapefile_zip, 'r') as zip_ref:
-        zip_ref.extractall(shapefile_dir)
-
-```
-
-
-```{python}
-
-# Load shapefile
-tracts = gpd.read_file(os.path.join(shapefile_dir, 'tl_2023_15_tract.shp'))
-```
-## Fetch ACS 2023 Population Data for Maui Tracts
-
-This section retrieves the latest census population data for Maui tracts and merges it with the shapefile.
-
-```{python}
-#| eval: false
-
-
-# Provide your Census API key
-API_KEY = "API_KEY"
-acs_url = (
-    "https://api.census.gov/data/2023/acs/acs5"
-    "?get=NAME,B01003_001E&for=tract:*&in=state:15+county:009"
-    f"&key={API_KEY}"
-)
-
-response = requests.get(acs_url)
-
-```
-```{python}
-#| echo: false
-
-
-
-# Provide your Census API key
-API_KEY = "4c4fb31afba1ae4fbf35b9f8a0d0d65e0432f6e9"
-acs_url = (
-    "https://api.census.gov/data/2023/acs/acs5"
-    "?get=NAME,B01003_001E&for=tract:*&in=state:15+county:009"
-    f"&key={API_KEY}"
-)
-
-response = requests.get(acs_url)
-
-```
-
-
-## Combining Census data with TIGER shapes
-```{python}
-
-census_data = response.json()
-census_df = pd.DataFrame(census_data[1:], columns=census_data[0])
-census_df['GEOID'] = census_df['state'] + census_df['county'] + census_df['tract']
-
-# Merge population data with tracts
-tracts = tracts.merge(
-    census_df[['GEOID', 'B01003_001E']],
-    on='GEOID',
-    how='left'
-)
-tracts['B01003_001E'] = pd.to_numeric(tracts['B01003_001E'])
-
-```
-
-
-
-
-```{python}
-#| eval: false
-
-global_min, global_max = np.inf, -np.inf
-for file in file_path:
-    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
-        precip = ds["precipitation"].sel(
-            lat=slice(lat_min, lat_max),
-            lon=slice(lon_min, lon_max)
-        ).isel(time=0).transpose("lat", "lon")
-        current_min = precip.min().item()
-        current_max = precip.max().item()
-        if np.isfinite(current_min): global_min = min(global_min, current_min)
-        if np.isfinite(current_max): global_max = max(global_max, current_max)
-
-# Optional: Use a LogNorm to enhance contrast
-from matplotlib.colors import LogNorm
-norm = LogNorm(vmin=0.05, vmax=global_max)
-
-fig, ax = plt.subplots( )
-
-# Load first raster
-with xr.open_dataset(file_path[0], engine="h5netcdf", group="Grid") as ds:
-    data0 = ds["precipitation"].sel(
-        lat=slice(lat_min, lat_max),
-        lon=slice(lon_min, lon_max)
-    ).isel(time=0).transpose("lat", "lon")
-    lon = ds["lon"].sel(lon=slice(lon_min, lon_max)).values
-    lat = ds["lat"].sel(lat=slice(lat_min, lat_max)).values
-
-lon2d, lat2d = np.meshgrid(lon, lat)
-
-# Plot base precipitation frame
-mesh = ax.pcolormesh(
-    lon2d, lat2d, data0.values,
-    cmap="Blues", shading="auto", norm=norm, zorder=1
-)
-cbar = fig.colorbar(mesh, ax=ax, label="Precipitation (mm/hr)")
-
-# Plot census tracts colored by population
-tracts.plot(
-    ax=ax,
-    column='B01003_001E',
-    cmap='Reds',
-    edgecolor='black',
-    linewidth=0.5,
-    alpha=0.6,
-    zorder=2,
-    legend=True,
-    legend_kwds={'label': "Population (ACS B01003_001E)"}
-)
-
-# Title and axes
-title_text = ax.set_title("Frame 1")
-ax.set_xlabel("Longitude")
-ax.set_ylabel("Latitude")
-plt.tight_layout()
-
-# -----------------------------
-# Step 4: Define Animation
-# -----------------------------
-def update(frame_index):
-    file = file_path[frame_index]
-    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
-        data = ds["precipitation"].sel(
-            lat=slice(lat_min, lat_max),
-            lon=slice(lon_min, lon_max)
-        ).isel(time=0).transpose("lat", "lon")
-    
-    # Update raster data
-    data_vals = data.values
-    data_vals[data_vals <= 0] = np.nan  # Avoid log(0)
-    mesh.set_array(data_vals.ravel())
-
-    # Timestamp label
-    filename = os.path.basename(file)
-    date_match = re.search(r"3IMERG\.(\d{8})", filename)
-    time_match = re.search(r"(\d{4}).V07B", filename)
-    if date_match and time_match:
-        date_str = date_match.group(1)
-        minutes = int(time_match.group(1))
-        dt = datetime.strptime(date_str, "%Y%m%d") + timedelta(minutes=minutes) - timedelta(hours=10)
-        label = dt.strftime("%Y-%m-%d %H:%M:%S HST")
-    else:
-        label = "Unknown timestamp"
-
-    title_text.set_text(f"Maui 2023 Population & Precipitation — {label}")
-    return mesh, title_text
-
-# -----------------------------
-# Step 5: Run and Save Animation
-# -----------------------------
-ani = animation.FuncAnimation(
-    fig, update, frames=len(file_path),
-    interval=200, blit=True, repeat=False
-)
-
-ani.save("data/images/maui_precip_population.gif", writer="pillow", fps=3)
-```
-
-
-
-
-![Maui Rain Population GIF](data/images/maui_precip_population.gif)
-
-
-
-
- 
-   
-
-## Summary
-
-This workflow demonstrates how to:
-
-- Download and merge census tract boundaries and population data for Maui.
-- Process and map local rainfall station observations.
-- Overlay demographic and environmental data for actionable disaster analysis.
-
-You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.

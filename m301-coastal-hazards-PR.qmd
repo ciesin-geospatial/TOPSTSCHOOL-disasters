@@ -97,7 +97,6 @@ In this section, you'll load the required Python libraries to work with census d
 Below is the full import block. Core packages are required; others are optional or used for extended functionality.
 
 
-
 ```{python}
 
 
@@ -107,7 +106,9 @@ from arcgis.gis import GIS
 
 
 # Standard libraries
-import os 
+import os
+import glob
+import re
 from zipfile import ZipFile
 
 from dotenv import load_dotenv
@@ -118,31 +119,35 @@ import requests
 # Data manipulation and plotting
 import pandas as pd
 import numpy as np
-
-
-import matplotlib
 import matplotlib.pyplot as plt
- 
 import matplotlib.colors as colors
 from matplotlib.ticker import FuncFormatter
 
-
 # Geospatial libraries
 import geopandas as gpd  
+from arcgis.features import GeoAccessor, GeoSeriesAccessor
+from arcgis.raster import Raster
+import arcgis.mapping  # For using WebMap, MapView, etc.
 
-
-from arcgis.gis import GIS
-from arcgis.features import FeatureSet, GeoAccessor, GeoSeriesAccessor
- 
- 
+# Earthdata access
+import earthaccess as ea
 
 # IPUMS API and DDI access
 from ipumspy.api import IpumsApiClient
-from ipumspy import AggregateDataExtract, ddi
-from ipumspy import readers 
+from ipumspy import AggregateDataExtract, readers, ddi
+
+from ipumspy import readers, ddi 
+
 from ipumspy.api.extract import NhgisDataset
 
-import seaborn as sns  
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+
+from matplotlib.ticker import FuncFormatter
+
+
+from shapely.geometry import Polygon
 
 import folium 
  
@@ -154,8 +159,6 @@ import folium
 This lesson uses `arcgis` version of 2.4.0 or higher:
 
 ```{python}
-#| eval: false
-#| 
 # Check the arcgis version for mapping properly 
 arcgis.__version__
 ```
@@ -186,22 +189,21 @@ After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. Y
 #| eval: false
  
 
-# Step 1: Load environment variables
-load_dotenv()
+# # Step 1: Load environment variables
+# load_dotenv()
 
-# Step 2: Retrieve API key from .env file
-IPUMS_API_KEY = os.getenv("IPUMS_API_KEY")  # Replace with your actual key name if different
+# # Step 2: Retrieve API key from .env file
+# IPUMS_API_KEY = os.getenv("IPUMS_API_KEY")  # Replace with your actual key name if different
 
-# Step 3: Validate that the key was loaded
-if IPUMS_API_KEY is None:
-    raise ValueError("API key not found. Ensure 'IPUMS_API_KEY' is set in your .env file.")
+# # Step 3: Validate that the key was loaded
+# if IPUMS_API_KEY is None:
+#     raise ValueError("API key not found. Ensure 'IPUMS_API_KEY' is set in your .env file.")
 
-# Step 4: Initialize the IPUMS API client
-ipums = IpumsApiClient(IPUMS_API_KEY)
+# # Step 4: Initialize the IPUMS API client
+# ipums = IpumsApiClient(IPUMS_API_KEY)
 ```
 
 ```{python} 
-#| eval: false
 #| echo: false
 
 
@@ -218,17 +220,13 @@ ipums = IpumsApiClient(IPUMS_API_KEY)
 
 ```
 
-### Downloading shapefiles from IPUMS
+### Downlaoding shapefiles from IPUMS
 
 Before downloading spatial data, we need to identify the correct **shapefile name** for our area of interest—in this case, **Puerto Rico block groups for 2010**
 
 The code below queries the NHGIS metadata catalog using the IPUMS API and lists matching shapefiles based on geography, level, and year.
 
 ```{python}
-#| eval: false
-#| 
-
-
 
 # Search IPUMS NHGIS metadata for shapefiles related to Puerto Rico block groups (2010)
 
@@ -787,7 +785,7 @@ def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Population Pyra
     bar_height = 0.35                     # Half-height bars for side-by-side comparison
 
 
-    fig, ax = plt.subplots(constrained_layout=True, figsize=(6.5, 6.5) )
+    fig, ax = plt.subplots()
 
     # Colors: 2010 (light), 2020 (dark)
     male_colors = ["#c6dbef", "#2171b5"]     # Blues
@@ -824,9 +822,10 @@ def plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title="Population Pyra
     ax.set_ylabel("Age Group")
 
     # Add legend
-    ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.0))
+    ax.legend(loc="lower right")
 
-    # Adjust layout to prevent label cutoff 
+    # Adjust layout to prevent label cutoff
+    plt.tight_layout()
     plt.show()
 
 
@@ -1057,12 +1056,11 @@ sns.pairplot(
     merged_df[plot_vars],
     diag_kind="hist",
     corner=True,  # Show only lower triangle
-    plot_kws=dict(marker="o", facecolors='none', edgecolor='blue'),
-    height=1.7
+    plot_kws=dict(marker="o", facecolors='none', edgecolors='blue')
 )
 
 # Add overall title and adjust layout
-plt.suptitle("Pairwise Scatterplots and Histograms (2010 to 2020 Changes)", y=1.02)
+plt.suptitle("Pairwise Scatterplots and Histograms (2010–2020 Changes)", y=1.02)
 plt.tight_layout()
 plt.show()
 
@@ -1091,32 +1089,21 @@ To retrieve official county boundaries for Puerto Rico, we use the `arcgis` Pyth
 
 We filter the layer to include only features where `STATEFP = '72'`, which corresponds to Puerto Rico, and convert the result into a **Spatially Enabled DataFrame (SEDF)** for further analysis.
 
-```{python}
-from arcgis.features import FeatureLayer
-from arcgis.gis import GIS
 
-# Anonymous GIS connection (with SSL disabled if needed)
-gis = GIS( )
-
-# Directly connect to the FeatureLayer by URL
-url = "https://services2.arcgis.com/IsDCghZ73NgoYoz5/arcgis/rest/services/US_county_2020/FeatureServer/0"
-layer = FeatureLayer(url)
-
-# Query Puerto Rico counties (STATEFP = '72')
-sedf = layer.query(where="STATEFP = '72'").sdf
-```
 ```{python}
 
 # Get the layer from the published data
- 
+
+# Connect to ArcGIS Online (anonymous session)
+gis = GIS()
 
 # Access a specific hosted feature layer by its Item ID
 layer = gis.content.get("3132216944b249a08d13b1aa0ee6fda2").layers[0]  # PR counties 2020 layer
 
-sedf = layer.query(where="STATEFP = '72'").sdf
-``` 
- 
+# Query Puerto Rico counties using the state FIPS code '72'
+sedf = layer.query(where="STATEFP = '72'").sdf  # Convert to Spatially Enabled DataFrame
 
+```
 
 We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `COUNTY` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!
 
@@ -1133,61 +1120,70 @@ print("`pr_sedf_ipums` DataFrame results after table join: ", len(pr_sedf_ipums)
 
 ```
 
-```{python}
-
- 
- # Convert SHAPE field to valid Shapely geometry 
-pr_sedf_ipums["geometry"] = pr_sedf_ipums["SHAPE"]
-
-# Convert both to GeoDataFrames 
-pr_ipums_gdf = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry")
-
-# Set projection (Esri Web Mercator) 
-
-pr_ipums_gdf.set_crs(epsg=3857, inplace=True)
-
-# pr_ipums_gdf.set_crs(epsg=4326) 
-```
-
 
 Now that we've merged demographic data with county geometries, we can use `arcgis` to create an interactive **choropleth map**. The map classifies Puerto Rico’s counties based on **z-scores of Population 60+ change** (`Pop60plus_dz`).
 
 ```{python}
+ 
 
-# Drop NaNs in geometry and target field
-gdf = pr_ipums_gdf.dropna(subset=["geometry", "Pop60plus_dz"]).reset_index(drop=True)
-gdf = gdf.to_crs(epsg=4326)
-gdf["id"] = gdf.index.astype(str)
+## Set up an interactive map centered on Puerto Rico
+gis = GIS()
+m = gis.map("Puerto Rico")
 
-# Map center from bounding box
-minx, miny, maxx, maxy = gdf.total_bounds
-center = [(miny + maxy) / 2, (minx + maxx) / 2]
+# Define classification settings for choropleth
+num_classes = 5                                      # Number of quantile classes
+field = "Pop60plus_dz"                               # Field to visualize (z-score of 60+ population change)
+column_values = pr_sedf_ipums[field].dropna()        # Drop missing values
 
-# Compute quantile breaks
-field = "Pop60plus_dz"
-breaks = list(np.quantile(gdf[field], np.linspace(0, 1, 6)))
+# Create class breaks using quantiles
+breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
 
-# Create folium map
-m = folium.Map(location=center, zoom_start=8)
+# Define a color palette (RdBu reversed)
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]
 
-# Add choropleth
-folium.Choropleth(
-    geo_data=gdf.to_json(),
-    data=gdf,
-    columns=["id", field],
-    key_on="feature.properties.id",
-    fill_color="RdBu",
-    fill_opacity=0.7,
-    line_opacity=0.2,
-    threshold_scale=breaks,
-    legend_name="Z-score of Change in Population Aged 60+, 2010 to 2020"
-).add_to(m)
+# Build a renderer to style the polygons
+renderer = {
+    "type": "classBreaks",
+    "field": field,
+    "classificationMethod": "esriClassifyQuantile",
+    "minValue": float(min(column_values)),
+    "classBreakInfos": [
+        {
+            "classMaxValue": float(breaks[i + 1]),
+            "label": f"{breaks[i]:.2f} – {breaks[i+1]:.2f}",
+            "description": "",
+            "symbol": {
+                "type": "esriSFS",
+                "style": "esriSFSSolid",
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],  # RGBA color
+                "outline": {
+                    "color": [0, 0, 0, 40],
+                    "width": 0.4,
+                    "type": "esriSLS",
+                    "style": "esriSLSSolid"
+                }
+            }
+        }
+        for i, c in enumerate(colors)
+    ]
+}
 
-# Display the map
+# Plot the spatial data with the custom renderer
+pr_sedf_ipums.spatial.plot(
+    map_widget=m,
+    renderer=renderer,
+    legend=True
+)
+
+# Enable legend display
+m.legend.enabled = True
+
+# Display the interactive map
 m
 
+
 ```
- 
+
 Map of relative change in population 60+ in Puerto Rico's Municipios. Red representing high values and blue representing low values.
 
 ## Low Elevation Coastal Zone Spatial Analysis with IPUMS counties
@@ -1227,6 +1223,79 @@ lecz_sdf = lecz_layer.query(where="lecz_zone > 0").sdf
 
 ### Map Counties with Population 60+ Change and LECZ Exposure
 
+This interactive map overlays two spatial layers:
+- A **choropleth** of Puerto Rico counties, colored by standardized change in **population 60+** from 2010–2020.
+- Polygons representing the **Low Elevation Coastal Zone (LECZ)**
+```{python}
+
+
+# Set up ArcGIS map centered on Puerto Rico
+gis = GIS()
+m = gis.map("Puerto Rico")
+
+# Define number of quantile-based classes
+num_classes = 5
+field = "Pop60plus_dz"  # Z-score of population 60+ change
+column_values = pr_sedf_ipums[field].dropna()
+
+# Generate class breaks using quantiles
+breaks = list(np.quantile(column_values, np.linspace(0, 1, num_classes + 1)))
+
+# Define a reversed RdBu color palette
+colors = ["#d73027", "#fc8d59", "#fee090", "#91bfdb", "#4575b4"]
+
+# Construct classBreaksRenderer for county layer
+renderer = {
+    "type": "classBreaks",
+    "field": field,
+    "classificationMethod": "esriClassifyQuantile",
+    "minValue": float(min(column_values)),
+    "classBreakInfos": [
+        {
+            "classMaxValue": float(breaks[i + 1]),
+            "label": f"{breaks[i]:.2f} – {breaks[i+1]:.2f}",
+            "description": "",
+            "symbol": {
+                "type": "esriSFS",
+                "style": "esriSFSSolid",
+                "color": list(int(c.lstrip("#")[i:i+2], 16) for i in (0, 2, 4)) + [180],  # RGBA
+                "outline": {
+                    "color": [0, 0, 0, 40],
+                    "width": 0.4,
+                    "type": "esriSLS",
+                    "style": "esriSLSSolid"
+                }
+            }
+        }
+        for i, c in enumerate(colors)
+    ]
+}
+
+# Plot county choropleth using the custom renderer
+pr_sedf_ipums.spatial.plot(
+    map_widget=m,
+    renderer=renderer,
+    legend=True
+)
+
+# Overlay the LECZ polygon layer (unclassified)
+lecz_sdf.spatial.plot(
+    map_widget=m
+)
+
+# Enable legend and display the map
+m.legend.enabled = True
+m
+
+
+```
+
+
+
+ 
+###  Overlay Analysis
+
+
 To assess which counties intersect with **Low Elevation Coastal Zones (LECZs)**, we perform a spatial overlay. This involves:
 
 1. Converting both LECZ and county feature layers into **GeoDataFrames** with proper geometries.
@@ -1239,13 +1308,16 @@ To assess which counties intersect with **Low Elevation Coastal Zones (LECZs)**,
 
  
  # Convert SHAPE field to valid Shapely geometry
-lecz_sdf["geometry"] = lecz_sdf["SHAPE"] 
+lecz_sdf["geometry"] = lecz_sdf["SHAPE"]
+pr_sedf_ipums["geometry"] = pr_sedf_ipums["SHAPE"]
 
 # Convert both to GeoDataFrames
-lecz_gdf = gpd.GeoDataFrame(lecz_sdf, geometry="geometry") 
+lecz_gdf = gpd.GeoDataFrame(lecz_sdf, geometry="geometry")
+pr_ipums_gdf = gpd.GeoDataFrame(pr_sedf_ipums, geometry="geometry")
 
 # Set projection (Esri Web Mercator)
-lecz_gdf.set_crs(epsg=3857, inplace=True) 
+lecz_gdf.set_crs(epsg=3857, inplace=True)
+pr_ipums_gdf.set_crs(epsg=3857, inplace=True)
 
 # Create a single dissolved LECZ polygon (MultiPolygon)
 lecz_gdf["dissolve_id"] = 1
@@ -1254,71 +1326,6 @@ lecz_union_gdf = lecz_gdf.dissolve(by=None)
 
 ```
 
-
-
-This interactive map overlays two spatial layers:
-- A **choropleth** of Puerto Rico counties, colored by standardized change in **population 60+** from 2010–2020.
-- Polygons representing the **Low Elevation Coastal Zone (LECZ)**
-
-```{python} 
-
-# Prepare base demographic layer
-gdf = pr_ipums_gdf.dropna(subset=["geometry", "Pop60plus_dz"]).reset_index(drop=True)
-gdf = gdf.to_crs(epsg=4326)
-gdf["id"] = gdf.index.astype(str)
-
-# Prepare overlay LECZ layer (must also be in EPSG:4326)
-lecz_gdf = lecz_union_gdf.dropna(subset=["geometry"]).to_crs(epsg=4326)
-
-# Compute bounding box center
-minx, miny, maxx, maxy = gdf.total_bounds
-center = [(miny + maxy) / 2, (minx + maxx) / 2]
-
-# Quantile breaks
-field = "Pop60plus_dz"
-breaks = list(np.quantile(gdf[field], np.linspace(0, 1, 6)))
-
-# Initialize folium map
-m = folium.Map(location=center, zoom_start=8)
-
-# ---- Layer 1: Choropleth of 60+ Z-scores ----
-choropleth = folium.Choropleth(
-    geo_data=gdf.to_json(),
-    data=gdf,
-    columns=["id", field],
-    key_on="feature.properties.id",
-    fill_color="RdBu",
-    fill_opacity=0.7,
-    line_opacity=0.2,
-    threshold_scale=breaks,
-    legend_name="Z-score of Change in Population Aged 60+, 2010 to 2020",
-    name="Pop 60+ Z-Score"
-)
-choropleth.add_to(m)
-
-# ---- Layer 2: Overlay LECZ polygons ----
-folium.GeoJson(
-    lecz_gdf.to_json(),
-    name="LECZ Zones",
-    style_function=lambda feature: {
-        "fillColor": "#00ffff",
-        "color": "#000000",
-        "weight": 0.5,
-        "fillOpacity": 0.4,
-    }
-).add_to(m)
-
-# Add layer control (to toggle layers)
-folium.LayerControl(collapsed=False).add_to(m)
-
-# Display the map
-m
-
-```
-
-
-
-###  Overlay Analysis
 
 To determine which counties are geographically exposed to coastal risk, we perform a spatial join with the `sjoin()` function. This operation checks whether each county geometry **intersects** the dissolved LECZ polygon.
 
@@ -1365,7 +1372,7 @@ To display the LECZ exposure choropleth in a web map, we:
 ```{python}
 
  
-# # Reproject to WGS84 (required for most web maps)
+# Reproject to WGS84 (required for most web maps)
 gdf = pr_counties_lecz_intersect.to_crs(epsg=4326)
 
 # Ensure LECZ flag is binary integer
@@ -1506,10 +1513,8 @@ sns.pairplot(
     hue="LECZ_Label",             # Color by LECZ category
     diag_kind="hist",             # Histogram on diagonal
     corner=True,                  # Lower triangle only
-    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7),
-    height=1.7  # Styling 
+    plot_kws=dict(marker="o", edgecolor="gray", alpha=0.7)  # Styling
 )
-
 
 # Add a super title and adjust layout
 plt.suptitle("Pairwise Scatterplots by LECZ", y=1.02)
@@ -1596,8 +1601,7 @@ def plot_pyramid_stacked_by_lecz(pyr2010, pyr2020):
     ax1.set_yticks(y)
     ax1.set_yticklabels(age_labels)
     ax1.axvline(0, color="gray", lw=0.8)
-    # Add legend
-    ax1.legend(loc="upper right", bbox_to_anchor=(1.3, 1.0))
+    ax1.legend(loc="lower right")
     ax1.xaxis.set_major_formatter(FuncFormatter(abs_tick))
     ax1.grid(axis="x", linestyle="--", linewidth=0.5, alpha=0.5)
 
