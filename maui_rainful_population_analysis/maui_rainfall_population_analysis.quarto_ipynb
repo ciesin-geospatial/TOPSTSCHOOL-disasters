@@ -62,7 +62,7 @@
         "\n",
         "This section downloads the latest census tract shapefile for Hawaii and loads it as a GeoDataFrame.\n"
       ],
-      "id": "e362d837"
+      "id": "c7846226"
     },
     {
       "cell_type": "code",
@@ -89,7 +89,7 @@
         "# Load shapefile\n",
         "tracts = gpd.read_file(os.path.join(shapefile_dir, 'tl_2023_15_tract.shp'))"
       ],
-      "id": "20ae9ee6",
+      "id": "ddabe638",
       "execution_count": null,
       "outputs": []
     },
@@ -101,7 +101,7 @@
         "\n",
         "This section retrieves the latest census population data for Maui tracts and merges it with the shapefile.\n"
       ],
-      "id": "6920b272"
+      "id": "4a9dface"
     },
     {
       "cell_type": "code",
@@ -128,7 +128,7 @@
         ")\n",
         "tracts['B01003_001E'] = pd.to_numeric(tracts['B01003_001E'])"
       ],
-      "id": "2ba5d182",
+      "id": "834a0222",
       "execution_count": null,
       "outputs": []
     },
@@ -140,7 +140,7 @@
         "\n",
         "This section loads your rainfall station CSV, cleans it, and converts it to a spatial points layer.\n"
       ],
-      "id": "4dea6b8b"
+      "id": "dc939b86"
     },
     {
       "cell_type": "code",
@@ -161,7 +161,7 @@
         "    crs='EPSG:4326'\n",
         ")"
       ],
-      "id": "28dc73e5",
+      "id": "a80031d4",
       "execution_count": null,
       "outputs": []
     },
@@ -173,7 +173,7 @@
         "\n",
         "This section creates a map showing population by census tract (shaded blue) and overlays rainfall stations as red dots, sized by rainfall amount.\n"
       ],
-      "id": "5dcfeb1e"
+      "id": "237aee78"
     },
     {
       "cell_type": "code",
@@ -203,7 +203,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "620689ad",
+      "id": "74418f2d",
       "execution_count": null,
       "outputs": []
     },
@@ -215,7 +215,7 @@
         "\n",
         "To complement the spatial map, we can visualize how rainfall changed over time across Maui by plotting the mean rainfall recorded at all stations for each date in the dataset.\n"
       ],
-      "id": "e77eb1e7"
+      "id": "8af71679"
     },
     {
       "cell_type": "code",
@@ -235,7 +235,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "65a9b948",
+      "id": "c70868e4",
       "execution_count": null,
       "outputs": []
     },
@@ -259,15 +259,14 @@
         "\n",
         "You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project."
       ],
-      "id": "028ba255"
+      "id": "dafe4b98"
     }
   ],
   "metadata": {
     "kernelspec": {
-      "name": "python3",
+      "display_name": "Python 3",
       "language": "python",
-      "display_name": "Python 3 (ipykernel)",
-      "path": "C:\\Users\\jmartine\\AppData\\Roaming\\jupyter\\kernels\\python3"
+      "name": "python3"
     }
   },
   "nbformat": 4,

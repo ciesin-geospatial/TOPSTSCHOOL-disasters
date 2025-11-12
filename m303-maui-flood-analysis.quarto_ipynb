@@ -29,7 +29,7 @@
         "\n",
         "## Introduction\n",
         "\n",
-        "Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. On the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers].\n",
+        "Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. In the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers]. In this research, learners will use NASA’s GPM IMERG rainfall data [@huffman2023imerg], MODIS Imagery, and drone photographies to analyze how the storm has impacted the island, its infrastructure, and people [@WHATEVER2020].\n",
         "\n",
         "Heavy rains, particularly over windward and wildfire-scarred slopes, threatened roads, homes, and infrastructure. This report explores the event using simulated rainfall data and visual  tools to assess possible flood impact zones.\n",
         "\n",
@@ -90,7 +90,7 @@
         "\n",
         ":::\n"
       ],
-      "id": "ad80d662"
+      "id": "9b3a5f47"
     },
     {
       "cell_type": "code",
@@ -113,7 +113,7 @@
         "\n",
         "import earthaccess\n"
       ],
-      "id": "eb33e633",
+      "id": "ddaad9e0",
       "execution_count": null,
       "outputs": []
     },
@@ -123,7 +123,7 @@
       "source": [
         "The earthaccess library simplifies the process of accessing NASA Earthdata by handling authentication and data discovery. Before you can search or download data using earthaccess, you need to authenticate using your Earthdata Login credentials. The `earthaccess.login()` function is the starting point for this process.\n"
       ],
-      "id": "a9789e4b"
+      "id": "910be65b"
     },
     {
       "cell_type": "code",
@@ -135,7 +135,7 @@
         "# This will prompt for username/password or use existing credentials  \n",
         " earthaccess.login()"
       ],
-      "id": "bd745601",
+      "id": "caa26aa2",
       "execution_count": null,
       "outputs": []
     },
@@ -145,7 +145,7 @@
       "source": [
         "To retrieve NASA precipitation data for Hawaii using earthaccess, we begin by querying geographic boundary data from OpenStreetMap using osmnx, then extract the bounding box for the region. This bounding box is used to search for GPM IMERG half-hourly precipitation data for a specific date range. \n"
       ],
-      "id": "0d31f562"
+      "id": "36da8f9c"
     },
     {
       "cell_type": "code",
@@ -159,7 +159,7 @@
         "bbox = hawaii.total_bounds  # [minx, miny, maxx, maxy]\n",
         "bounding_box = (bbox[0], bbox[1], bbox[2], bbox[3])"
       ],
-      "id": "a5529cf4",
+      "id": "cabb7b88",
       "execution_count": null,
       "outputs": []
     },
@@ -169,7 +169,7 @@
       "source": [
         "Search for GPM IMERG Half-Hourly Precipitation Data:\n"
       ],
-      "id": "fa7be7b6"
+      "id": "9e52a7e1"
     },
     {
       "cell_type": "code",
@@ -189,7 +189,7 @@
         "# Print number of URLs found\n",
         "print(len(all_urls), \"URLs found.\")\n"
       ],
-      "id": "9098d1a9",
+      "id": "205af7d1",
       "execution_count": null,
       "outputs": []
     },
@@ -199,7 +199,7 @@
       "source": [
         "Finally, this code will download and create a list of the file paths of the downloaded data from `earthaccess`:"
       ],
-      "id": "7cdac9bb"
+      "id": "157a246e"
     },
     {
       "cell_type": "code",
@@ -209,7 +209,7 @@
         "#| \n",
         "file_path = earthaccess.download(all_urls)"
       ],
-      "id": "c350a5a9",
+      "id": "e83fadd3",
       "execution_count": null,
       "outputs": []
     },
@@ -229,7 +229,7 @@
         " os.path.isfile(os.path.join(folder, f))]\n",
         "print(file_path)\n"
       ],
-      "id": "1b2da44f",
+      "id": "f091bd97",
       "execution_count": null,
       "outputs": []
     },
@@ -241,7 +241,7 @@
         "\n",
         "Once we’ve downloaded the GPM IMERG precipitation data, we can use `xarray` to open the **NetCDF** file and subset it to the region of interest (in this case, Hawaii). This subset is then visualized using `matplotlib` and xarray’s built-in plotting utilities to generate a precipitation map for the first available half-hourly time step.\n"
       ],
-      "id": "7ea71fc4"
+      "id": "b8d29289"
     },
     {
       "cell_type": "code",
@@ -279,7 +279,7 @@
         "plt.tight_layout()\n",
         "plt.show()\n"
       ],
-      "id": "acca3a9a",
+      "id": "a3acfb57",
       "execution_count": null,
       "outputs": []
     },
@@ -291,7 +291,7 @@
         "\n",
         "To understand how precipitation evolves over time, we can animate the sequence of GPM IMERG half-hourly rainfall images. This animation cycles through each file, extracts the timestamp, overlays the precipitation data on the Hawaii boundary, and renders a smooth temporal visualization using `matplotlib.animation`. This is especially helpful for spotting storm patterns and tracking rainfall intensity across the region.\n"
       ],
-      "id": "8adea1d7"
+      "id": "76de05f8"
     },
     {
       "cell_type": "code",
@@ -400,7 +400,7 @@
         "\n",
         "ani.save(\"data/images/hawaii_precip.gif\", writer=\"pillow\", fps=3)  # Save at 3 frames per second\n"
       ],
-      "id": "de944ea3",
+      "id": "6ada3ad0",
       "execution_count": null,
       "outputs": []
     },
@@ -415,7 +415,7 @@
         "\n",
         "To focus analysis on our location of analysis, we use `osmnx` to retrieve the geographic boundary for Maui County, Hawaii from **OpenStreetMap**. We then extract its bounding box and apply a small buffer (0.1 degrees) to ensure that nearby data just outside the strict boundary is included. This padded extent will be used to spatially filter satellite precipitation data or other geospatial layers relevant to the region.\n"
       ],
-      "id": "591509db"
+      "id": "2beffcc0"
     },
     {
       "cell_type": "code",
@@ -436,7 +436,7 @@
         "lon_min = bounding_box[0] - pad  # Western boundary\n",
         "lon_max = bounding_box[2] + pad  # Eastern boundary\n"
       ],
-      "id": "24e9a505",
+      "id": "a231c0d8",
       "execution_count": null,
       "outputs": []
     },
@@ -446,7 +446,7 @@
       "source": [
         "After defining the padded bounding box for Maui, we can visualize GPM IMERG half-hourly precipitation data for that area. This plot overlays satellite-derived rainfall intensity on the island’s geographic outline using `xarray` and `matplotlib`, providing spatial context for localized precipitation events.\n"
       ],
-      "id": "42211078"
+      "id": "ab7ab41d"
     },
     {
       "cell_type": "code",
@@ -487,7 +487,7 @@
         "# Display the plot\n",
         "plt.show()\n"
       ],
-      "id": "3348bf07",
+      "id": "255496df",
       "execution_count": null,
       "outputs": []
     },
@@ -497,7 +497,7 @@
       "source": [
         "To visualize how rainfall evolves across Maui County, this animation cycles through a sequence of GPM IMERG half-hourly datasets. For each frame, it subsets the data to the Maui region, overlays the county boundary, and updates the timestamp extracted from the filename. The animation is then saved as a `.gif` for easy sharing and visual analysis.\n"
       ],
-      "id": "feabd4fd"
+      "id": "4e701bb3"
     },
     {
       "cell_type": "code",
@@ -594,7 +594,7 @@
         "\n",
         "ani.save(\"data/images/maui_precip.gif\", writer=\"pillow\", fps=3)  # Save to file at 3 frames per second"
       ],
-      "id": "5d59209a",
+      "id": "f1182734",
       "execution_count": null,
       "outputs": []
     },
@@ -609,7 +609,7 @@
         "\n",
         "We can use the GPM IMERG half-hourly precipitation files to calculates the mean rainfall over Maui County for each timestep. The data is spatially subset to the OSM Maui bounding box, rasterized using a *geographic transform*, and then aggregated over the island polygon using the function `zonal_stats`. Results are compiled into a *DataFrame* for further analysis or plotting.\n"
       ],
-      "id": "d21f2b61"
+      "id": "4a95b0c0"
     },
     {
       "cell_type": "code",
@@ -682,7 +682,7 @@
         "# --- Convert results list to a clean DataFrame ---\n",
         "results_df = pd.DataFrame(results)  # Each row: [datetime, mean_precip]"
       ],
-      "id": "2029dc08",
+      "id": "d31fc3aa",
       "execution_count": null,
       "outputs": []
     },
@@ -692,7 +692,7 @@
       "source": [
         "Now that we’ve extracted mean precipitation values for each GPM IMERG file, we can visualize how rainfall changes over time across Maui County. This line plot presents a temporal snapshot of precipitation intensity, helping to identify storm events, rainfall variability, and dry periods.\n"
       ],
-      "id": "44421456"
+      "id": "75da0c76"
     },
     {
       "cell_type": "code",
@@ -721,7 +721,7 @@
         "# Display the plot in the output cell\n",
         "plt.show()"
       ],
-      "id": "6a0e33c0",
+      "id": "7b0bcee2",
       "execution_count": null,
       "outputs": []
     }

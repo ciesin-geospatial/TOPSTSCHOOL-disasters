@@ -9,7 +9,29 @@ bibliography: m303-maui-flood-bibliography.bib
 
 ## Overview
 
-In this lesson, you will analyze the **Flash Flood Watch for Maui** issued in January 15, 2024 due to prolonged, heavy rainfall. You will simulate rainfall data to evaluate flood risks across different regions of the island. This type of hazard analysis helps develop early-warning systems and improve response strategies for climate-related emergencies.
+On January 16, 2024, a slow-moving rainstorm over Maui led to significant flooding, road closures, and emergency rescues. In this lesson, learners will employ a Python workflow with NASA’s Integrated Multi-satellite Retrievals for GPM (Global Precipitation Measurement) half-hourly rainfall data, MODIS imagery, and drone photographs (from April 2024). Using open-source packages such as earthaccess, xarray, and rasterstats, participants will acquire, analyze, and visualize multi-scale remote sensing data. Then, integrate demographic layers to explore exposure, impacts, and recovery within the disaster-lifecycle framework.
+
+Maui’s population profile highlights the importance of this analysis. Around one in five residents of Maui County are seniors (>65), and one in five are children (<18) (U.S. Census Bureau, 2024) - two demographics that frequently need specialized assistance during emergencies. These groups make up slightly more than 40% of the county's population. Due to high housing costs (median home value of $858K (U.S. Census Bureau, 2024)) and nearly 10% of the population living below the poverty line, preparedness and recovery capabilities may be limited by financial constraints. The need for culturally sensitive disaster communication tactics is highlighted by the diverse racial makeup, which includes sizable Native Hawaiian/Pacific Islander communities. Together with spatial housing patterns (65% owner-occupied units (U.S. Census Bureau, 2024)), these demographic characteristics offer crucial background information for evacuation plans, allocating resources, and launching long-term recovery initiatives.
+
+### What will learners do?
+- Authenticate and access (IMERG) precipitation with earthaccess.
+
+
+- Define the Maui Area of Interest (AOI) using osmnx and apply spatial subsetting.
+
+
+- Visualize rainfall fields and create time-step animations with xarray and matplotlib.
+
+
+- Compare satellite-estimated rainfall with local gauge observations.
+
+
+- Retrieve ACS 2023 tract-level population via the Census API and overlay exposure.
+
+
+- Produce reproducible maps, charts, and summary statistics to inform preparedness and recovery.
+
+
 
 ## Learning Objectives
 
@@ -19,12 +41,23 @@ By the end of this lesson, you should be able to:
 - Access and work with NASA rainfall data using Python.
 - Compare NASA data and rain gauge data to see similarities.
 - Use U.S. Cenus data to determine how many households were affected by the event.
+- Understand the meteorological causes and risk factors of flash floods in Maui.
+ 
+Access and process U.S. Census tract population data using Python and the Census API.
+Overlay population and rainfall data to identify high-risk communities.
+Visualize spatial and time series data in static maps and animated forms using matplotlib/xarray
+Create a reproducible, automated workflow for spatial disaster analysis.
+Communicate analytical results effectively with charts, summary maps, and recommendations for whom it affects. 
+
 
 ## Introduction
 
 Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. In the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers]. In this research, learners will use NASA’s GPM IMERG rainfall data [@huffman2023imerg], MODIS Imagery, and drone photographies to analyze how the storm has impacted the island, its infrastructure, and people [@WHATEVER2020].
 
 Heavy rains, particularly over windward and wildfire-scarred slopes, threatened roads, homes, and infrastructure. This report explores the event using simulated rainfall data and visual  tools to assess possible flood impact zones.
+
+
+okshtk ajshrglzkdjfglkzdjhgkXZDjhgldxZKfgadsi [@Bae2021Longitudinal]. sgfzskjgfaklsdghasdkljghzkdgh 
 
 ### NASA Global Precipitation Measurement (GPM)
 

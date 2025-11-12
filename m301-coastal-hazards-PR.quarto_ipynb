@@ -103,7 +103,7 @@
         "\n",
         "Below is the full import block. Core packages are required; others are optional or used for extended functionality.\n"
       ],
-      "id": "466fe6d3"
+      "id": "b9b05957"
     },
     {
       "cell_type": "code",
@@ -159,7 +159,7 @@
         "\n",
         "import folium \n"
       ],
-      "id": "2fa1cbd9",
+      "id": "e7a3ef0b",
       "execution_count": null,
       "outputs": []
     },
@@ -169,7 +169,7 @@
       "source": [
         "This lesson uses `arcgis` version of 2.4.0 or higher:\n"
       ],
-      "id": "5d24d057"
+      "id": "1ffdb788"
     },
     {
       "cell_type": "code",
@@ -178,7 +178,7 @@
         "# Check the arcgis version for mapping properly \n",
         "arcgis.__version__"
       ],
-      "id": "25fcbf2d",
+      "id": "5e399b45",
       "execution_count": null,
       "outputs": []
     },
@@ -188,7 +188,7 @@
       "source": [
         "If arcgis version is lower, use `pip install`:\n"
       ],
-      "id": "ae3229a9"
+      "id": "b366fc71"
     },
     {
       "cell_type": "code",
@@ -199,7 +199,7 @@
         "\n",
         "pip install arcgis==2.4.1.1"
       ],
-      "id": "3e3b85fb",
+      "id": "325e5458",
       "execution_count": null,
       "outputs": []
     },
@@ -216,7 +216,7 @@
         "\n",
         "After you requested your IPUMS API, to the NHGIS, store it in `os.env` format. You will need your registration email and the API Key:\n"
       ],
-      "id": "2ad752bb"
+      "id": "1606d5ca"
     },
     {
       "cell_type": "code",
@@ -238,7 +238,7 @@
         "# # Step 4: Initialize the IPUMS API client\n",
         "# ipums = IpumsApiClient(IPUMS_API_KEY)"
       ],
-      "id": "55c10ad2",
+      "id": "dfd792f8",
       "execution_count": null,
       "outputs": []
     },
@@ -259,7 +259,7 @@
         "# Step 2: Initialize IPUMS client\n",
         "ipums = IpumsApiClient(IPUMS_API_KEY)\n"
       ],
-      "id": "8e234e25",
+      "id": "cb467879",
       "execution_count": null,
       "outputs": []
     },
@@ -273,7 +273,7 @@
         "\n",
         "The code below queries the NHGIS metadata catalog using the IPUMS API and lists matching shapefiles based on geography, level, and year.\n"
       ],
-      "id": "c7d3b48d"
+      "id": "4e19e27a"
     },
     {
       "cell_type": "code",
@@ -290,7 +290,7 @@
         "        ):\n",
         "            print(f\"Name: {shapefile['name']} | Year: {shapefile['year']}\")"
       ],
-      "id": "ac08c2a8",
+      "id": "f6993dd1",
       "execution_count": null,
       "outputs": []
     },
@@ -305,7 +305,7 @@
         "\n",
         "Getting data from 2010 and 2020 with the variables for **5-year Age Groups (P12)** and **Housing (H3)**. \n"
       ],
-      "id": "7a9def0e"
+      "id": "a354a1ae"
     },
     {
       "cell_type": "code",
@@ -334,7 +334,7 @@
         "    # shapefiles=[\"720_blck_grp_2020_tl2020\"]  # Optional: include shapefile\n",
         ")\n"
       ],
-      "id": "17da51c5",
+      "id": "4f6c3431",
       "execution_count": null,
       "outputs": []
     },
@@ -344,7 +344,7 @@
       "source": [
         "This code sends the extract request to IPUMS, prints the unique extract ID so you can track it, and sets up to wait until the extract is finished.\n"
       ],
-      "id": "992325f1"
+      "id": "9140dd38"
     },
     {
       "cell_type": "code",
@@ -359,7 +359,7 @@
         "\n",
         "# Wait for the extract to finish"
       ],
-      "id": "20747159",
+      "id": "185b6870",
       "execution_count": null,
       "outputs": []
     },
@@ -369,7 +369,7 @@
       "source": [
         "This code sets up the folder where the extract will be saved, creates it if it doesn't already exist, and downloads the extract from IPUMS to that location:\n"
       ],
-      "id": "7f2a2abb"
+      "id": "64681531"
     },
     {
       "cell_type": "code",
@@ -386,7 +386,7 @@
         "\n",
         "ipums.download_extract(extract, download_dir=DOWNLOAD_DIR)  # Download files to folder"
       ],
-      "id": "0c7a9af4",
+      "id": "493ff92f",
       "execution_count": null,
       "outputs": []
     },
@@ -396,7 +396,7 @@
       "source": [
         "After downloading the extract, this code navigates to the download directory, identifies the ZIP file containing the CSV data, and inspects its contents. It then locates the specific CSV files for the years 2010 and 2020 using filename patterns, and reads them directly from the ZIP archive into pandas DataFrames—no need to manually unzip anything!\n"
       ],
-      "id": "d4b31c3c"
+      "id": "ca08f94e"
     },
     {
       "cell_type": "code",
@@ -408,7 +408,7 @@
         "csv_zip = [f for f in file_list if f.endswith('_csv.zip')] \n",
         "file_list"
       ],
-      "id": "76748861",
+      "id": "a00dd855",
       "execution_count": null,
       "outputs": []
     },
@@ -465,7 +465,7 @@
         "print(\"2020 shape:\", df_2020.shape)\n",
         "print(\"2010 shape:\", df_2010.shape)"
       ],
-      "id": "bc818560",
+      "id": "f5536fe8",
       "execution_count": null,
       "outputs": []
     },
@@ -479,7 +479,7 @@
         "\n",
         "Look for the .txt file(s) in the zipped file you downloaded, and they will shed some light on your data.\n"
       ],
-      "id": "e74b180b"
+      "id": "4ed86988"
     },
     {
       "cell_type": "code",
@@ -685,7 +685,7 @@
         "df_2010.rename(columns=rename_2010, inplace=True)  # Rename 2010 columns\n",
         "df_2020.rename(columns=rename_2020, inplace=True)  # Rename 2020 columns"
       ],
-      "id": "92d3f87a",
+      "id": "d82b8759",
       "execution_count": null,
       "outputs": []
     },
@@ -695,7 +695,7 @@
       "source": [
         "This step filters both datasets to include only records from Puerto Rico, which is identified in the IPUMS data by `STATEA == 72`. It also removes any columns that are completely empty (all values are NaN), which helps clean up the data for analysis.\n"
       ],
-      "id": "3882658f"
+      "id": "80fe2768"
     },
     {
       "cell_type": "code",
@@ -709,7 +709,7 @@
         "pr_df_2010 = pr_df_2010.dropna(axis=1, how='all')  # Clean 2010 data\n",
         "pr_df_2020 = pr_df_2020.dropna(axis=1, how='all')  # Clean 2020 data"
       ],
-      "id": "0b7f6b24",
+      "id": "53e5ed46",
       "execution_count": null,
       "outputs": []
     },
@@ -725,7 +725,7 @@
         "\n",
         "These ratios help measure aging and housing vacancy patterns in Puerto Rico over time.\n"
       ],
-      "id": "d0bdd0e3"
+      "id": "704026a5"
     },
     {
       "cell_type": "code",
@@ -761,7 +761,7 @@
         "pr_df_2020[\"Pop60pRatio\"] = pr_df_2020[\"Pop60plus_total\"] / pr_df_2020[\"Total_Population\"]\n",
         "pr_df_2020[\"VacantRatio\"] = pr_df_2020[\"Vacant\"] / pr_df_2020[\"Total_Housing_Units\"]\n"
       ],
-      "id": "a4a295ea",
+      "id": "c4f6712c",
       "execution_count": null,
       "outputs": []
     },
@@ -780,7 +780,7 @@
         "\n",
         "This kind of visualization helps reveal spatial patterns or clusters related to population 60+ and housing dynamics.\n"
       ],
-      "id": "ec3c3d1c"
+      "id": "5099db7b"
     },
     {
       "cell_type": "code",
@@ -796,7 +796,7 @@
         "plt.tight_layout()  # Adjust layout\n",
         "plt.show()  # Display plot"
       ],
-      "id": "bfd167b2",
+      "id": "c3f44111",
       "execution_count": null,
       "outputs": []
     },
@@ -812,7 +812,7 @@
         "\n",
         "First, Extract age-by-sex columns from the dataset.\n"
       ],
-      "id": "b2e6c647"
+      "id": "07310cfc"
     },
     {
       "cell_type": "code",
@@ -822,7 +822,7 @@
         "pyramid_columns_2010 = [col for col in pr_df_2010.columns if col.startswith(\"Male:\") or col.startswith(\"Female:\")]\n",
         "pyramid_columns_2020 = [col for col in pr_df_2020.columns if col.startswith(\"Male:\") or col.startswith(\"Female:\")]\n"
       ],
-      "id": "da7ba02f",
+      "id": "f30211ef",
       "execution_count": null,
       "outputs": []
     },
@@ -836,7 +836,7 @@
         "\n",
         "After combining, it prepares the data for bidirectional horizontal bar plotting by making male values negative (so they show on the left), keeping female values positive (on the right), and creating helper columns for width and placement of bars.\n"
       ],
-      "id": "9fab1d5f"
+      "id": "5783b550"
     },
     {
       "cell_type": "code",
@@ -890,7 +890,7 @@
         "\n",
         "    return pyramid\n"
       ],
-      "id": "a8cc1b98",
+      "id": "b873a40a",
       "execution_count": null,
       "outputs": []
     },
@@ -900,7 +900,7 @@
       "source": [
         "To prepare for visualizing population structure, we first apply the `combine_age_groups()` function to our cleaned census data for 2010 and 2020. This step transforms narrow age bands into broader, more interpretable categories and reshapes the data for plotting population pyramids.\n"
       ],
-      "id": "625bad66"
+      "id": "dc699997"
     },
     {
       "cell_type": "code",
@@ -909,7 +909,7 @@
         "pyramid_2010 = combine_age_groups(pr_df_2010) #use defined function and apply the dataframe `pr_df_2010`\n",
         "pyramid_2020 = combine_age_groups(pr_df_2020) #use defined function and apply the dataframe `pr_df_2020`"
       ],
-      "id": "15518406",
+      "id": "a6514a95",
       "execution_count": null,
       "outputs": []
     },
@@ -925,7 +925,7 @@
         "\n",
         "Custom axis formatting, color palettes, and layout tweaks are used to enhance visual clarity.\n"
       ],
-      "id": "61be3b94"
+      "id": "4d76b1a4"
     },
     {
       "cell_type": "code",
@@ -987,7 +987,7 @@
         "    plt.tight_layout()\n",
         "    plt.show()\n"
       ],
-      "id": "fcfe367a",
+      "id": "87a6e474",
       "execution_count": null,
       "outputs": []
     },
@@ -997,7 +997,7 @@
       "source": [
         "To generate the population pyramid comparing Puerto Rico in 2010 and 2020, we call the plotting function and pass in the pre-processed DataFrames.\n"
       ],
-      "id": "a3d38a52"
+      "id": "8762874a"
     },
     {
       "cell_type": "code",
@@ -1006,7 +1006,7 @@
         "# Plot population pyramid comparing Puerto Rico (2010 vs 2020)\n",
         "plot_pyramid_2010_vs_2020(pyramid_2010, pyramid_2020, title=\"Puerto Rico Population Pyramid (2010 vs 2020)\")"
       ],
-      "id": "4bc9ca4e",
+      "id": "c714e25e",
       "execution_count": null,
       "outputs": []
     },
@@ -1018,7 +1018,7 @@
         "\n",
         "To compare demographic structure at a finer spatial scale, you can generate a population pyramid for any individual municipio (county) in Puerto Rico. The steps below demonstrate how to do this for Arecibo Municipio.\n"
       ],
-      "id": "2d97f046"
+      "id": "0b63aafc"
     },
     {
       "cell_type": "code",
@@ -1027,7 +1027,7 @@
         "#show unique names of COUNTY column\n",
         "print(pr_df_2010[\"COUNTY\"].unique())"
       ],
-      "id": "16d0ca74",
+      "id": "fb33c295",
       "execution_count": null,
       "outputs": []
     },
@@ -1037,7 +1037,7 @@
       "source": [
         "Select and change the COUNTY you want to plot below:"
       ],
-      "id": "0486d18e"
+      "id": "3bec8652"
     },
     {
       "cell_type": "code",
@@ -1054,7 +1054,7 @@
         "#Plot population pyramid for Arecibo Municipio\n",
         "plot_pyramid_2010_vs_2020(county_pyr_2010, county_pyr_2020, \"Arecibo, PR, Population Pyramid (2010 vs 2020)\")"
       ],
-      "id": "5a10c477",
+      "id": "30350750",
       "execution_count": null,
       "outputs": []
     },
@@ -1071,7 +1071,7 @@
         "-   Sums total population, housing units, and selected variables by county\n",
         "-   Aggregates all age/sex columns needed for further analysis (like population pyramids)\n"
       ],
-      "id": "f680c6ca"
+      "id": "e35a8397"
     },
     {
       "cell_type": "code",
@@ -1101,7 +1101,7 @@
         "\n",
         "    return df_aggregated"
       ],
-      "id": "5e1e6f38",
+      "id": "eda7c38a",
       "execution_count": null,
       "outputs": []
     },
@@ -1111,7 +1111,7 @@
       "source": [
         "Now we apply the function to both the 2010 and 2020 datasets to produce county-level summaries.\n"
       ],
-      "id": "6c283ab7"
+      "id": "59efd349"
     },
     {
       "cell_type": "code",
@@ -1123,7 +1123,7 @@
         "# Apply the aggregation function to the 2020 data\n",
         "county_df_2020 = aggregate_to_county(pr_df_2020)\n"
       ],
-      "id": "b1f206aa",
+      "id": "b00a1377",
       "execution_count": null,
       "outputs": []
     },
@@ -1139,7 +1139,7 @@
         "\n",
         "The resulting `merged_df` DataFrame contains side-by-side values for both years, using suffixes to distinguish 2010 and 2020 columns.\n"
       ],
-      "id": "4b7dd8a0"
+      "id": "9b937ff7"
     },
     {
       "cell_type": "code",
@@ -1153,7 +1153,7 @@
         "    suffixes=(\"_2020\", \"_2010\")  # Label columns by year\n",
         ")\n"
       ],
-      "id": "25cd494b",
+      "id": "351e5590",
       "execution_count": null,
       "outputs": []
     },
@@ -1175,7 +1175,7 @@
         "\n",
         "The code below creates new columns in the `merged_df` DataFrame to store the absolute and percent changes for each indicator. Division-by-zero cases are handled safely using `.where()`\n"
       ],
-      "id": "5d712809"
+      "id": "801e9552"
     },
     {
       "cell_type": "code",
@@ -1203,7 +1203,7 @@
         "    merged_df[\"Vacant_2010\"].where(merged_df[\"Vacant_2010\"] != 0)\n",
         ") * 100\n"
       ],
-      "id": "84add3d7",
+      "id": "84f7e5d9",
       "execution_count": null,
       "outputs": []
     },
@@ -1225,7 +1225,7 @@
         "\n",
         "To better evaluate how unusual each area's change is, we compute **z-scores** for each variable. This standardizes the values by subtracting the mean and dividing by the standard deviation, allowing for comparisons across indicators on a consistent scale.\n"
       ],
-      "id": "4fdc91ad"
+      "id": "f20af97d"
     },
     {
       "cell_type": "code",
@@ -1240,7 +1240,7 @@
         "    z_col = var.replace(\"_Change_Pct\", \"_dz\")\n",
         "    merged_df[z_col] = (merged_df[var] - means[var]) / stds[var]"
       ],
-      "id": "6a62640a",
+      "id": "395410ff",
       "execution_count": null,
       "outputs": []
     },
@@ -1269,7 +1269,7 @@
         "\n",
         "Can you spot any linear trends in the scatterplots?\n"
       ],
-      "id": "511f2000"
+      "id": "6ee84624"
     },
     {
       "cell_type": "code",
@@ -1297,7 +1297,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "c6d032bd",
+      "id": "3ca7b406",
       "execution_count": null,
       "outputs": []
     },
@@ -1326,7 +1326,7 @@
         "\n",
         "We filter the layer to include only features where `STATEFP = '72'`, which corresponds to Puerto Rico, and convert the result into a **Spatially Enabled DataFrame (SEDF)** for further analysis.\n"
       ],
-      "id": "e23d093c"
+      "id": "96833866"
     },
     {
       "cell_type": "code",
@@ -1343,7 +1343,7 @@
         "# Query Puerto Rico counties using the state FIPS code '72'\n",
         "sedf = layer.query(where=\"STATEFP = '72'\").sdf  # Convert to Spatially Enabled DataFrame"
       ],
-      "id": "87f7fcec",
+      "id": "1eea1331",
       "execution_count": null,
       "outputs": []
     },
@@ -1353,7 +1353,7 @@
       "source": [
         "We can merge the spatial county feature layer for Puerto Rico (2020) with your  demographic data (2010–2020) using the `COUNTY` field as a common geographic identifier. The result, `pr_sedf_ipums`, is a Spatially Enabled DataFrame that contains both geometry and attribute data—making it ready for mapping or spatial analysis!\n"
       ],
-      "id": "de61d6d9"
+      "id": "7a5b6283"
     },
     {
       "cell_type": "code",
@@ -1365,7 +1365,7 @@
         "\n",
         "print(\"`pr_sedf_ipums` DataFrame results after table join: \", len(pr_sedf_ipums))\n"
       ],
-      "id": "16bf2605",
+      "id": "4e23247f",
       "execution_count": null,
       "outputs": []
     },
@@ -1375,7 +1375,7 @@
       "source": [
         "Now that we've merged demographic data with county geometries, we can use `arcgis` to create an interactive **choropleth map**. The map classifies Puerto Rico’s counties based on **z-scores of Population 60+ change** (`Pop60plus_dz`).\n"
       ],
-      "id": "8c0dbea8"
+      "id": "71f8edc4"
     },
     {
       "cell_type": "code",
@@ -1436,7 +1436,7 @@
         "# Display the interactive map\n",
         "m\n"
       ],
-      "id": "3921c196",
+      "id": "dac17a58",
       "execution_count": null,
       "outputs": []
     },
@@ -1452,7 +1452,7 @@
         "\n",
         "The first step is to search **ArcGIS Online’s Living Atlas** using the `arcgis` Python package to locate an LECZ feature layer for Puerto Rico.\n"
       ],
-      "id": "ed328e66"
+      "id": "af58182b"
     },
     {
       "cell_type": "code",
@@ -1471,7 +1471,7 @@
         "# Select the first matching layer (assumes the most relevant appears first)\n",
         "lecz_layer = lecz[0].layers[0]\n"
       ],
-      "id": "8a9675a9",
+      "id": "96004819",
       "execution_count": null,
       "outputs": []
     },
@@ -1481,7 +1481,7 @@
       "source": [
         "Once we've identified the appropriate LECZ layer from ArcGIS Online, we query it to retrieve only the polygons where `lecz_zone > 0`. These represent areas that fall within low-elevation thresholds and are considered exposed to coastal flooding or sea-level rise.\n"
       ],
-      "id": "b793e0b6"
+      "id": "8bff555d"
     },
     {
       "cell_type": "code",
@@ -1491,7 +1491,7 @@
         "# The field `lecz_zone > 0` filters out non-exposed areas (e.g., 0 = not LECZ)\n",
         "lecz_sdf = lecz_layer.query(where=\"lecz_zone > 0\").sdf"
       ],
-      "id": "2413d941",
+      "id": "259eb7a6",
       "execution_count": null,
       "outputs": []
     },
@@ -1505,7 +1505,7 @@
         "- A **choropleth** of Puerto Rico counties, colored by standardized change in **population 60+** from 2010–2020.\n",
         "- Polygons representing the **Low Elevation Coastal Zone (LECZ)**"
       ],
-      "id": "f91e9306"
+      "id": "6c88df3c"
     },
     {
       "cell_type": "code",
@@ -1569,7 +1569,7 @@
         "m.legend.enabled = True\n",
         "m\n"
       ],
-      "id": "775a5ca1",
+      "id": "74cd47dc",
       "execution_count": null,
       "outputs": []
     },
@@ -1588,7 +1588,7 @@
         "4. Flagging each county with a binary value (`lecz = 1` if exposed, `0` if not).\n",
         "5. Visualizing the results with a **Folium choropleth map**.\n"
       ],
-      "id": "bfcf6760"
+      "id": "8929c083"
     },
     {
       "cell_type": "code",
@@ -1610,7 +1610,7 @@
         "lecz_gdf[\"dissolve_id\"] = 1\n",
         "lecz_union_gdf = lecz_gdf.dissolve(by=None)\n"
       ],
-      "id": "dd642f3a",
+      "id": "7b411084",
       "execution_count": null,
       "outputs": []
     },
@@ -1620,7 +1620,7 @@
       "source": [
         "To determine which counties are geographically exposed to coastal risk, we perform a spatial join with the `sjoin()` function. This operation checks whether each county geometry **intersects** the dissolved LECZ polygon.\n"
       ],
-      "id": "3de7970b"
+      "id": "63e0fcc4"
     },
     {
       "cell_type": "code",
@@ -1631,7 +1631,7 @@
         "    pr_ipums_gdf, lecz_union_gdf, how=\"left\", predicate=\"intersects\"\n",
         ")"
       ],
-      "id": "b86b85c8",
+      "id": "6a0796ff",
       "execution_count": null,
       "outputs": []
     },
@@ -1643,7 +1643,7 @@
         "\n",
         "Counties that intersect the LECZ polygon are assigned `1`; all others are assigned `0`\n"
       ],
-      "id": "f5ef3cb1"
+      "id": "e402c092"
     },
     {
       "cell_type": "code",
@@ -1661,7 +1661,7 @@
         "# Final conversion to integer type\n",
         "pr_counties_lecz_intersect[\"lecz\"] = pr_counties_lecz_intersect[\"lecz\"].astype(int)\n"
       ],
-      "id": "e0b3c43f",
+      "id": "545c7e28",
       "execution_count": null,
       "outputs": []
     },
@@ -1678,7 +1678,7 @@
         "- Add a unique string `id` field\n",
         "- Calculate map center for display\n"
       ],
-      "id": "ba2ecfa9"
+      "id": "837cd884"
     },
     {
       "cell_type": "code",
@@ -1698,7 +1698,7 @@
         "minx, miny, maxx, maxy = gdf.total_bounds\n",
         "center = [(miny + maxy) / 2, (minx + maxx) / 2]\n"
       ],
-      "id": "a4138414",
+      "id": "1eb2f3f5",
       "execution_count": null,
       "outputs": []
     },
@@ -1711,7 +1711,7 @@
         "- `1` = exposed to LECZ  \n",
         "- `0` = not exposed\n"
       ],
-      "id": "c3cd6b95"
+      "id": "17f5a9a7"
     },
     {
       "cell_type": "code",
@@ -1735,7 +1735,7 @@
         "# Display the map\n",
         "m"
       ],
-      "id": "0f3cfa8b",
+      "id": "bb4aa29b",
       "execution_count": null,
       "outputs": []
     },
@@ -1751,7 +1751,7 @@
         "- Group data by `lecz` status (`1 = inside`, `0 = outside`)\n",
         "- Compute summary statistics for each group\n"
       ],
-      "id": "4ef22ea6"
+      "id": "d527b5c9"
     },
     {
       "cell_type": "code",
@@ -1800,7 +1800,7 @@
         "print(\"\\nAverage Demographic and Housing Indicators by LECZ Group:\")\n",
         "print(summary_df)\n"
       ],
-      "id": "043dc2f9",
+      "id": "ea85cd3a",
       "execution_count": null,
       "outputs": []
     },
@@ -1810,7 +1810,7 @@
       "source": [
         "This step uses a Seaborn `pairplot` to explore pairwise relationships among key demographic and housing variables. The scatterplots are grouped by **LECZ exposure (`Inside` vs. `Outside`)**, allowing visual comparison of patterns such as population loss, aging, and housing vacancy.\n"
       ],
-      "id": "2cf7618c"
+      "id": "f5a680d7"
     },
     {
       "cell_type": "code",
@@ -1853,7 +1853,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "c52bbbfa",
+      "id": "29b6dbbb",
       "execution_count": null,
       "outputs": []
     },
@@ -1868,7 +1868,7 @@
         "\n",
         "This allows us to compare how the age distribution—particularly among older populations—differs by exposure to coastal flood risk.\n"
       ],
-      "id": "060bbd16"
+      "id": "c10f8305"
     },
     {
       "cell_type": "code",
@@ -1982,7 +1982,7 @@
         "# Plot pyramids\n",
         "plot_pyramid_stacked_by_lecz(pyramid_2010, pyramid_2020)"
       ],
-      "id": "a784322d",
+      "id": "09bb2011",
       "execution_count": null,
       "outputs": []
     },
@@ -1992,7 +1992,7 @@
       "source": [
         "Preview the pyramid tables:\n"
       ],
-      "id": "ccc359c6"
+      "id": "8de56044"
     },
     {
       "cell_type": "code",
@@ -2003,7 +2003,7 @@
         "\n",
         "print(pyramid_2020.head(5))"
       ],
-      "id": "0444f5f4",
+      "id": "1ce5659f",
       "execution_count": null,
       "outputs": []
     },
@@ -2047,7 +2047,7 @@
         " \n",
         "Coupling small-area demographics with a simple exposure proxy (LECZ) helps reveal who lives in potentially flood-exposed zones and how local population structure is changing—critical context for risk reduction, health services planning, and adaptation.\n"
       ],
-      "id": "37837b88"
+      "id": "b6543f36"
     }
   ],
   "metadata": {
