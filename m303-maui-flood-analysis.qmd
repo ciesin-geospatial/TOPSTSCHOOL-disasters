@@ -6,10 +6,26 @@ format:
   html 
 bibliography: m303-maui-flood-bibliography.bib
 ---
-Testing
+
 ## Overview
 
-In this lesson, you will analyze the **Flash Flood Watch for Maui** issued in January 15, 2024 due to prolonged, heavy rainfall. You will simulate rainfall data to evaluate flood risks across different regions of the island. This type of hazard analysis helps develop early-warning systems and improve response strategies for climate-related emergencies.
+On January 16, 2024, a slow-moving rainstorm over Maui led to significant flooding, road closures, and emergency rescues. In this lesson, learners will employ a Python workflow with NASA’s Integrated Multi-satellite Retrievals for GPM (Global Precipitation Measurement) half-hourly rainfall data, MODIS imagery, and drone photographs (from April 2024). Using open-source packages such as earthaccess, xarray, and rasterstats, participants will acquire, analyze, and visualize multi-scale remote sensing data. Then, integrate demographic layers to explore exposure, impacts, and recovery within the disaster-lifecycle framework.
+
+Maui’s population profile highlights the importance of this analysis. Around one in five residents of Maui County are seniors (>65), and one in five are children (<18) (U.S. Census Bureau, 2024) - two demographics that frequently need specialized assistance during emergencies. These groups make up slightly more than 40% of the county's population. Due to high housing costs (median home value of $858K (U.S. Census Bureau, 2024)) and nearly 10% of the population living below the poverty line, preparedness and recovery capabilities may be limited by financial constraints. The need for culturally sensitive disaster communication tactics is highlighted by the diverse racial makeup, which includes sizable Native Hawaiian/Pacific Islander communities. Together with spatial housing patterns (65% owner-occupied units (U.S. Census Bureau, 2024)), these demographic characteristics offer crucial background information for evacuation plans, allocating resources, and launching long-term recovery initiatives.
+
+### What will learners do?
+- Authenticate and access (IMERG) precipitation with earthaccess.
+
+- Define the Maui Area of Interest (AOI) using osmnx and apply spatial subsetting.
+
+- Visualize rainfall fields and create time-step animations with xarray and matplotlib.
+
+- Compare satellite-estimated rainfall with local gauge observations.
+
+- Retrieve ACS 2023 tract-level population via the Census API and overlay exposure.
+
+- Produce reproducible maps, charts, and summary statistics to inform preparedness and recovery.
+
 
 ## Learning Objectives
 
