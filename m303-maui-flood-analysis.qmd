@@ -11,18 +11,18 @@ bibliography: m303-maui-flood-bibliography.bib
 
 On January 16, 2024, a slow-moving rainstorm over Maui led to significant flooding, road closures, and emergency rescues. In this lesson, learners will employ a Python workflow with NASA’s Integrated Multi-satellite Retrievals for GPM (Global Precipitation Measurement) half-hourly rainfall data, MODIS imagery, and drone photographs (from April 2024). Using open-source packages such as earthaccess, xarray, and rasterstats, participants will acquire, analyze, and visualize multi-scale remote sensing data. Then, integrate demographic layers to explore exposure, impacts, and recovery within the disaster-lifecycle framework.
 
-Maui’s population profile highlights the importance of this analysis. Around one in five residents of Maui County are seniors (>65), and one in five are children (<18) (U.S. Census Bureau, 2024) - two demographics that frequently need specialized assistance during emergencies. These groups make up slightly more than 40% of the county's population. Due to high housing costs (median home value of $858K (U.S. Census Bureau, 2024)) and nearly 10% of the population living below the poverty line, preparedness and recovery capabilities may be limited by financial constraints. The need for culturally sensitive disaster communication tactics is highlighted by the diverse racial makeup, which includes sizable Native Hawaiian/Pacific Islander communities. Together with spatial housing patterns (65% owner-occupied units (U.S. Census Bureau, 2024)), these demographic characteristics offer crucial background information for evacuation plans, allocating resources, and launching long-term recovery initiatives.
+Maui’s population profile highlights the importance of this analysis. Around one in five residents of Maui County are seniors (>65), and one in five are children (<18) [@uscensus2024maui] - two demographics that frequently need specialized assistance during emergencies. These groups make up slightly more than 40% of the county's population. Due to high housing costs (median home value of $858K [@uscensus2024maui]) and nearly 10% of the population living below the poverty line, preparedness and recovery capabilities may be limited by financial constraints. The need for culturally sensitive disaster communication tactics is highlighted by the diverse racial makeup, which includes sizable Native Hawaiian/Pacific Islander communities. Together with spatial housing patterns (65% owner-occupied units [@uscensus2024maui]), these demographic characteristics offer crucial background information for evacuation plans, allocating resources, and launching long-term recovery initiatives.
 
 ### What will learners do?
-- Authenticate and access (IMERG) precipitation with earthaccess.
+- Authenticate and access **Integrated Multi-satellitE Retrievals for GPM (Global Precipitation Measurements) (IMERG)** precipitation with earthaccess.
 
-- Define the Maui Area of Interest (AOI) using osmnx and apply spatial subsetting.
+- Define the Maui **Area of Interest (AOI)** using osmnx and apply spatial subsetting.
 
-- Visualize rainfall fields and create time-step animations with xarray and matplotlib.
+- Visualize rainfall fields and create **time-step animations** with xarray and matplotlib.
 
-- Compare satellite-estimated rainfall with local gauge observations.
+- Compare satellite-estimated rainfall with **local gauge observations**.
 
-- Retrieve ACS 2023 tract-level population via the Census API and overlay exposure.
+- Retrieve **ACS 2023** tract-level population via the **Census API** and overlay exposure.
 
 - Produce reproducible maps, charts, and summary statistics to inform preparedness and recovery.
 
@@ -31,16 +31,38 @@ Maui’s population profile highlights the importance of this analysis. Around o
 
 By the end of this lesson, you should be able to:
 
-- Understand the meteorological cause and risk factors of flash floods in Maui.
-- Access and work with NASA rainfall data using Python.
-- Compare NASA data and rain gauge data to see similarities.
-- Use U.S. Cenus data to determine how many households were affected by the event.
+  - Understand the meteorological causes and risk factors of flash floods in Maui.
+  - Access and work with NASA rainfall data using Python.
+  - Download, preprocess, and visualize gridded satellite rainfall data using Python.
+  - Compare NASA data and rain gauge data to see similarities.
+  - Integrate and analyze drone imagery to validate and supplement remote sensing results.
+  - Access and process U.S. Census tract population data using Python and the Census API.
+  - Overlay population and rainfall data to identify high-risk communities.
+  - Visualize spatial and time series data in static maps and animated forms using matplotlib/xarray
+  - Create a reproducible, automated workflow for spatial disaster analysis.
+  - Communicate analytical results effectively with charts, summary maps, and recommendations for whom it affects. 
+
 
 ## Introduction
 
-Flash floods are sudden, powerful events that can occur when intense rain overwhelms drainage systems. In the early hours of **January 16, 2024**, the National Weather Service issued a **Flood Watch for Maui**, warning residents of potentially hazardous rainfall due to a slow-moving weather system [@mauinow2024showers]. In this research, learners will use NASA’s GPM IMERG rainfall data [@huffman2023imerg], MODIS Imagery, and drone photographies to analyze how the storm has impacted the island, its infrastructure, and people [@WHATEVER2020].
+Floods are one of the most devastating and long-lasting disasters on Earth. They can affect millions of people worldwide and cause damages that go beyond billions of dollars to fix or mitigate. Over the last years, the number of floods has increased, which is tied to anthropogenic climate change and the rise of global temperatures [@ceola2022unraveling][@undrr2025garfloods] (Ceola et al., 2022; GAR 2025 Hazard Explorations, 2025). 
 
-Heavy rains, particularly over windward and wildfire-scarred slopes, threatened roads, homes, and infrastructure. This report explores the event using simulated rainfall data and visual  tools to assess possible flood impact zones.
+### Why have floods been getting more severe?
+The primary cause of the increasing severity and number of floods is the significantly higher global temperature and increasing rainfall extremes. Global surface temperature is still getting higher and higher, which strengthens the hydrologic cycle, that way producing more intense and frequent rainfalls and increased river flows [@chen2023impacts][@rogers2025role]. The latest meta-analyses have found that climate change is responsible for about 21% of the increase in global flood exposure, but urbanization - and especially the concentration of populations and assets in floodplains - is responsible for up to 77% of the increase in risk observed, with the most exposure of vulnerability being among urban and poor populations [@devitt2023flood][@rogers2025role]. A United States-based study showed that urbanization along coastlines outpaces infrastructure adaptation, leading to increased, more populous, and more exposed settlements [@swain2020increased]. In poorer countries, this intersection of accelerated development and limited adaptation capacity is the most intense [@rentschler2022flood]. 
+
+### Population Density and Flood Infrastructure.
+**Population density** is commonly defined as the number of inhabitants per square kilometer of area. Among scientists, it is common to use national census, high-resolution gridded population datasets (e.g., Global Human Settlement Layer, WorldPop, or GPWv4 (Gridded Population of the World version 4) to calculate the density of population, dynamic sources like phone call data records or satellite imagery. 
+Population density is one of the key variables that worsens the consequences of flood exposure. The bigger the population density is in flood-affected area, the more businesses, property, and more importantly, people get impacted. Therefore, it can lead to even bigger economic losses [@sanders2024quantifying].
+Flood risk infrastructure refers to the set of engineered, natural, and physical systems intended to reduce the occurrence and intensity of flooding. Some of the examples are levees, floodwalls, embankments, stormwater drainage infrastructure, retention basins, coastal protection works, and green infrastructure such as wetlands and vegetated buffers, all of which are engineered to deflect, reserve, or dissipate floodwaters [@mcclymont2020flood]. The infrastructure for flood risk quality and coverage is usually measured using quantifiable parameters such as the total length of levees and flood walls per square kilometer, drainage capacity and volume, or even green adaptation components [@bae2021longitudinal][@mcclymont2020flood]. While comprehensive global datasets regarding population and hazard exposure are plentiful (e.g., WorldPop, Global Human Settlement Layer), there is a notable scarcity of standardized, open-access data on infrastructure quality at spatial scales. This data gap is a key challenge for comparative risk assessment and highlights the need for expanded data infrastructure projects and collaborative initiatives, as called for by recent meta-analyses [@guo2021urban][@mcclymont2020flood]. In addition, investment in maintenance, per capita expenditure on infrastructure, or normalized resilience indicators - derived using methods such as principal component analysis - are utilized increasingly in comparative flood resilience benchmarking [@bae2021longitudinal][@mcclymont2020flood]. These steps help both policymakers and engineers evaluate how prepared a community’s built environment is to resist large-scale flooding, both in terms of current protective performance as well as the potential to build resilience into a changing climate risk. In the end, those areas with greater infrastructure capacity, higher standards of maintenance, and robust green defense have a much lower flood risk and can recover faster, highlighting the imperative for ongoing investment and adjustment as flood hazards increase around the world. 
+
+### Why are population density and flood infrastructure important?
+Amidst this increased vulnerability, it has come into perspective that population density and the integrity or extent of flood hazard infrastructure are two variables that can have a disproportionate effect on flood damage severity. Heavy population density can significantly increase the number of exposed people and asset value treated by a single flood event [@rogers2025role]. Strong flood risk infrastructure in the form of levees, floodways, drainage, and green adaptation can minimize significant losses even when augmenting hazards [@fan2025exploring][@wu2021quantifying].
+
+### Analysis / Methods
+- Compare economic damage in similar places, but **population density** is the main difference.
+- Compare economic damage in similar places, but the level of **flood risk infrastructure** is the main difference.
+- Compare economic damage in similar places, but population density and the level of flood risk infrastructure are simultaneous differences. (see a larger effect than from either variable by itself / sometimes, the combined effect is different from what is expected due to other reasons)
+
 
 ### NASA Global Precipitation Measurement (GPM)
 
@@ -617,3 +639,37 @@ plt.tight_layout()
 plt.show()
 
 ```
+
+
+## Summary
+This workflow demonstrates how to:
+  - Download and merge census tract boundaries and population data for Maui.
+  - Process and map local rainfall station observations.
+  - Overlay demographic and environmental data for actionable disaster analysis.
+You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.
+
+
+## Discussion
+The analysis demonstrated that intense storms, such as the one that caused flooding in Maui in January 2024, can be studied effectively with the aid of open data and Python tools. Working with NASA’s IMERG rainfall dataset enabled us to observe the storms’ timing, intensity, and movement at 30-minute intervals. The animation helped highlight those transitions, making the storms peak visualize and link with known roa
+
+When we compared NASA’s IMERG estimates with the Kahului Airport rain gauge data, we got similar rainfall timings, yet the exact rainfall totals differed. The main reason is that IMERG covers a large grid while a rain gauge measures a single point. Despite the difference, both sources demonstrated the same main rainfall surge.
+
+After adding 2023 census tract data, we were able to connect the rainfall patterns to communities. The overlap between the heaviest rainfall zones and the tracts with more seniors, children, and lower-income households showed clear differences in potential exposure. The demographic data combined with environmental data portrayed a more complete picture of risk. It showed not only where flooding was likely to occur, but also who might have the hardest time and will likely need help. 
+
+The drone and MODIS imagery showed how surface water accumulated after the event. Even though the drone images were captured months after the event, they provided great context for infrastructure and drainage paths. Combined with satellite data, they confirmed which areas were repeatedly saturated and their likely causes.
+
+However, there are gaps in how infrastructure quality is measured. Open datasets on drainage systems and culvert capacity are limited. Due to the lack of datasets, we used spatial proxies in the analysis to find approximate flood pathways. Despite the constraints, we were able to identify several low-lying transportation pathways and coastal plains that may need improvement to reduce the damage if the event occurs again.
+
+Finally, the demographic of Maui added a social perspective to the technical analysis. Due to a large number of Native Hawaiian and Pacific Islander residents and a high cost of living, flood response efficiency depends not only on weather forecasts but also on communication and access. By linking rainfall intensity with population distribution, this analysis shows where outreach, support, and resources are needed most, reinforcing that flood risk is as much about people as it is about precipitation.
+
+## Conclusion
+You have just completed a hands-on exploration of how open datasets and Python workflows can be used to study flood impacts, using Maui flooding as an example. Through this analysis, we learned how to combine rainfall observations, population data, and spatial layers to understand both environmental and social exposure to storms.
+
+Throughout the process, we were able to:
+Access and visualize NASA’s IMERG rainfall data to observe storm timing, intensity, and movement.
+Compare satellite rainfall estimates with ground-based station data, validate patterns, and detect differences.
+Merge census tract boundaries with rainfall layers to outline which locations are most exposed to heavy rainfall.
+Use spatial analysis tools to identify low-lying areas, coastal zones, and transportal pathways with higher flood risk.
+Combine demographic and environmental data to figure out which populations, areas, and communities are likely to face greater challenges.
+By utilizing both environmental and demographic information, this project demonstrated how data analytics can support disaster preparedness and recovery planning. Understanding which areas are most likely to be in danger and who lives there helps communities and first responders create a smarter plan of action, allocate resources efficiently, and strengthen population and infrastructure for future storms.
+
