@@ -640,13 +640,282 @@ plt.show()
 
 ```
 
+## Comparing IMERG Sattelite data and Oberved Precipitation data
 
-## Summary
-This workflow demonstrates how to:
-  - Download and merge census tract boundaries and population data for Maui.
-  - Process and map local rainfall station observations.
-  - Overlay demographic and environmental data for actionable disaster analysis.
-You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.
+The data for this report comes from the Kahului Airport and downloaded from [WeatherSpark](https://weatherspark.com/h/d/150359/2024/1/16/Historical-Weather-on-Tuesday-January-16-2024-in-Maui-Hawaii-United-States#metar-00-14).
+
+
+
+```{python}
+ 
+# Load your CSV (update with your actual file path)
+obs_df = pd.read_csv("data/maui_rain/maui_rain_gauge_Jan2024.csv")
+ 
+
+# Parse datetime
+obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
+
+# Convert precipitation to float
+obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
+ 
+
+ 
+```
+
+Plot the data with dual y-axis without proportional scaling to visually compare the two datasets.
+
+```{python} 
+
+# Make sure datetime columns are parsed
+obs_df["datetime"] = pd.to_datetime(obs_df["Date"] + " " + obs_df["Time"])
+obs_df["obs_precip"] = obs_df["Precipitation"].str.replace(" in", "", regex=False).astype(float)
+
+results_df["datetime"] = pd.to_datetime(results_df["datetime"])
+
+# Create the plot
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+# Plot observed precipitation on left y-axis
+line1, = ax1.plot(
+    obs_df["datetime"], obs_df["obs_precip"],
+    label="Observed (inches)", color="tab:blue", marker="o"
+)
+ax1.set_ylabel("Precipitation (inches)", color="tab:blue")
+ax1.tick_params(axis='y', labelcolor="tab:blue")
+
+# Create right y-axis
+ax2 = ax1.twinx()
+
+# Plot IMERG precipitation on right y-axis (assumed in mm)
+line2, = ax2.plot(
+    results_df["datetime"], results_df["mean_precip"],
+    label="IMERG (mm)", color="tab:green", marker="x", linestyle="--"
+)
+ax2.set_ylabel("Precipitation (mm)", color="tab:green")
+ax2.tick_params(axis='y', labelcolor="tab:green")
+
+# Combine legends
+lines = [line1, line2]
+labels = [line.get_label() for line in lines]
+ax1.legend(lines, labels, loc="upper left")
+
+# Formatting
+plt.title("Observed vs IMERG Precipitation")
+ax1.set_xlabel("Datetime")
+fig.autofmt_xdate()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+
+
+```
+
+
+
+
+
+
+
+## Integrating Maui Census Tract Data
+
+This section downloads the latest census tract shapefile for Hawaii and loads it as a GeoDataFrame.
+
+```{python}
+
+shapefile_zip = "data/maui_rain/tl_2023_15_tract.zip"
+shapefile_dir = "data/maui_rain/tl_2023_15_tract"
+```
+
+```{python}
+#| eval: false
+
+# Set URLs and file paths
+tiger_url = "https://www2.census.gov/geo/tiger/TIGER2023/TRACT/tl_2023_15_tract.zip"
+
+
+
+# Ensure the directory exists
+os.makedirs(os.path.dirname(shapefile_zip), exist_ok=True)
+
+# Download and extract if not already present
+if not os.path.exists(shapefile_dir):
+    r = requests.get(tiger_url, verify=False)
+    with open(shapefile_zip, 'wb') as f:
+        f.write(r.content)
+    with zipfile.ZipFile(shapefile_zip, 'r') as zip_ref:
+        zip_ref.extractall(shapefile_dir)
+
+```
+
+
+```{python}
+
+# Load shapefile
+tracts = gpd.read_file(os.path.join(shapefile_dir, 'tl_2023_15_tract.shp'))
+```
+## Fetch ACS 2023 Population Data for Maui Tracts
+
+This section retrieves the latest census population data for Maui tracts and merges it with the shapefile.
+
+```{python}
+#| eval: false
+
+
+# Provide your Census API key
+API_KEY = "API_KEY"
+acs_url = (
+    "https://api.census.gov/data/2023/acs/acs5"
+    "?get=NAME,B01003_001E&for=tract:*&in=state:15+county:009"
+    f"&key={API_KEY}"
+)
+
+response = requests.get(acs_url)
+
+```
+```{python}
+#| echo: false
+
+
+
+# Provide your Census API key
+API_KEY = "4c4fb31afba1ae4fbf35b9f8a0d0d65e0432f6e9"
+acs_url = (
+    "https://api.census.gov/data/2023/acs/acs5"
+    "?get=NAME,B01003_001E&for=tract:*&in=state:15+county:009"
+    f"&key={API_KEY}"
+)
+
+response = requests.get(acs_url)
+
+```
+
+
+## Combining Census data with TIGER shapes
+```{python}
+
+census_data = response.json()
+census_df = pd.DataFrame(census_data[1:], columns=census_data[0])
+census_df['GEOID'] = census_df['state'] + census_df['county'] + census_df['tract']
+
+# Merge population data with tracts
+tracts = tracts.merge(
+    census_df[['GEOID', 'B01003_001E']],
+    on='GEOID',
+    how='left'
+)
+tracts['B01003_001E'] = pd.to_numeric(tracts['B01003_001E'])
+
+```
+
+
+
+
+```{python}
+#| eval: false
+
+global_min, global_max = np.inf, -np.inf
+for file in file_path:
+    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
+        precip = ds["precipitation"].sel(
+            lat=slice(lat_min, lat_max),
+            lon=slice(lon_min, lon_max)
+        ).isel(time=0).transpose("lat", "lon")
+        current_min = precip.min().item()
+        current_max = precip.max().item()
+        if np.isfinite(current_min): global_min = min(global_min, current_min)
+        if np.isfinite(current_max): global_max = max(global_max, current_max)
+
+# Optional: Use a LogNorm to enhance contrast
+from matplotlib.colors import LogNorm
+norm = LogNorm(vmin=0.05, vmax=global_max)
+
+fig, ax = plt.subplots( )
+
+# Load first raster
+with xr.open_dataset(file_path[0], engine="h5netcdf", group="Grid") as ds:
+    data0 = ds["precipitation"].sel(
+        lat=slice(lat_min, lat_max),
+        lon=slice(lon_min, lon_max)
+    ).isel(time=0).transpose("lat", "lon")
+    lon = ds["lon"].sel(lon=slice(lon_min, lon_max)).values
+    lat = ds["lat"].sel(lat=slice(lat_min, lat_max)).values
+
+lon2d, lat2d = np.meshgrid(lon, lat)
+
+# Plot base precipitation frame
+mesh = ax.pcolormesh(
+    lon2d, lat2d, data0.values,
+    cmap="Blues", shading="auto", norm=norm, zorder=1
+)
+cbar = fig.colorbar(mesh, ax=ax, label="Precipitation (mm/hr)")
+
+# Plot census tracts colored by population
+tracts.plot(
+    ax=ax,
+    column='B01003_001E',
+    cmap='Reds',
+    edgecolor='black',
+    linewidth=0.5,
+    alpha=0.6,
+    zorder=2,
+    legend=True,
+    legend_kwds={'label': "Population (ACS B01003_001E)"}
+)
+
+# Title and axes
+title_text = ax.set_title("Frame 1")
+ax.set_xlabel("Longitude")
+ax.set_ylabel("Latitude")
+plt.tight_layout()
+
+# -----------------------------
+# Step 4: Define Animation
+# -----------------------------
+def update(frame_index):
+    file = file_path[frame_index]
+    with xr.open_dataset(file, engine="h5netcdf", group="Grid") as ds:
+        data = ds["precipitation"].sel(
+            lat=slice(lat_min, lat_max),
+            lon=slice(lon_min, lon_max)
+        ).isel(time=0).transpose("lat", "lon")
+    
+    # Update raster data
+    data_vals = data.values
+    data_vals[data_vals <= 0] = np.nan  # Avoid log(0)
+    mesh.set_array(data_vals.ravel())
+
+    # Timestamp label
+    filename = os.path.basename(file)
+    date_match = re.search(r"3IMERG\.(\d{8})", filename)
+    time_match = re.search(r"(\d{4}).V07B", filename)
+    if date_match and time_match:
+        date_str = date_match.group(1)
+        minutes = int(time_match.group(1))
+        dt = datetime.strptime(date_str, "%Y%m%d") + timedelta(minutes=minutes) - timedelta(hours=10)
+        label = dt.strftime("%Y-%m-%d %H:%M:%S HST")
+    else:
+        label = "Unknown timestamp"
+
+    title_text.set_text(f"Maui 2023 Population & Precipitation — {label}")
+    return mesh, title_text
+
+# -----------------------------
+# Step 5: Run and Save Animation
+# -----------------------------
+ani = animation.FuncAnimation(
+    fig, update, frames=len(file_path),
+    interval=200, blit=True, repeat=False
+)
+
+ani.save("data/images/maui_precip_population.gif", writer="pillow", fps=3)
+```
+
+
+
+
+![Maui Rain Population GIF](data/images/maui_precip_population.gif)
 
 
 ## Discussion
@@ -673,3 +942,9 @@ Use spatial analysis tools to identify low-lying areas, coastal zones, and trans
 Combine demographic and environmental data to figure out which populations, areas, and communities are likely to face greater challenges.
 By utilizing both environmental and demographic information, this project demonstrated how data analytics can support disaster preparedness and recovery planning. Understanding which areas are most likely to be in danger and who lives there helps communities and first responders create a smarter plan of action, allocate resources efficiently, and strengthen population and infrastructure for future storms.
 
+## Summary
+This workflow demonstrates how to:
+  - Download and merge census tract boundaries and population data for Maui.
+  - Process and map local rainfall station observations.
+  - Overlay demographic and environmental data for actionable disaster analysis.
+You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.
