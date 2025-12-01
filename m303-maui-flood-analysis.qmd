@@ -196,7 +196,7 @@ file_path = earthaccess.download(all_urls)
 
 
 
-folder = r"/Users/ulugbekmedetov/Downloads/2025-07-07-47e9ab"
+folder = r"F:\TOPSSCHOOL\git\TOPSTSCHOOL-disasters\data\2025-07-07-47e9ab"
 
 file_path = [os.path.join(folder, f) for f in os.listdir(folder) if \
   os.path.isfile(os.path.join(folder, f))]
@@ -641,7 +641,7 @@ The data for this report comes from the Kahului Airport and downloaded from [Wea
 ```{python}
  
 # Load your CSV (update with your actual file path)
-obs_df = pd.read_csv("/Users/ulugbekmedetov/Downloads/maui_rain/maui_rain_gauge_Jan2024.csv")
+obs_df = pd.read_csv("data/maui_rain/maui_rain_gauge_Jan2024.csv")
  
 
 # Parse datetime
@@ -716,8 +716,8 @@ This section downloads the latest census tract shapefile for Hawaii and loads it
 
 ```{python}
 
-shapefile_zip = "/Users/ulugbekmedetov/Downloads/maui_rain/tl_2023_15_tract.zip"
-shapefile_dir = "/Users/ulugbekmedetov/Downloads/maui_rain/tl_2023_15_tract"
+shapefile_zip = "data/maui_rain/tl_2023_15_tract.zip"
+shapefile_dir = "data/maui_rain/tl_2023_15_tract"
 ```
 
 ```{python}
