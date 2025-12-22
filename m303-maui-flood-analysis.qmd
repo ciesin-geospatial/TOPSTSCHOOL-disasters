@@ -44,25 +44,17 @@ By the end of this lesson, you should be able to:
 
 
 ## Introduction
+Floods are one of the most destructive and persistent natural hazards, affecting vast populations and resulting in enormous economic losses worldwide. In recent decade, flood occurances have risen, a trend closely linked to human-driven climate change and the warming of the planet [@ceola2022unraveling][@undrr2025garfloods].
 
-Floods are one of the most devastating and long-lasting disasters on Earth. They can affect millions of people worldwide and cause damages that go beyond billions of dollars to fix or mitigate. Over the last years, the number of floods has increased, which is tied to anthropogenic climate change and the rise of global temperatures [@ceola2022unraveling][@undrr2025garfloods] (Ceola et al., 2022; GAR 2025 Hazard Explorations, 2025). 
+Increasing global temperatures and more extreme rainfalls are the main drivers behind the growing frequency and intensity of floods, because a warmer atmosphere accelerates the hydrologic cycle and produces heavier downpours and higher river flows [@chen2023impacts][@rogers2025role]. Recent large-scale studies estimate that climate change accounts for 21% of the observed rise in global flood exposure, while urbanization—especially dense development of people and assets in floodplains—explains up to about 77% of the increase, with urban and low-income communities facing the greatest exposure [@devitt2023flood][@rogers2025role]. Additional research focused on the United States indicates that rapid coastal urban growth is outstripping infrastructure upgrades, creating larger, more densely populated, and more flood-prone settlements, and similar patterns are even more acute in poorer countries where fast development collides with limited capacity to adapt [@swain2020increased][@rentschler2022flood].
 
-### Why have floods been getting more severe?
-The primary cause of the increasing severity and number of floods is the significantly higher global temperature and increasing rainfall extremes. Global surface temperature is still getting higher and higher, which strengthens the hydrologic cycle, that way producing more intense and frequent rainfalls and increased river flows [@chen2023impacts][@rogers2025role]. The latest meta-analyses have found that climate change is responsible for about 21% of the increase in global flood exposure, but urbanization - and especially the concentration of populations and assets in floodplains - is responsible for up to 77% of the increase in risk observed, with the most exposure of vulnerability being among urban and poor populations [@devitt2023flood][@rogers2025role]. A United States-based study showed that urbanization along coastlines outpaces infrastructure adaptation, leading to increased, more populous, and more exposed settlements [@swain2020increased]. In poorer countries, this intersection of accelerated development and limited adaptation capacity is the most intense [@rentschler2022flood]. 
+**Population density** is typically defined as the number of people living within a given area, such as inhabitants per square kilometer. Scientists estimate this using sources like national censuses and high-resolution gridded population datasets (for example, the Global Human Settlement Layer, WorldPop, or GPWv4), and in some cases supplement these with dynamic information from mobile phone call records or satellite imagery to refine where people are actually located.​
 
-### Population Density and Flood Infrastructure.
-**Population density** is commonly defined as the number of inhabitants per square kilometer of area. Among scientists, it is common to use national census, high-resolution gridded population datasets (e.g., Global Human Settlement Layer, WorldPop, or GPWv4 (Gridded Population of the World version 4) to calculate the density of population, dynamic sources like phone call data records or satellite imagery. 
-Population density is one of the key variables that worsens the consequences of flood exposure. The bigger the population density is in flood-affected area, the more businesses, property, and more importantly, people get impacted. Therefore, it can lead to even bigger economic losses [@sanders2024quantifying].
-Flood risk infrastructure refers to the set of engineered, natural, and physical systems intended to reduce the occurrence and intensity of flooding. Some of the examples are levees, floodwalls, embankments, stormwater drainage infrastructure, retention basins, coastal protection works, and green infrastructure such as wetlands and vegetated buffers, all of which are engineered to deflect, reserve, or dissipate floodwaters [@mcclymont2020flood]. The infrastructure for flood risk quality and coverage is usually measured using quantifiable parameters such as the total length of levees and flood walls per square kilometer, drainage capacity and volume, or even green adaptation components [@bae2021longitudinal][@mcclymont2020flood]. While comprehensive global datasets regarding population and hazard exposure are plentiful (e.g., WorldPop, Global Human Settlement Layer), there is a notable scarcity of standardized, open-access data on infrastructure quality at spatial scales. This data gap is a key challenge for comparative risk assessment and highlights the need for expanded data infrastructure projects and collaborative initiatives, as called for by recent meta-analyses [@guo2021urban][@mcclymont2020flood]. In addition, investment in maintenance, per capita expenditure on infrastructure, or normalized resilience indicators - derived using methods such as principal component analysis - are utilized increasingly in comparative flood resilience benchmarking [@bae2021longitudinal][@mcclymont2020flood]. These steps help both policymakers and engineers evaluate how prepared a community’s built environment is to resist large-scale flooding, both in terms of current protective performance as well as the potential to build resilience into a changing climate risk. In the end, those areas with greater infrastructure capacity, higher standards of maintenance, and robust green defense have a much lower flood risk and can recover faster, highlighting the imperative for ongoing investment and adjustment as flood hazards increase around the world. 
+High population density can greatly intensify the impacts of flooding because a single event affects more residents, more buildings, and more economic activity within the flooded zone, leading to higher total losses [@sanders2024quantifying].​
 
-### Why are population density and flood infrastructure important?
-Amidst this increased vulnerability, it has come into perspective that population density and the integrity or extent of flood hazard infrastructure are two variables that can have a disproportionate effect on flood damage severity. Heavy population density can significantly increase the number of exposed people and asset value treated by a single flood event [@rogers2025role]. Strong flood risk infrastructure in the form of levees, floodways, drainage, and green adaptation can minimize significant losses even when augmenting hazards [@fan2025exploring][@wu2021quantifying].
+**Flood risk infrastructure** consists of engineered, natural, and other physical systems that aim to reduce how often floods occur and how severe their impacts are. Typical examples include levees, floodwalls, embankments, stormwater drainage networks, retention or detention basins, coastal defenses, and green infrastructure such as wetlands and vegetated buffers, all of which work in different ways to store, redirect, or slow floodwaters [@mcclymont2020flood].​
 
-### Analysis / Methods
-- Compare economic damage in similar places, but **population density** is the main difference.
-- Compare economic damage in similar places, but the level of **flood risk infrastructure** is the main difference.
-- Compare economic damage in similar places, but population density and the level of flood risk infrastructure are simultaneous differences. (see a larger effect than from either variable by itself / sometimes, the combined effect is different from what is expected due to other reasons)
-
+Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with many people and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring][@wu2021quantifying].
 
 ### NASA Global Precipitation Measurement (GPM)
 
@@ -749,9 +741,11 @@ if not os.path.exists(shapefile_dir):
 
 ```
 
+```{python}
+import geopandas as gpd
+```
 
 ```{python}
-
 # Load shapefile
 tracts = gpd.read_file(os.path.join(shapefile_dir, 'tl_2023_15_tract.shp'))
 ```
@@ -774,6 +768,11 @@ acs_url = (
 response = requests.get(acs_url)
 
 ```
+
+```{python}
+import requests
+```
+
 ```{python}
 #| echo: false
 
