@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "1e9d69b8",
+   "id": "1a524e96",
    "metadata": {},
    "source": [
     "---\n",
@@ -52,9 +52,9 @@
     "\n",
     "\n",
     "## Introduction\n",
-    "Floods are one of the most destructive and persistent natural hazards, affecting vast populations and resulting in enormous economic losses worldwide. In recent decades, flood occurances have risen, a trend closely linked to human-driven climate change and its impacts on the water cycle [@ceola2022unraveling][@undrr2025garfloods].\n",
+    "Floods are one of the most destructive and persistent natural hazards, affecting vast populations and resulting in enormous economic losses worldwide. In recent decades, flood occurances have risen, a trend closely linked to human-driven climate change and its impacts on the water cycle [@ceola2022unraveling; @undrr2025garfloods].\n",
     "\n",
-    "Increasing global temperatures and more extreme rainfalls are the main drivers behind the growing frequency and intensity of floods. For example, a warmer atmosphere accelerates the hydrologic cycle and produces heavier downpours and higher river flows [@chen2023impacts][@rogers2025role]. Recent large-scale studies estimate that climate change accounts for 21% of the observed rise in global flood exposure, while urbanization—-particularly dense development of people and assets in floodplains—-can account for about 77% of the increase in exposure, with urban and low-income communities facing the greatest exposure [@devitt2023flood][@rogers2025role]. Additional research focused on the United States indicates that rapid coastal urban growth is outpacing flood infrastructure upgrades, creating larger, more densely populated, and more flood-prone settlements, and similar patterns are even more acute in poorer countries where fast development collides with limited capacity to adapt [@swain2020increased][@rentschler2022flood].\n",
+    "Increasing global temperatures and more extreme rainfalls are the main drivers behind the growing frequency and intensity of floods. For example, a warmer atmosphere accelerates the hydrologic cycle and produces heavier downpours and higher river flows [@chen2023impacts; @rogers2025role]. Recent large-scale studies estimate that climate change accounts for 21% of the observed rise in global flood exposure, while urbanization—-particularly dense development of people and assets in floodplains—-can account for about 77% of the increase in exposure, with urban and low-income communities facing the greatest exposure [@devitt2023flood; @rogers2025role]. Additional research focused on the United States indicates that rapid coastal urban growth is outpacing flood infrastructure upgrades, creating larger, more densely populated, and more flood-prone settlements, and similar patterns are even more acute in poorer countries where fast development collides with limited capacity to adapt [@swain2020increased; @rentschler2022flood].\n",
     "\n",
     "**Population density** is the number of people living within a given area, such as inhabitants per square kilometer. Sources like national censuses and high-resolution gridded population datasets (for example, the [GHSL - Global Human Settlement Layer](https://human-settlement.emergency.copernicus.eu/), [WorldPop Open Population Repository (WOPR)](https://wopr.worldpop.org/), or [Gridded Population of the World, Version 4 (GPWv4)](https://doi.org/10.7910/DVN/TGGNSU)) can be used to supplement disaster analysis with dynamic information, from mobile phone call records or satellite imagery, to refine where people are actually located.​\n",
     "\n",
@@ -62,7 +62,7 @@
     "\n",
     "**Flood risk infrastructure** consists of engineered, natural, and other physical systems that aim to reduce how often floods occur and how severe their impacts are. Typical examples include levees, floodwalls, embankments, stormwater drainage networks, retention or detention basins, coastal defenses, and green infrastructure such as wetlands and vegetated buffers, all of which work in different ways to store, redirect, or slow floodwaters [@mcclymont2020flood].​\n",
     "\n",
-    "Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with high population density and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring][@wu2021quantifying].\n",
+    "Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with high population density and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring; @wu2021quantifying].\n",
     "\n",
     "### NASA Global Precipitation Measurement (GPM)\n",
     "\n",
@@ -125,7 +125,7 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "005ea3a6",
+   "id": "edf43be0",
    "metadata": {},
    "outputs": [
     {
@@ -166,7 +166,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "27d7228a",
+   "id": "85dc1521",
    "metadata": {},
    "source": [
     "The earthaccess library simplifies the process of accessing NASA Earthdata by handling authentication and data discovery. Before you can search or download data using earthaccess, you need to authenticate using your Earthdata Login credentials. The `earthaccess.login()` function is the starting point for this process.\n"
@@ -175,7 +175,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "5a399c1c",
+   "id": "be92b8aa",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -188,7 +188,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "390ca812",
+   "id": "8cc2cb77",
    "metadata": {},
    "source": [
     "To retrieve NASA precipitation data for Hawaii using earthaccess, we begin by querying geographic boundary data from OpenStreetMap using osmnx, then extract the bounding box for the region. This bounding box is used to search for GPM IMERG half-hourly precipitation data for a specific date range. \n"
@@ -197,7 +197,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "1f47555a",
+   "id": "c3954830",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -212,7 +212,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "efe9a120",
+   "id": "cb6a1c74",
    "metadata": {},
    "source": [
     "Search for GPM IMERG Half-Hourly Precipitation Data:\n"
@@ -221,7 +221,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "26507809",
+   "id": "0ce5726e",
    "metadata": {},
    "outputs": [
     {
@@ -250,7 +250,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "89b43f61",
+   "id": "889a6759",
    "metadata": {},
    "source": [
     "Finally, this code will download and create a list of the file paths of the downloaded data from `earthaccess`:"
@@ -259,7 +259,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "67d3f8b7",
+   "id": "819d56b0",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -271,7 +271,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "75b4ff41",
+   "id": "519f82b5",
    "metadata": {
     "md-indent": " "
    },
@@ -298,7 +298,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "71e4c6ac",
+   "id": "47e55047",
    "metadata": {},
    "source": [
     "### Visualizing Precipitation Data\n",
@@ -309,7 +309,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "a8afd33e",
+   "id": "4051859e",
    "metadata": {},
    "outputs": [
     {
@@ -366,7 +366,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f0057145",
+   "id": "16ff9e6f",
    "metadata": {},
    "source": [
     "## Animation: Visualizing Half-Hourly Rainfall Over Time\n",
@@ -377,7 +377,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "3bb7267c",
+   "id": "96503e73",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -487,7 +487,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "485153f4",
+   "id": "28122727",
    "metadata": {},
    "source": [
     "![Hawaii GIF](data/images/hawaii_precip.gif)\n",
@@ -501,7 +501,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "0f327876",
+   "id": "debf6954",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -523,7 +523,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "7c439cd6",
+   "id": "0e186865",
    "metadata": {},
    "source": [
     "After defining the padded bounding box for Maui, we can visualize GPM IMERG half-hourly precipitation data for that area. This plot overlays satellite-derived rainfall intensity on the island’s geographic outline using `xarray` and `matplotlib`, providing spatial context for localized precipitation events.\n"
@@ -532,7 +532,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "dd1afa16",
+   "id": "6d13d95a",
    "metadata": {},
    "outputs": [
     {
@@ -585,7 +585,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "7f9d26a2",
+   "id": "2b82ea89",
    "metadata": {},
    "source": [
     "To visualize how rainfall evolves across Maui County, this animation cycles through a sequence of GPM IMERG half-hourly datasets. For each frame, it subsets the data to the Maui region, overlays the county boundary, and updates the timestamp extracted from the filename. The animation is then saved as a `.gif` for easy sharing and visual analysis.\n"
@@ -594,7 +594,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "065bf263",
+   "id": "a36a3162",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -692,7 +692,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2b2e0c4a",
+   "id": "a500a549",
    "metadata": {},
    "source": [
     "![Maui GIF](data/images/maui_precip.gif)\n",
@@ -706,7 +706,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "d2873c72",
+   "id": "433194b1",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -782,7 +782,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "14a4b214",
+   "id": "9684ada0",
    "metadata": {},
    "source": [
     "Now that we’ve extracted mean precipitation values for each GPM IMERG file, we can visualize how rainfall changes over time across Maui County. This line plot presents a temporal snapshot of precipitation intensity, helping to identify storm events, rainfall variability, and dry periods.\n"
@@ -791,7 +791,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "03a190cb",
+   "id": "27b7a45e",
    "metadata": {},
    "outputs": [
     {
@@ -832,7 +832,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "29037145",
+   "id": "8f20f95c",
    "metadata": {},
    "source": [
     "## Comparing IMERG Sattelite data and Oberved Precipitation data\n",
@@ -843,14 +843,14 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "75e4c1a7",
+   "id": "98f47364",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_83837/3286023823.py:6: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
+      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_90012/3286023823.py:6: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
       "  obs_df[\"datetime\"] = pd.to_datetime(obs_df[\"Date\"] + \" \" + obs_df[\"Time\"])\n"
      ]
     }
@@ -869,7 +869,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "06e5f459",
+   "id": "b614120d",
    "metadata": {},
    "source": [
     "Plot the data with dual y-axis without proportional scaling to visually compare the two datasets.\n"
@@ -878,14 +878,14 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "3129b470",
+   "id": "28e8175d",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_83837/2757781746.py:2: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
+      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_90012/2757781746.py:2: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
       "  obs_df[\"datetime\"] = pd.to_datetime(obs_df[\"Date\"] + \" \" + obs_df[\"Time\"])\n"
      ]
     },
@@ -945,7 +945,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "3f77d362",
+   "id": "14dbf844",
    "metadata": {},
    "source": [
     "## Integrating Maui Census Tract Data\n",
@@ -956,7 +956,7 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "9c12e9bf",
+   "id": "9a6e89ed",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -967,7 +967,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "782e9347",
+   "id": "1fd7e221",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -993,7 +993,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "653d30e2",
+   "id": "09743ddc",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1003,7 +1003,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "eed7ac9a",
+   "id": "617e57c6",
    "metadata": {},
    "source": [
     "## Fetch ACS 2023 Population Data for Maui Tracts\n",
@@ -1014,7 +1014,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "daeec67e",
+   "id": "d3e612bf",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1035,7 +1035,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "1255d708",
+   "id": "3c064b9d",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1056,7 +1056,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "d17fbe59",
+   "id": "7ee963f4",
    "metadata": {},
    "source": [
     "## Combining Census data with TIGER shapes"
@@ -1065,7 +1065,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "889fc0cf",
+   "id": "a91d9d1c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1085,7 +1085,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "875d5fe9",
+   "id": "b1586cbe",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1190,7 +1190,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e663c1d3",
+   "id": "4ef3096e",
    "metadata": {},
    "source": [
     "![Maui Rain Population GIF](data/images/maui_precip_population.gif)\n",
