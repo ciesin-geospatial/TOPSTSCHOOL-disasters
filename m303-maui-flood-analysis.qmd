@@ -1027,7 +1027,7 @@ ani.save("data/images/infrared_flood_animation.gif",
 plt.close(fig)
 ```
 
-![Maui Rain Population GIF](data/images/infrared_flood_animation.gif)
+![Maui Drone Infrared GIF](data/images/infrared_flood_animation.gif)
 
 
 ## Discussion
