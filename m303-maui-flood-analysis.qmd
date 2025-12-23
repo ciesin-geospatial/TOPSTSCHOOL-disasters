@@ -56,6 +56,10 @@ High population density can greatly intensify the impacts of flooding because a 
 
 Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with high population density and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring; @wu2021quantifying].
 
+![Maui Disaster Assessment](data/images/maui-disaster-assessment.png)[^1]
+
+[^1] Photo Credit: Kytt MacManus
+
 ### NASA Global Precipitation Measurement (GPM)
 
 The **[Global Precipitation Measurement (GPM) IMERG Final Precipitation L3 Half Hourly 0.1 degree x 0.1 degree V07 (GPM_3IMERGHH)](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGHH_07/summary)** provides high-resolution multi-satellite precipitation estimates [@huffman2023imerg]. This dataset is produced by the Precipitation Processing System (PPS) at NASA's Goddard Space Flight Center (GSFC) and is distributed through the [Goddard Earth Sciences Data and Information Services Center (GES DISC)](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGHH_07/summary).
