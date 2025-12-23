@@ -48,4 +48,6 @@ docs/data/images/hawaii_precip.gif
 docs/data/images/maui_precip_population.gif
 docs/data/images/maui_precip.gif
 docs/data/lecz_pr/lecz_satellite.png
-maui_rainful_population_analysis/maui_rainfall.csv 
+maui_rainful_population_analysis/maui_rainfall.csv
+.DS_Store 
+    

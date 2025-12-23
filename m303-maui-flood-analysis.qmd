@@ -9,7 +9,7 @@ bibliography: m303-maui-flood-bibliography.bib
 
 ## Overview
 
-On January 16, 2024, a slow-moving rainstorm over Maui led to significant flooding, road closures, and emergency rescues. In this lesson, learners will employ a Python workflow with NASA’s Integrated Multi-satellite Retrievals for GPM (Global Precipitation Measurement) half-hourly rainfall data, MODIS imagery, and drone photographs (from April 2024). Using open-source packages such as earthaccess, xarray, and rasterstats, participants will acquire, analyze, and visualize multi-scale remote sensing data. Then, integrate demographic layers to explore exposure, impacts, and recovery within the disaster-lifecycle framework.
+On January 16, 2024, a slow-moving rainstorm over Maui, Hawaii led to significant flooding, road closures, and emergency rescues. In this lesson, learners will employ a Python workflow with NASA’s Integrated Multi-satellite Retrievals for GPM (Global Precipitation Measurement) half-hourly rainfall data, MODIS imagery, and drone photographs (from April 2024). Using open-source packages such as earthaccess, xarray, and rasterstats, participants will acquire, analyze, and visualize multi-scale remote sensing data. Then, integrate demographic layers to explore exposure, impacts, and recovery within the disaster-lifecycle framework, as defined by the [Earth Science Information Partners (ESIP)](https://wiki.esipfed.org/Disasters/Disaster_Life_Cycle). 
 
 Maui’s population profile highlights the importance of this analysis. Around one in five residents of Maui County are seniors (>65), and one in five are children (<18) [@uscensus2024maui] - two demographics that frequently need specialized assistance during emergencies. These groups make up slightly more than 40% of the county's population. Due to high housing costs (median home value of $858K [@uscensus2024maui]) and nearly 10% of the population living below the poverty line, preparedness and recovery capabilities may be limited by financial constraints. The need for culturally sensitive disaster communication tactics is highlighted by the diverse racial makeup, which includes sizable Native Hawaiian/Pacific Islander communities. Together with spatial housing patterns (65% owner-occupied units [@uscensus2024maui]), these demographic characteristics offer crucial background information for evacuation plans, allocating resources, and launching long-term recovery initiatives.
 
@@ -44,17 +44,17 @@ By the end of this lesson, you should be able to:
 
 
 ## Introduction
-Floods are one of the most destructive and persistent natural hazards, affecting vast populations and resulting in enormous economic losses worldwide. In recent decade, flood occurances have risen, a trend closely linked to human-driven climate change and the warming of the planet [@ceola2022unraveling][@undrr2025garfloods].
+Floods are one of the most destructive and persistent natural hazards, affecting vast populations and resulting in enormous economic losses worldwide. In recent decades, flood occurances have risen, a trend closely linked to human-driven climate change and its impacts on the water cycle [@ceola2022unraveling][@undrr2025garfloods].
 
-Increasing global temperatures and more extreme rainfalls are the main drivers behind the growing frequency and intensity of floods, because a warmer atmosphere accelerates the hydrologic cycle and produces heavier downpours and higher river flows [@chen2023impacts][@rogers2025role]. Recent large-scale studies estimate that climate change accounts for 21% of the observed rise in global flood exposure, while urbanization—especially dense development of people and assets in floodplains—explains up to about 77% of the increase, with urban and low-income communities facing the greatest exposure [@devitt2023flood][@rogers2025role]. Additional research focused on the United States indicates that rapid coastal urban growth is outstripping infrastructure upgrades, creating larger, more densely populated, and more flood-prone settlements, and similar patterns are even more acute in poorer countries where fast development collides with limited capacity to adapt [@swain2020increased][@rentschler2022flood].
+Increasing global temperatures and more extreme rainfalls are the main drivers behind the growing frequency and intensity of floods. For example, a warmer atmosphere accelerates the hydrologic cycle and produces heavier downpours and higher river flows [@chen2023impacts][@rogers2025role]. Recent large-scale studies estimate that climate change accounts for 21% of the observed rise in global flood exposure, while urbanization—-particularly dense development of people and assets in floodplains—-can account for about 77% of the increase in exposure, with urban and low-income communities facing the greatest exposure [@devitt2023flood][@rogers2025role]. Additional research focused on the United States indicates that rapid coastal urban growth is outpacing flood infrastructure upgrades, creating larger, more densely populated, and more flood-prone settlements, and similar patterns are even more acute in poorer countries where fast development collides with limited capacity to adapt [@swain2020increased][@rentschler2022flood].
 
-**Population density** is typically defined as the number of people living within a given area, such as inhabitants per square kilometer. Scientists estimate this using sources like national censuses and high-resolution gridded population datasets (for example, the Global Human Settlement Layer, WorldPop, or GPWv4), and in some cases supplement these with dynamic information from mobile phone call records or satellite imagery to refine where people are actually located.​
+**Population density** is the number of people living within a given area, such as inhabitants per square kilometer. Sources like national censuses and high-resolution gridded population datasets (for example, the [GHSL - Global Human Settlement Layer](https://human-settlement.emergency.copernicus.eu/), [WorldPop Open Population Repository (WOPR)](https://wopr.worldpop.org/), or [Gridded Population of the World, Version 4 (GPWv4)](https://doi.org/10.7910/DVN/TGGNSU)) can be used to supplement disaster analysis with dynamic information, from mobile phone call records or satellite imagery, to refine where people are actually located.​
 
 High population density can greatly intensify the impacts of flooding because a single event affects more residents, more buildings, and more economic activity within the flooded zone, leading to higher total losses [@sanders2024quantifying].​
 
 **Flood risk infrastructure** consists of engineered, natural, and other physical systems that aim to reduce how often floods occur and how severe their impacts are. Typical examples include levees, floodwalls, embankments, stormwater drainage networks, retention or detention basins, coastal defenses, and green infrastructure such as wetlands and vegetated buffers, all of which work in different ways to store, redirect, or slow floodwaters [@mcclymont2020flood].​
 
-Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with many people and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring][@wu2021quantifying].
+Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with high population density and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring][@wu2021quantifying].
 
 ### NASA Global Precipitation Measurement (GPM)
 
@@ -122,17 +122,24 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import xarray as xr
 
+# import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 import osmnx as ox
+import rasterio
 from rasterio.transform import from_origin
 from rasterstats import zonal_stats
 
 import earthaccess
 
+import h5netcdf
+import h5py
+ 
+import requests 
  
 ```
 
@@ -196,7 +203,7 @@ file_path = earthaccess.download(all_urls)
 
 
 
-folder = r"F:\TOPSSCHOOL\git\TOPSTSCHOOL-disasters\data\2025-07-07-47e9ab"
+folder = r"/Users/CIESINIT/Documents/tops/TOPSTSCHOOL-disasters/data/2025-07-07-47e9ab"
 
 file_path = [os.path.join(folder, f) for f in os.listdir(folder) if \
   os.path.isfile(os.path.join(folder, f))]
@@ -601,6 +608,9 @@ for file in file_path:
 # --- Convert results list to a clean DataFrame ---
 results_df = pd.DataFrame(results)  # Each row: [datetime, mean_precip]
 
+results_df = results_df.sort_values(by="datetime")
+
+
 ```
 
 
@@ -614,7 +624,7 @@ plt.figure(figsize=(12, 6))  # Set figure size for clarity and legibility
 plt.plot(results_df['datetime'], results_df['mean_precip'], marker='o', linestyle='-')
 
 # Add a title and axis labels to describe the plot
-plt.title('Mean Precipitation Over Maui County Time Series')     # Plot title
+plt.title('Mean Precipitation Over Maui County Half-Hour Time Series')     # Plot title
 plt.xlabel('Date and Time (HST)')                                 # X-axis label
 plt.ylabel('Mean Precipitation')                                  # Y-axis label (units assumed mm/hr)
 
@@ -740,10 +750,7 @@ if not os.path.exists(shapefile_dir):
         zip_ref.extractall(shapefile_dir)
 
 ```
-
-```{python}
-import geopandas as gpd
-```
+ 
 
 ```{python}
 # Load shapefile
@@ -768,10 +775,7 @@ acs_url = (
 response = requests.get(acs_url)
 
 ```
-
-```{python}
-import requests
-```
+ 
 
 ```{python}
 #| echo: false
