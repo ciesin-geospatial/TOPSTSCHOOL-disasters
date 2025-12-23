@@ -2,13 +2,13 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "457b8591",
+   "id": "4a470c40",
    "metadata": {},
    "source": [
     "---\n",
     "title: \"Flood Watch Report – Maui Heavy Rainfall Analysis\"\n",
     "author: \n",
-    "  - \"Kytt MacManus, Raphael Sutiono, Francisco Sanchez, Mykola Dydych, Juan F. Martinez\"\n",
+    "  - \"Kytt MacManus, Raphael Sutiono, Francisco Sanchez, Mykola Dydych, Juan F. Martinez, Ulugbek Medetov\"\n",
     "format: \n",
     "  html \n",
     "bibliography: m303-maui-flood-bibliography.bib\n",
@@ -132,7 +132,7 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "79bf5195",
+   "id": "720f8834",
    "metadata": {},
    "outputs": [
     {
@@ -209,7 +209,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "85122f4c",
+   "id": "c057cc3b",
    "metadata": {},
    "source": [
     "The earthaccess library simplifies the process of accessing NASA Earthdata by handling authentication and data discovery. Before you can search or download data using earthaccess, you need to authenticate using your Earthdata Login credentials. The `earthaccess.login()` function is the starting point for this process.\n"
@@ -218,7 +218,7 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "472f79bd",
+   "id": "e091ecec",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -231,7 +231,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "72a941b5",
+   "id": "087efd14",
    "metadata": {},
    "source": [
     "To retrieve NASA precipitation data for Hawaii using earthaccess, we begin by querying geographic boundary data from OpenStreetMap using osmnx, then extract the bounding box for the region. This bounding box is used to search for GPM IMERG half-hourly precipitation data for a specific date range. \n"
@@ -240,7 +240,7 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "6d5fc1a8",
+   "id": "f994f66e",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -255,7 +255,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1138c0a9",
+   "id": "7ea91eb8",
    "metadata": {},
    "source": [
     "Search for GPM IMERG Half-Hourly Precipitation Data:\n"
@@ -264,7 +264,7 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "2e25e0bc",
+   "id": "5eaadcd1",
    "metadata": {},
    "outputs": [
     {
@@ -293,7 +293,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "eb705ce2",
+   "id": "c3ad72d8",
    "metadata": {},
    "source": [
     "Finally, this code will download and create a list of the file paths of the downloaded data from `earthaccess`:"
@@ -302,7 +302,7 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "cb1829eb",
+   "id": "84f425ae",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -314,7 +314,7 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "d0b7388d",
+   "id": "5954157b",
    "metadata": {
     "md-indent": " "
    },
@@ -341,7 +341,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "28e5d20c",
+   "id": "3da00263",
    "metadata": {},
    "source": [
     "### Visualizing Precipitation Data\n",
@@ -352,7 +352,7 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "d3e4962e",
+   "id": "5f484cda",
    "metadata": {},
    "outputs": [
     {
@@ -409,7 +409,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "8d17bf60",
+   "id": "1263a856",
    "metadata": {},
    "source": [
     "## Animation: Visualizing Half-Hourly Rainfall Over Time\n",
@@ -420,7 +420,7 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "ce130490",
+   "id": "1b408b95",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -530,7 +530,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "4061d6f0",
+   "id": "1adf3db8",
    "metadata": {},
    "source": [
     "![Hawaii GIF](data/images/hawaii_precip.gif)\n",
@@ -544,7 +544,7 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "dfa476fc",
+   "id": "aa192050",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -566,7 +566,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "817e1940",
+   "id": "97d9ff8e",
    "metadata": {},
    "source": [
     "After defining the padded bounding box for Maui, we can visualize GPM IMERG half-hourly precipitation data for that area. This plot overlays satellite-derived rainfall intensity on the island’s geographic outline using `xarray` and `matplotlib`, providing spatial context for localized precipitation events.\n"
@@ -575,7 +575,7 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "0066b07c",
+   "id": "e1ee6676",
    "metadata": {},
    "outputs": [
     {
@@ -628,7 +628,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "90f27f11",
+   "id": "147369f2",
    "metadata": {},
    "source": [
     "To visualize how rainfall evolves across Maui County, this animation cycles through a sequence of GPM IMERG half-hourly datasets. For each frame, it subsets the data to the Maui region, overlays the county boundary, and updates the timestamp extracted from the filename. The animation is then saved as a `.gif` for easy sharing and visual analysis.\n"
@@ -637,7 +637,7 @@
   {
    "cell_type": "code",
    "execution_count": 11,
-   "id": "1762319f",
+   "id": "e951a09b",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -735,7 +735,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1ce5067c",
+   "id": "5ea4ed54",
    "metadata": {},
    "source": [
     "![Maui GIF](data/images/maui_precip.gif)\n",
@@ -749,7 +749,7 @@
   {
    "cell_type": "code",
    "execution_count": 12,
-   "id": "bac0b8ba",
+   "id": "6a1afb93",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -825,7 +825,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "6dd50ec2",
+   "id": "9ce829ba",
    "metadata": {},
    "source": [
     "Now that we’ve extracted mean precipitation values for each GPM IMERG file, we can visualize how rainfall changes over time across Maui County. This line plot presents a temporal snapshot of precipitation intensity, helping to identify storm events, rainfall variability, and dry periods.\n"
@@ -834,7 +834,7 @@
   {
    "cell_type": "code",
    "execution_count": 13,
-   "id": "d60dce06",
+   "id": "7d9e3a9c",
    "metadata": {},
    "outputs": [
     {
@@ -875,7 +875,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "711a5c40",
+   "id": "38e85add",
    "metadata": {},
    "source": [
     "## Comparing IMERG Sattelite data and Oberved Precipitation data\n",
@@ -886,14 +886,14 @@
   {
    "cell_type": "code",
    "execution_count": 14,
-   "id": "44835f48",
+   "id": "810fd5f8",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_95132/3286023823.py:6: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
+      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_96444/3286023823.py:6: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
       "  obs_df[\"datetime\"] = pd.to_datetime(obs_df[\"Date\"] + \" \" + obs_df[\"Time\"])\n"
      ]
     }
@@ -912,7 +912,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "14e4afe6",
+   "id": "83746456",
    "metadata": {},
    "source": [
     "Plot the data with dual y-axis without proportional scaling to visually compare the two datasets.\n"
@@ -921,14 +921,14 @@
   {
    "cell_type": "code",
    "execution_count": 15,
-   "id": "695e0946",
+   "id": "e72c9adf",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_95132/2757781746.py:2: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
+      "/var/folders/wl/y9t6glk11hq5gtqw7gx3fwy80000gp/T/ipykernel_96444/2757781746.py:2: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
       "  obs_df[\"datetime\"] = pd.to_datetime(obs_df[\"Date\"] + \" \" + obs_df[\"Time\"])\n"
      ]
     },
@@ -988,7 +988,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "1382c1ca",
+   "id": "1a9af832",
    "metadata": {},
    "source": [
     "## Integrating Maui Census Tract Data\n",
@@ -999,7 +999,7 @@
   {
    "cell_type": "code",
    "execution_count": 16,
-   "id": "1767875d",
+   "id": "62be4cc0",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1010,7 +1010,7 @@
   {
    "cell_type": "code",
    "execution_count": 17,
-   "id": "c9af1e03",
+   "id": "504f25e9",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1036,7 +1036,7 @@
   {
    "cell_type": "code",
    "execution_count": 18,
-   "id": "9bb4cb3e",
+   "id": "7b2ba697",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1046,7 +1046,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "5cb58d6f",
+   "id": "7b84253b",
    "metadata": {},
    "source": [
     "## Fetch ACS 2023 Population Data for Maui Tracts\n",
@@ -1057,7 +1057,7 @@
   {
    "cell_type": "code",
    "execution_count": 19,
-   "id": "3ed3447d",
+   "id": "0aee1e2e",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1078,7 +1078,7 @@
   {
    "cell_type": "code",
    "execution_count": 20,
-   "id": "e827ad38",
+   "id": "cc220140",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1099,7 +1099,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ebe9206a",
+   "id": "1192f49d",
    "metadata": {},
    "source": [
     "## Combining Census data with TIGER shapes\n",
@@ -1110,7 +1110,7 @@
   {
    "cell_type": "code",
    "execution_count": 21,
-   "id": "4e750fb0",
+   "id": "0eca399a",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1129,7 +1129,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "41ee27be",
+   "id": "89d246a2",
    "metadata": {},
    "source": [
     "We can use the IMERG files to find a precipitation range, then use that range to keep a consistent (log-scaled) color normalization across time frames. \n",
@@ -1140,7 +1140,7 @@
   {
    "cell_type": "code",
    "execution_count": 22,
-   "id": "20d35838",
+   "id": "0916e499",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1245,7 +1245,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "adda6840",
+   "id": "a64b4fc3",
    "metadata": {},
    "source": [
     "![Maui Rain Population GIF](data/images/maui_precip_population.gif)\n",
@@ -1261,7 +1261,7 @@
   {
    "cell_type": "code",
    "execution_count": 23,
-   "id": "53ccb26f",
+   "id": "67e7772f",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1278,7 +1278,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e56af642",
+   "id": "17b18855",
    "metadata": {},
    "source": [
     "We can plot the infrared images found from the drone to perform a damage assessment of roads in Maui and create a GIF animnation.\n"
@@ -1287,7 +1287,7 @@
   {
    "cell_type": "code",
    "execution_count": 24,
-   "id": "4fa5f343",
+   "id": "d4f5c94e",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1330,7 +1330,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ece4b859",
+   "id": "87125340",
    "metadata": {},
    "source": [
     "![Maui Drone Infrared GIF](data/images/infrared_flood_animation.gif)\n",

@@ -1,7 +1,7 @@
 ---
 title: "Flood Watch Report – Maui Heavy Rainfall Analysis"
 author: 
-  - "Kytt MacManus, Raphael Sutiono, Francisco Sanchez, Mykola Dydych, Juan F. Martinez"
+  - "Kytt MacManus, Raphael Sutiono, Francisco Sanchez, Mykola Dydych, Juan F. Martinez, Ulugbek Medetov"
 format: 
   html 
 bibliography: m303-maui-flood-bibliography.bib
