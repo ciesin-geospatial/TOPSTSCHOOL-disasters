@@ -19,22 +19,23 @@ The SCHOOL Modules do not intend to teach all-encompassing earth science lessons
 
 Module 3: Disaster datasets and use cases cover:
 
+
+
+- **Leveraging IPUMS Census Data with Low Elevation Coastal Zone (LECZ) data**  
+   This lesson uses cloud based tools to analyze coastal elevation risks on census administrative areas focusing on Puerto Rico.  
+    - [Lesson 1: Population in Low Elevation Coastal Zones (LECZ) in Puerto RICO](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m301-coastal-hazards-PR.html)
+    
+
 - **Geospatial Analysis of Canadian Wildfire Impacts: A Multi-sensor Approach**  
    This lesson focuses on the 2023 Yellowknife wildfire evacuation, using satellite-derived data to understand conditions that led to the evacuation of 20,000 residents.  
     - [Lesson 2: Analyzing Wildfire Impact Using NASA FIRMS and NOAA GOES-18 Data](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m302-wildfire-assessment.html)
+
+
+- **Geospatial Analysis of Maui Flood Risk: Integrating Elevation, Rainfall, and Exposure Data**  
+   This lesson explores flood vulnerability in Maui, Hawai‘i, using satellite rainfall estimates, drone imagery, and demographic exposure metrics to identify communities at greatest risk.  
+    - [Lesson 3: Maui Flood Rainfall Analysis](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m303-maui-flood-analusis.html)
     
-
-- **Community Generated: Multi-Hazards**  
-   This lesson showcases community-generated lessons that demonstrate different aspects of the data science life cycle.  
-    - [Lesson 4a: Mapping Wildfire Burned Areas Using VIIRS/AVIRIS-3 Data (Python)](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m304a-viirs-wildfires.html)
-
-    - [Lesson 4b: The Major Effects of Climate Change Towards the Arctic Ecosystem (Python)](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m304b-arctic-climate.html)
-
-    - [Lesson 4c: Data Analysis of California Wildfires (Python)](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m304c-california-wildfires.html)
-
-    - [Lesson 4d: Opening Snow Storm Data (Python)](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m304d-snow-storms.html)
-
-- **More Lessons coming soon...**
+ 
 
 ::: {style="text-align: right;"}
 [Start Lesson](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m302-wildfire-assessment.html){.btn .btn-primary .btn role="button"}
