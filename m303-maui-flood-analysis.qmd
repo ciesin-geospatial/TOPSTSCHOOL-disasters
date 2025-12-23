@@ -56,9 +56,10 @@ High population density can greatly intensify the impacts of flooding because a 
 
 Population density and the quality of flood protection systems stand out as key factors shaping how severe flood losses become. Communities with high population density and high-value assets concentrated in one area face much greater exposure when a single flood occurs [@rogers2025role]. In contrast, well-designed flood infrastructure—such as levees, designated floodways, stormwater drainage, and green adaptation measures—can substantially curb damages, even when hazard levels increase [@fan2025exploring; @wu2021quantifying].
 
-![Maui Disaster Assessment](data/images/maui-disaster-assessment.png)[^1]
+![Maui Disaster Assessment](data/images/maui-disaster-assessment.png)
+Photo of road in Maui, Hawaii post flooding event, 2024.[^1]
 
-[^1] Photo Credit: Kytt MacManus
+[^1]: Photo Credit: Kytt MacManus
 
 ### NASA Global Precipitation Measurement (GPM)
 
@@ -117,33 +118,71 @@ Before beginning, please note that this lesson uses the Python programming langu
 
 :::
 
+Using Python 3.11.14, we can import these packages into the Jupyter environment
 
 ```{python}
+#  
+# Standard library utilities (files, text, time handling)
+#  
+import os                  # Interact with the operating system (paths, files, environment variables)
+import re                  # Regular expressions for pattern matching in strings
+from datetime import datetime, timedelta  # Work with dates, times, and time offsets
 
-import os
-import re
-from datetime import datetime, timedelta
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import xarray as xr
+#  
+# Core scientific and tabular data analysis
+#  
+import numpy as np          # Numerical computing with arrays and matrices
+import pandas as pd         # Tabular data analysis using DataFrames
+import geopandas as gpd     # Spatial data analysis with georeferenced DataFrames
+import xarray as xr         # Multidimensional labeled arrays (e.g., gridded climate or satellite data)
 
-# import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
-import osmnx as ox
-import rasterio
-from rasterio.transform import from_origin
-from rasterstats import zonal_stats
+#  
+# Visualization and animation
+#  
+import matplotlib.pyplot as plt       # Static plotting and visualization
+import matplotlib.animation as animation  # Create animated visualizations (e.g., time series maps)
 
-import earthaccess
 
-import h5netcdf
-import h5py
- 
-import requests 
+#  
+# Street networks and OpenStreetMap data
+#  
+import osmnx as ox          # Download and analyze street networks and other OSM features
+
+
+#  
+# Raster data input/output and spatial analysis
+#  
+import rasterio             # Read, write, and process raster (gridded) geospatial data
+from rasterio.transform import from_origin  # Define georeferencing for raster grids
+from rasterstats import zonal_stats          # Compute statistics of raster values within vector zones
+
+
+#   
+# Earth observation and remote data access
+#  
+import earthaccess          # Access NASA Earthdata datasets (e.g., satellite precipitation, climate data)
+
+
+#  
+# HDF5 / NetCDF data backends
+#  
+import h5netcdf             # NetCDF interface built on HDF5, compatible with xarray
+import h5py                 # Low-level access to HDF5 files and datasets
+
+
+#  
+# Web requests and APIs
+#  
+import requests             # Send HTTP requests to web APIs (e.g., Census, data services)
+
+
+from pathlib import Path          # Handle file system paths in a platform-independent way 
+
+from PIL import Image  # PIL is a dependency of matplotlib, usually already available
+
+
  
 ```
 
@@ -800,6 +839,9 @@ response = requests.get(acs_url)
 
 
 ## Combining Census data with TIGER shapes
+
+This code converts a Census API JSON response into a pandas DataFrame and constructs a geographic identifier (GEOID) by concatenating state, county, and tract codes. It then joins the Census population data to a GeoDataFrame of census tracts using the GEOID as a key. Finally, it ensures the population values are numeric so they can be used reliably in analysis and mapping.
+
 ```{python}
 
 census_data = response.json()
@@ -817,7 +859,9 @@ tracts['B01003_001E'] = pd.to_numeric(tracts['B01003_001E'])
 ```
 
 
+We can use the IMERG files to find a precipitation range, then use that range to keep a consistent (log-scaled) color normalization across time frames. 
 
+We can plot an animated precipitation raster over Maui and overlays census tracts colored by population, updating the raster and the timestamped title for each frame. Finally, it saves the result as a GIF.
 
 ```{python}
 #| eval: false
@@ -878,7 +922,7 @@ ax.set_ylabel("Latitude")
 plt.tight_layout()
 
 # -----------------------------
-# Step 4: Define Animation
+#  Define Animation
 # -----------------------------
 def update(frame_index):
     file = file_path[frame_index]
@@ -908,9 +952,9 @@ def update(frame_index):
     title_text.set_text(f"Maui 2023 Population & Precipitation — {label}")
     return mesh, title_text
 
-# -----------------------------
-# Step 5: Run and Save Animation
-# -----------------------------
+#  
+#  Run and Save Animation
+#  
 ani = animation.FuncAnimation(
     fig, update, frames=len(file_path),
     interval=200, blit=True, repeat=False
@@ -925,8 +969,69 @@ ani.save("data/images/maui_precip_population.gif", writer="pillow", fps=3)
 ![Maui Rain Population GIF](data/images/maui_precip_population.gif)
 
 
+## Using Drone Data for Damage Assessment
+
+Using **infrared (thermal) drone images for flooding damage assessment** helps identify water extent, saturation, and temperature contrasts that are not always visible in standard imagery. Thermal sensors can distinguish standing water from wet soil and detect moisture intrusion in buildings, supporting more accurate damage classification. Repeated infrared flights allow analysts to monitor receding floodwaters and lingering moisture that may indicate ongoing risk to structures or infrastructure. 
+
+When combined with elevation, land cover, and parcel data, thermal imagery improves understanding of flood impacts across neighborhoods. As with all drone operations, data collection should follow airspace regulations and account for privacy and ethical considerations when surveying affected communities.
+
+```{python}
+#| eval: false
+
+# Folder containing infrared JPEG frames
+frames_dir = "data/images/thermal"
+image_files = sorted([
+    os.path.join(frames_dir, f)
+    for f in os.listdir(frames_dir)
+    if f.lower().endswith("_t.jpg") or f.lower().endswith("_t.jpeg")
+])
+```
+
+We can plot the infrared images found from the drone to perform a damage assessment of roads in Maui and create a GIF animnation.
+
+```{python}
+#| eval: false
+
+# skip first 10, then take the next 25
+subset_files = image_files[10:35]
+
+
+# Set up the figure
+fig, ax = plt.subplots()
+ax.axis("off")
+
+# Load the first frame
+img = Image.open(subset_files[0])
+im = ax.imshow(img, cmap="inferno")
+
+def update(frame):
+    img = Image.open(subset_files[frame])
+    im.set_data(img)
+    return [im]
+
+# Create animation
+ani = animation.FuncAnimation(
+    fig,
+    update,
+    frames=len(subset_files),
+    interval=200,   # milliseconds between frames
+    blit=True
+)
+
+# Save as GIF
+ani.save("data/images/infrared_flood_animation.gif",
+    writer="pillow",
+    fps=4
+)
+
+plt.close(fig)
+```
+
+![Maui Rain Population GIF](data/images/infrared_flood_animation.gif)
+
+
 ## Discussion
-The analysis demonstrated that intense storms, such as the one that caused flooding in Maui in January 2024, can be studied effectively with the aid of open data and Python tools. Working with NASA’s IMERG rainfall dataset enabled us to observe the storms’ timing, intensity, and movement at 30-minute intervals. The animation helped highlight those transitions, making the storms peak visualize and link with known roa
+The analysis demonstrated that intense storms, such as the one that caused flooding in Maui in January 2024, can be studied effectively with the aid of open data and Python tools. Working with NASA’s IMERG rainfall dataset enabled us to observe the storms’ timing, intensity, and movement at 30-minute intervals. The animation helped highlight those transitions, making the storms peak visualize and link with population density data.
 
 When we compared NASA’s IMERG estimates with the Kahului Airport rain gauge data, we got similar rainfall timings, yet the exact rainfall totals differed. The main reason is that IMERG covers a large grid while a rain gauge measures a single point. Despite the difference, both sources demonstrated the same main rainfall surge.
 
@@ -947,12 +1052,15 @@ Compare satellite rainfall estimates with ground-based station data, validate pa
 Merge census tract boundaries with rainfall layers to outline which locations are most exposed to heavy rainfall.
 Use spatial analysis tools to identify low-lying areas, coastal zones, and transportal pathways with higher flood risk.
 Combine demographic and environmental data to figure out which populations, areas, and communities are likely to face greater challenges.
+
 By utilizing both environmental and demographic information, this project demonstrated how data analytics can support disaster preparedness and recovery planning. Understanding which areas are most likely to be in danger and who lives there helps communities and first responders create a smarter plan of action, allocate resources efficiently, and strengthen population and infrastructure for future storms.
 
 ## Summary
 This workflow demonstrates how to:
-  - Download and merge census tract boundaries and population data for Maui.
-  - Process and map local rainfall station observations.
-  - Overlay demographic and environmental data for actionable disaster analysis.
+
+- Download and merge census tract boundaries and population data for Maui.
+- Process and map local rainfall station observations.
+- Overlay demographic and environmental data for actionable disaster analysis.
+
 You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.   
   

@@ -50,4 +50,5 @@ docs/data/images/maui_precip.gif
 docs/data/lecz_pr/lecz_satellite.png
 maui_rainful_population_analysis/maui_rainfall.csv
 .DS_Store 
-    
+data/images/*
+docs/.DS_Store
