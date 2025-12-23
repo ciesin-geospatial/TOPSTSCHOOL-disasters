@@ -26,7 +26,7 @@ data/granule_files/merged_radiance_03.tif
 data/granule_files/merged_radiance_05.tif
 TOPS Proposal -2.ipynb
 data/stevaughnborders-Global-Warming-e3d0012.zip
->>>>>>> 833b4be22e509f42136d77b956dc60dae50c36be
+ 
 data/2025-07-07-47e9ab/*
 data/ipums/*
 data/maui_rain/tl_2023_15_tract.zip
@@ -48,4 +48,4 @@ docs/data/images/hawaii_precip.gif
 docs/data/images/maui_precip_population.gif
 docs/data/images/maui_precip.gif
 docs/data/lecz_pr/lecz_satellite.png
-maui_rainful_population_analysis/maui_rainfall.csv
+maui_rainful_population_analysis/maui_rainfall.csv 
