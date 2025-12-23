@@ -950,4 +950,5 @@ This workflow demonstrates how to:
   - Download and merge census tract boundaries and population data for Maui.
   - Process and map local rainfall station observations.
   - Overlay demographic and environmental data for actionable disaster analysis.
-You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.
+You can expand this analysis by incorporating additional census variables, different time periods, or more advanced spatial statistics as needed for your project.   
+  
