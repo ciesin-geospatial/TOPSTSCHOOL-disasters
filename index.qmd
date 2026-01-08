@@ -33,12 +33,12 @@ Module 3: Disaster datasets and use cases cover:
 
 - **Geospatial Analysis of Maui Flood Risk: Integrating Elevation, Rainfall, and Exposure Data**  
    This lesson explores flood vulnerability in Maui, Hawai‘i, using satellite rainfall estimates, drone imagery, and demographic exposure metrics to identify communities at greatest risk.  
-    - [Lesson 3: Maui Flood Rainfall Analysis](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m303-maui-flood-analusis.html)
+    - [Lesson 3: Maui Flood Rainfall Analysis](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m303-maui-flood-analysis.html)
     
  
 
 ::: {style="text-align: right;"}
-[Start Lesson](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m302-wildfire-assessment.html){.btn .btn-primary .btn role="button"}
+[Start Lesson 1](https://ciesin-geospatial.github.io/TOPSTSCHOOL-disasters/m301-coastal-hazards-PR.html){.btn .btn-primary .btn role="button"}
 :::
 
 This course was made possible thanks to the work of our NASA Transform to Open Science (TOPS) team, our SCHOOL Open Science team, open science Subject Matter Experts (SMEs), and the SCHOOL Development team!
